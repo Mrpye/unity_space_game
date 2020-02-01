@@ -11,6 +11,7 @@ public class WeponSystem : MonoBehaviour {
 
     [Header("Player Projectile")]
     [SerializeField] private GameObject prefab_blaster_laser;
+
     [SerializeField] private GameObject laser_hit_sprite;
     [SerializeField] public enum_wepon_type wepon_type = enum_wepon_type.single_blaster;
     [SerializeField] public float laser_range = 10f;
@@ -32,23 +33,20 @@ public class WeponSystem : MonoBehaviour {
             laser_hit_sprite_renderer = laser_hit_sprite.GetComponent<SpriteRenderer>();
             laser_hit_sprite_renderer.enabled = false;
         }
-        
     }
 
     private void Update() {
         //if (wepon_type == enum_wepon_type.beam) {
-            Fire_Beam();
+        Fire_Beam();
         //} else {
-            Fire_Blaster();
+        Fire_Blaster();
         //}
     }
 
     private void Fire_Beam() {
         if (Input.GetButton("Fire2")) {
-           
             int hit_mask = (1 << LayerMask.NameToLayer("Asteroid")) | (1 << LayerMask.NameToLayer("Enemy")) | (1 << LayerMask.NameToLayer("Material"));
 
-           
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, transform.up, laser_range, hit_mask);
             if (hit2D) {
                 laser_hit_sprite.transform.position = hit2D.point;

@@ -1,18 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Enemy : MonoBehaviour
-{
-   
-
+public class Enemy : MonoBehaviour {
 
     private void OnBecameInvisible() {
-        this.enabled=false;
-    }
-    private void OnBecameVisible() {
         this.enabled = false;
     }
 
-
+    private void OnBecameVisible() {
+        this.enabled = false;
+    }
 }

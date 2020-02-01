@@ -10,6 +10,7 @@ public class TractorBeam : MonoBehaviour {
     [SerializeField] private float range;
     [SerializeField] private float width = 0.3f;
     [SerializeField] private float pull = -10f;
+
     private void Start() {
         //Lets set up the range and width
         tractor_beam_fx = GameObject.Find("TracktorBeam").GetComponent<ParticleSystem>();
@@ -17,8 +18,6 @@ public class TractorBeam : MonoBehaviour {
         tractor_collider = GameObject.Find("TracktorBeam").GetComponent<BoxCollider2D>();
         shape = tractor_beam_fx.shape;
         main = tractor_beam_fx.main;
-
-       
     }
 
     private void UpdateTracktorBeam() {
@@ -28,6 +27,7 @@ public class TractorBeam : MonoBehaviour {
         tractor_collider.size = new Vector2(width, range);
         tractor_pull.forceMagnitude = pull;
     }
+
     private void Update() {
         if (Input.GetKey(KeyCode.T)) {
             UpdateTracktorBeam();

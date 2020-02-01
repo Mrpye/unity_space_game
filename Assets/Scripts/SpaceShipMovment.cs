@@ -45,10 +45,14 @@ public class SpaceShipMovment : MonoBehaviour {
     private ParticleSystem right_eng_bottom_fx;
 
     private Vector3 oldEulerAngles;
+
     [Header("Debug Info")]
-    [SerializeField] float rotationDelta;
-    [SerializeField]  Vector3 verlocity;
-    [SerializeField] float s;
+    [SerializeField] private float rotationDelta;
+
+    [SerializeField] private Vector3 verlocity;
+    [SerializeField] private float s;
+    [SerializeField] private float mag;
+
     private void Start() {
         //**********************
         //Setup the Game Objects
@@ -67,15 +71,12 @@ public class SpaceShipMovment : MonoBehaviour {
         right_eng_bottom_fx = GameObject.Find("RightEngine_Bottom").GetComponent<ParticleSystem>();
 
         Vector3 oldEulerAngles = transform.rotation.eulerAngles;
-
     }
 
     private void Update() {
         ZoomHandler();//Handle the zoom
 
         Get_Player_Input();
-
-
 
         /*  Debug.Log(movement_y);
           if (Input.GetKeyDown(KeyCode.M)) {
@@ -98,18 +99,17 @@ public class SpaceShipMovment : MonoBehaviour {
         rotaion_movement = Input.GetAxis("Horizontal");
         rotationDelta = oldEulerAngles.z - transform.rotation.eulerAngles.z;
         verlocity = transform.InverseTransformDirection(rb.velocity);
-
+        mag = rb.velocity.magnitude;
         //***************
         //Breaking system
         //***************
         if (Input.GetKey(KeyCode.X)) {
-           
             if (rotationDelta > -0.01f && rotationDelta < 0.01f) {
-                rb.angularDrag = rotate_break_drag*4;
+                rb.angularDrag = rotate_break_drag * 4;
             } else {
                 rb.angularDrag = rotate_break_drag;
             }
-            if (verlocity.x > -1f && verlocity.x < 1f && verlocity.y > -1f && verlocity.y < 1f) {
+            if (rb.velocity.magnitude < 0.2) {
                 rb.drag = speed_break_drag * 100;
             } else {
                 rb.drag = speed_break_drag;
@@ -182,12 +182,11 @@ public class SpaceShipMovment : MonoBehaviour {
         }
     }
 
-
     private void MoveChar(float movement_x, float movement_y, float rotaion_movement) {
         //***************************************
         //This Handles Forward and reverse Motion
         //***************************************
-        if (movement_y > 0) { movement_y = movement_y *2; }
+        if (movement_y > 0) { movement_y = movement_y * 2; }
         Vector2 force = Vector2.up * Time.deltaTime * speed_y * movement_y;
         rb.AddRelativeForce(force);
 
@@ -213,7 +212,7 @@ public class SpaceShipMovment : MonoBehaviour {
         }
 
         //Draw Vector arrow
-        Vector2 dir = rb.velocity;
+        /*Vector2 dir = rb.velocity;
          s = 1 * dir.magnitude + 1;
        // pointer.transform.localScale = new Vector3(s, s, 1);
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -222,8 +221,7 @@ public class SpaceShipMovment : MonoBehaviour {
             pointer.SetActive(false);
         } else {
             pointer.SetActive(true);
-        }
-       
+        }*/
 
         /* transform.Rotate(new Vector3(0, 0, Input.GetAxis("Horizontal") * rotate_speed) * Time.deltaTime);
          if (Input.GetKeyDown(KeyCode.W)) {

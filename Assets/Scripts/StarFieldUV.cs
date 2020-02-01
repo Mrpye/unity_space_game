@@ -5,13 +5,12 @@ public class StarFieldUV : MonoBehaviour {
     [SerializeField] private bool warp = false;
 
     private void Update() {
-
         MeshRenderer mr = GetComponent<MeshRenderer>();
         Material mat = mr.material;
         Vector2 offset = mat.mainTextureOffset;
 
         if (warp == true) {
-            offset.x = transform.position.x / transform.localScale.x *( parralax*0.02f);
+            offset.x = transform.position.x / transform.localScale.x * (parralax * 0.02f);
             offset.y = transform.position.y / transform.localScale.y * (parralax * 0.02f);
         } else {
             offset.x = transform.position.x / transform.localScale.x / parralax;
