@@ -2,13 +2,13 @@
 using UnityEngine.UI;
 
 public class StorageReader : MonoBehaviour {
-    [SerializeField] public PlayerStorage.enum_item item_type;
-    private PlayerStorage storage;
+    [SerializeField] public Storage.enum_item item_type;
+    private Storage storage;
     private Text txt;
 
     // Start is called before the first frame update
     private void Start() {
-        storage = GetComponentInParent<PlayerStorage>();
+        storage = GetComponentInParent<Storage>();
         txt = GetComponentInChildren<Text>();
         InvokeRepeating("UpdateDisplayData", 0, 1.0f);
     }

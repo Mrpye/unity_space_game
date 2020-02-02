@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-public class RefinerReader : MonoBehaviour
-{
+
+public class RefinerReader : MonoBehaviour {
     [SerializeField] private Refiner refiner;
     private Slider bar;
 
@@ -15,9 +13,8 @@ public class RefinerReader : MonoBehaviour
 
     private void UpdateDisplayData() {
         if (refiner != null && bar != null) {
-            bar.maxValue = refiner.max_items;
-            bar.value = refiner.Item_Count();
+            bar.maxValue = refiner.Get_MaxItems();
+            bar.value = refiner.Bin_Item_Count();
         }
-
     }
 }

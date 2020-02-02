@@ -6,26 +6,34 @@ using UnityEngine;
 /// Possible upgrades
 /// Faster processing time
 /// </summary>
-public class Refiner : SystemRequirments {
-    [SerializeField] public List<PlayerStorage.enum_item> processing_bin = new List<PlayerStorage.enum_item>();
-    [SerializeField] public int processing_time = 20;
-    [SerializeField] public int max_items = 10;
-    private PlayerStorage storage ;
+public class Refiner : ModuleSystemInfo {
+    private List<Storage.enum_item> processing_bin = new List<Storage.enum_item>();
+    private float processing_time = 20;
 
+    private Storage storage;
     private bool processing = false;
-    private MaterialResorce mr;
+    private ItemResorce mr;
 
-    private void Start() {
-        storage=GetComponentInParent<PlayerStorage>();
+    /// <summary>
+    /// This gets Moduleinfo settigs and apply to the specific module
+    /// </summary>
+    public void UpdateModuleStats() {
+        processing_time = this.Get_ActionSpeed();
     }
 
-    public int Item_Count() {
+    private void Start() {
+        storage = GetComponentInParent<Storage>();
+        UpdateModuleStats();
+        StartMonitor();
+    }
+
+    public int Bin_Item_Count() {
         return processing_bin.Count;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.tag == "material") {
-            mr = collision.gameObject.GetComponent<MaterialResorce>();
+            mr = collision.gameObject.GetComponent<ItemResorce>();
             if (mr != null) {
                 processing_bin.Add(mr.material_type);
             }
@@ -43,8 +51,8 @@ public class Refiner : SystemRequirments {
         processing = true;
         do {
             yield return new WaitForSeconds(processing_time);
-            PlayerStorage.enum_item item = processing_bin[0];
-            if(storage != null) {
+            Storage.enum_item item = processing_bin[0];
+            if (storage != null) {
                 storage.Store_Material(item);
             }
             processing_bin.RemoveAt(0);

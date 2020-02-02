@@ -5,9 +5,9 @@ public class Rotator : MonoBehaviour {
     [SerializeField] private int rotate_speed = 0;
     [SerializeField] private bool manual_set = false;
 
-    public void Set_rotation_Speed(int spped) {
+    public void Set_rotation_Speed(int speed) {
         manual_set = true;
-        rotate_speed = max_rotation_speed;
+        rotate_speed = speed;
     }
 
     // Start is called before the first frame update

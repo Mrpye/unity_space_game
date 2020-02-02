@@ -1,15 +1,14 @@
 ﻿using UnityEngine;
 
-public class TractorBeam : MonoBehaviour {
+public class TractorBeam : ModuleSystemInfo {
     private ParticleSystem tractor_beam_fx;
     private PointEffector2D tractor_pull;
     private BoxCollider2D tractor_collider;
     private ParticleSystem.ShapeModule shape;
     private ParticleSystem.MainModule main;
-
-    [SerializeField] private float range;
+    [Header("Tractorbeam")]
     [SerializeField] private float width = 0.3f;
-    [SerializeField] private float pull = -10f;
+
 
     private void Start() {
         //Lets set up the range and width
@@ -21,11 +20,11 @@ public class TractorBeam : MonoBehaviour {
     }
 
     private void UpdateTracktorBeam() {
-        shape.position = new Vector3(0, range, 0);
-        main.startSpeed = 1.8f * range;
-        tractor_collider.offset = new Vector2(0, range * 0.5f);
-        tractor_collider.size = new Vector2(width, range);
-        tractor_pull.forceMagnitude = pull;
+        shape.position = new Vector3(0, this.Get_Range(), 0);
+        main.startSpeed = 1.8f * this.Get_Range();
+        tractor_collider.offset = new Vector2(0, this.Get_Range() * 0.5f);
+        tractor_collider.size = new Vector2(width, this.Get_Range());
+        tractor_pull.forceMagnitude = this.Get_Ammount();
     }
 
     private void Update() {

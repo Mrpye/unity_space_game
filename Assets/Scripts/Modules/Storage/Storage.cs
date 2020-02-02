@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// This class is used for storing items such as materials or plans
 /// </summary>
-public class PlayerStorage : MonoBehaviour {
+public class Storage : MonoBehaviour {
 
     public enum enum_item {
         gold,

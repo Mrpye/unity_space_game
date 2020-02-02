@@ -134,19 +134,36 @@ public class SpaceShipMovment : MonoBehaviour {
         EngineParticles(movement_x, movement_y, rotaion_movement);
     }
 
+    private void Start_Usage(GameObject go) {
+        ModuleSystemInfo ms = go.GetComponent<ModuleSystemInfo>();
+        if (ms != null) {
+            ms.StartUsage();
+        }
+    }
+
+    private void Stop_Usage(GameObject go) {
+        ModuleSystemInfo ms = go.GetComponent<ModuleSystemInfo>();
+        if (ms != null) {
+            ms.StopUsage();
+        }
+    }
+
     private void EngineParticles(float movement_x, float movement_y, float rotaion_movement) {
         //****************
         //Handle y movment
         //****************
         if (movement_y > 0) {
             main_eng_fx.Play();
+            Start_Usage(main_eng_fx.gameObject);
         } else if (movement_y < 0) {
             front_eng_left_fx.Play();
             front_eng_right_fx.Play();
+            Start_Usage(front_eng_left_fx.gameObject);
+            Start_Usage(front_eng_right_fx.gameObject);
         } else {
-            if (main_eng_fx.isPlaying) { main_eng_fx.Stop(); }
-            if (front_eng_left_fx.isPlaying) { front_eng_left_fx.Stop(); }
-            if (front_eng_right_fx.isPlaying) { front_eng_right_fx.Stop(); }
+            if (main_eng_fx.isPlaying) { main_eng_fx.Stop(); Stop_Usage(main_eng_fx.gameObject); }
+            if (front_eng_left_fx.isPlaying) { front_eng_left_fx.Stop(); Stop_Usage(front_eng_left_fx.gameObject); }
+            if (front_eng_right_fx.isPlaying) { front_eng_right_fx.Stop(); Stop_Usage(front_eng_right_fx.gameObject); }
         }
 
         //****************
@@ -155,14 +172,18 @@ public class SpaceShipMovment : MonoBehaviour {
         if (movement_x > 0) {
             left_eng_top_fx.Play();
             left_eng_bottom_fx.Play();
+            Start_Usage(left_eng_top_fx.gameObject);
+            Start_Usage(left_eng_bottom_fx.gameObject);
         } else if (movement_x < 0) {
             right_eng_top_fx.Play();
             right_eng_bottom_fx.Play();
+            Start_Usage(right_eng_top_fx.gameObject);
+            Start_Usage(right_eng_bottom_fx.gameObject);
         } else {
-            if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); }
-            if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); }
-            if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); }
-            if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); }
+            if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); Stop_Usage(left_eng_top_fx.gameObject); }
+            if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); Stop_Usage(left_eng_bottom_fx.gameObject); }
+            if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); Stop_Usage(right_eng_top_fx.gameObject); }
+            if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); Stop_Usage(right_eng_bottom_fx.gameObject); }
         }
 
         //***********************
@@ -171,14 +192,21 @@ public class SpaceShipMovment : MonoBehaviour {
         if (rotaion_movement > 0) {
             left_eng_top_fx.Play();
             right_eng_bottom_fx.Play();
+
+            Start_Usage(left_eng_top_fx.gameObject);
+            Start_Usage(right_eng_bottom_fx.gameObject);
+
         } else if (rotaion_movement < 0) {
             right_eng_top_fx.Play();
             left_eng_bottom_fx.Play();
+
+            Start_Usage(right_eng_top_fx.gameObject);
+            Start_Usage(left_eng_bottom_fx.gameObject);
         } else if (movement_x == 0 && rotaion_movement == 0) {
-            if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); }
-            if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); }
-            if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); }
-            if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); }
+            if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); Stop_Usage(left_eng_top_fx.gameObject); }
+            if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); Stop_Usage(left_eng_bottom_fx.gameObject); }
+            if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); Stop_Usage(right_eng_top_fx.gameObject); }
+            if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); Stop_Usage(right_eng_bottom_fx.gameObject); }
         }
     }
 
