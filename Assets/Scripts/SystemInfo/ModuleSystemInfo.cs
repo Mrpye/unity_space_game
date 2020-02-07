@@ -1,7 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ModuleSystemInfo : MonoBehaviour {
+
+    #region enum
 
     public enum enum_system_info {
         Class_A,
@@ -10,105 +13,163 @@ public class ModuleSystemInfo : MonoBehaviour {
         Class_D,
     }
 
+    #endregion enum
+
+    #region inspector Fields
+
     [Header("Class")]
-    [SerializeField] private enum_system_info system_class;
+    [SerializeField] public enum_system_info system_class = enum_system_info.Class_D;
+    [SerializeField] public string ModuleName = "";
+    [SerializeField] public string id = "";
+    public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
 
     [Header("Heat")]
-    [SerializeField] private float idle_heat = 1;
+    [SerializeField] public float idle_heat = 0;
 
-    [SerializeField] private float min_idle_heat = 1;
-    [SerializeField] private float usage_factor_heat = 0.1f;
-    [SerializeField] private float min_usage_factor_heat = 0.1f;
+    [SerializeField] public float min_idle_heat = 0;
+    [SerializeField] public float usage_factor_heat = 1f;
+    [SerializeField] public float min_usage_factor_heat = 0.1f;
 
     [Header("Power")]
-    [SerializeField] private float idle_power = 0.1f;
+    [SerializeField] public float idle_power = 0f;
 
-    [SerializeField] private float min_idle_power = 0.1f;
-    [SerializeField] private float power_usage_factor = 1f;
-    [SerializeField] private float min_power_usage_factor = 1f;
+    [SerializeField] public float min_idle_power = 0f;
+    [SerializeField] public float power_usage_factor = -5f;
+    [SerializeField] public float min_power_usage_factor = -1f;
 
     [Header("Fuel")]
-    [SerializeField] private float idle_fuel = 0;
+    [SerializeField] public float idle_fuel = 0;
 
-    [SerializeField] private float min_idle_fuel = 0;
-    [SerializeField] private float fuel_usage_factor = 1f;
-    [SerializeField] private float min_fuel_usage_factor = 1f;
+    [SerializeField] public float min_idle_fuel = 0;
+    [SerializeField] public float fuel_usage_factor = -5f;
+    [SerializeField] public float min_fuel_usage_factor = -1f;
 
     [Header("CPU")]
-    [SerializeField] private float cpu = 1;
+    [SerializeField] public float cpu = 1;
 
-    [SerializeField] private float min_cpu = 1;
+    [SerializeField] public float min_cpu = 1;
 
     [Header("Health")]
-    [SerializeField] private float health = 100;
+    [SerializeField] public float health = 100;
 
-    [SerializeField] private float health_malfunction = 20;
-    [SerializeField] private float health_offline = 20;
+    [SerializeField] public float health_malfunction = 30;
+    [SerializeField] public float health_offline = 10;
 
     [Header("Mass")]
-    [SerializeField] private float mass = 10;
+    [SerializeField] public float mass = 10;
 
-    [SerializeField] private float min_mass = 10;
+    [SerializeField] public float min_mass = 10;
 
     [Header("Thrust")]
-    [SerializeField] private float max_thrust = 10;
+    [SerializeField] public float max_thrust;
 
-    [SerializeField] private float thrust = 10;
+    [SerializeField] public float thrust;
 
     [Header("Damage")]
-    [SerializeField] private float max_Damage = 10;
+    [SerializeField] public float max_Damage = 100;
 
-    [SerializeField] private float damage = 10;
+    [SerializeField] public float damage = 10;
 
-    [Header("Action Speed")]
-    [SerializeField] private float max_action_speed = 10;
+    [Header("Action Speed")]//can be used for rate of fire
+    [SerializeField] public float max_action_speed = 2;
 
-    [SerializeField] private float min_action_speed = 10;
-    [SerializeField] private float action_speed = 10;
+    [SerializeField] public float min_action_speed = 0.1f;
+    [SerializeField] public float action_speed = 0.5f;
 
-    [Header("Speed")]
-    [SerializeField] private float max_speed = 10;
+    [Header("Speed")]//Can be used for speed of bullets
+    [SerializeField] public float max_speed = 100;
 
-    [SerializeField] private float min_speed = 10;
-    [SerializeField] private float speed = 10;
+    [SerializeField] public float min_speed = 10;
+    [SerializeField] public float speed = 6;
 
-    [Header("Items")]
-    [SerializeField] private float max_items = 10;
+    [Header("Items")]//storage items
+    [SerializeField] public float max_items = 20;
 
-    [SerializeField] private  int items = 10;
- 
+    [SerializeField] public int items = 10;
 
+    [Header("Range")]//Range of wepon or tractor beam
+    [SerializeField] public float max_range = 30;
 
-    [Header("Range")]
-    [SerializeField] private float max_range = 10;
+    [SerializeField] public float range = 10;
 
-    [SerializeField] private float range = 10;
+    [Header("Ammount")]//Can be used for how much the tractor bbeam pulls
+    [SerializeField] public float max_ammount = 10;
 
+    [SerializeField] public float ammount = 10;
 
-    [Header("Ammount")]
-    [SerializeField] private float max_ammount = 10;
+    [Header("Malfunction")]//This is used for handling malfunctions
+    [SerializeField] public float min_offline_malfunction_time = 1;
 
-    [SerializeField] private float ammount = 10;
+    [SerializeField] public float max_offline_malfunction_time = 2;
+    [SerializeField] public float min_online_malfunction_time = 2;
+    [SerializeField] public float max_online_malfunction_time = 5;
 
-    [Header("Malfunction")]
-    [SerializeField] private float min_offline_malfunction_time = 1;
-    [SerializeField] private float max_offline_malfunction_time = 2;
-    [SerializeField] private float min_online_malfunction_time = 1;
-    [SerializeField] private float max_online_malfunction_time = 2;
+    #endregion inspector Fields
+
+    #region private fileds
 
     private float offline_malfunction_time;
     private float online_malfunction_time;
-    private bool in_use = false;
+    [SerializeField] private bool in_use = false;
     private float current_heat = 0;
     private float current_power = 0;
     private float current_fuel = 0;
     private bool is_malfunctioning = false;
+
+    #endregion private fileds
+
+    #region methods
 
     public void StartMonitor() {
         online_malfunction_time = Random.Range(min_online_malfunction_time, max_online_malfunction_time);
         offline_malfunction_time = Random.Range(min_offline_malfunction_time, max_offline_malfunction_time);
         StartCoroutine(Malfunction());
     }
+
+    /// <summary>
+    /// Calculate mafunctions
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Malfunction() {
+        while (true) {
+            yield return new WaitForSeconds(online_malfunction_time);
+            if (health < health_malfunction) {
+                float chance = 100 - health;
+                if (Random.Range(0, 100) < chance) {
+                    is_malfunctioning = true;
+                } else {
+                    is_malfunctioning = false;
+                }
+                yield return new WaitForSeconds(offline_malfunction_time);
+            } else {
+                is_malfunctioning = false;
+            }
+        }
+    }
+
+    public void ResetUsage() {
+        current_power = idle_power;
+        current_fuel = idle_fuel;
+    }
+    public void UpdateUsage() {
+        if (in_use == true) {
+            current_heat += usage_factor_heat * Time.deltaTime;
+            current_power += power_usage_factor * Time.deltaTime;
+            current_fuel += fuel_usage_factor * Time.deltaTime;
+        } else {
+            current_heat -= usage_factor_heat * Time.deltaTime; if (current_heat <= idle_heat) { current_heat = idle_heat; }
+        }
+    }
+
+    public void SingleUpdateUsage() {
+        current_heat += usage_factor_heat;
+        current_power += power_usage_factor;
+        current_fuel += fuel_usage_factor;
+    }
+
+    #endregion methods
+
+    #region functions
 
     /// <summary>
     /// This will say if the system has malfunctioned
@@ -118,50 +179,28 @@ public class ModuleSystemInfo : MonoBehaviour {
         return !is_malfunctioning;
     }
 
-    private IEnumerator Malfunction() {
-        while (true) {
-            if (health < health_malfunction) {
-                yield return new WaitForSeconds(online_malfunction_time);
-                float chance = 100 - health;
-                if (Random.Range(0, 100) < chance) {
-                    is_malfunctioning = true;
-                } else {
-                    is_malfunctioning = false;
-                }
-                yield return new WaitForSeconds(offline_malfunction_time);
-            } else {
-                is_malfunctioning = true;
-            }
-        }
+     public virtual void Set_Values(float heat, float max_heat, float power, float max_power, float fuel, float max_fuel) {
+
     }
 
     public bool Is_OffLine() {
         return health <= health_offline;
     }
 
-    private void Update() {
-        if (in_use == true) {
-            current_heat += usage_factor_heat * Time.deltaTime;
-            current_power += power_usage_factor * Time.deltaTime;
-            current_fuel += fuel_usage_factor * Time.deltaTime;
-        } else {
-            current_heat -= usage_factor_heat * Time.deltaTime; if (current_heat <= idle_heat) { current_heat = idle_heat; }
-            current_power = idle_power;
-            current_fuel = idle_fuel;
-        }
-    }
     public float Get_Ammount() {
         return ammount;
     }
+
     public enum_system_info Get_Class() {
         return system_class;
     }
-    public float Get_MaxItems() {
-        return items;
-    }
+
+
+
     public float Get_Items() {
         return items;
     }
+
     public float Get_Range() {
         return range;
     }
@@ -213,4 +252,6 @@ public class ModuleSystemInfo : MonoBehaviour {
     public void StopUsage() {
         in_use = false;
     }
+
+    #endregion functions
 }

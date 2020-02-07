@@ -19,6 +19,7 @@ public class Refiner : ModuleSystemInfo {
     /// </summary>
     public void UpdateModuleStats() {
         processing_time = this.Get_ActionSpeed();
+        if (processing_time == 0) { processing_time = 1; }
     }
 
     private void Start() {
@@ -32,7 +33,8 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.tag == "material") {
+        float maxbin = Get_Ammount();
+        if (collision.gameObject.tag == "material" && processing_bin.Count< maxbin) {
             mr = collision.gameObject.GetComponent<ItemResorce>();
             if (mr != null) {
                 processing_bin.Add(mr.material_type);
@@ -42,9 +44,12 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void Update() {
+        UpdateUsage();
         if (processing == false && processing_bin.Count > 0) {
+            StartUsage();
             StartCoroutine(ProcessBin());
         }
+
     }
 
     private IEnumerator ProcessBin() {
@@ -58,5 +63,6 @@ public class Refiner : ModuleSystemInfo {
             processing_bin.RemoveAt(0);
         } while (processing_bin.Count > 0);
         processing = false;
+        StopUsage();
     }
 }

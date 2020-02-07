@@ -5,8 +5,9 @@ public class DamageSystem : MonoBehaviour {
 
     [Header("Destruction")]
     [SerializeField] private GameObject deathFX;
+    [SerializeField] private GameObject shockwave;
 
-    [SerializeField] private float durationOfExplosion = 1f;
+    [SerializeField] private float durationOfExplosion = 0.5f;
 
     private CircleCollider2D explosion_force_collider;
     private PointEffector2D explosion_force_effector;
@@ -42,6 +43,11 @@ public class DamageSystem : MonoBehaviour {
         Destroy(gameObject, durationOfExplosion);
         if (deathFX == null) { return; }
         GameObject explosion = Instantiate(deathFX, transform.position, transform.rotation);
+        if (shockwave != null) {
+            Instantiate(shockwave, transform.position, transform.rotation);
+        }
+        
+        
         Destroy(explosion, durationOfExplosion);
     }
 }

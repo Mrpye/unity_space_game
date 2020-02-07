@@ -21,7 +21,7 @@ public class SystemInfo : MonoBehaviour {
         }
     }
 
-    [SerializeField] private List<GameObject> modules;
+    [SerializeField] public List<GameObject> modules;
 
     [SerializeField] private float heat_max;
     [SerializeField] private float heat;
@@ -42,16 +42,41 @@ public class SystemInfo : MonoBehaviour {
 
 
     [SerializeField] private float mass;
+    [SerializeField] private Rigidbody2D rb;
 
-    private void Update() {
-        UpdateValues();
+    private void Start() {
+        rb = gameObject.GetComponent<Rigidbody2D>();
+        GameObject mods = GameObject.Find("Modules");
+        modules = new List<GameObject>();
+        ModuleSystemInfo[] childmods = mods.GetComponentsInChildren<ModuleSystemInfo>();
+        foreach (ModuleSystemInfo c in childmods) {
+            AddModule(c.gameObject);
+        }
     }
 
+    private void Update() {
+       
+        UpdateValues();
+    }
+    public void AddModule(GameObject module) {
+        Debug.Log("Adding Module" + module.name);
+        SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
+        ModuleSystemInfo m = module.GetComponent<ModuleSystemInfo>();
+        foreach(KeyMappingModel e in m.key_mappings) {
+            controls.AddKeyBinding(e, module);
+        }
+        modules.Add(module);
+        GameObject mods = GameObject.Find("Modules");
+
+        module.transform.parent = mods.transform;
+    }
     private void UpdateValues() {
         heat = 0;
         cpu_usage = 0;
         power_drain = 0;
         fuel_drain = 0;
+        mass = 0;
+
         foreach (GameObject e in modules) {
             ModuleSystemInfo ms = e.GetComponent<ModuleSystemInfo>();
             if (ms != null) {
@@ -59,11 +84,32 @@ public class SystemInfo : MonoBehaviour {
                 cpu_usage += ms.Get_CPU();
                 power_drain += ms.Get_Power();
                 fuel_drain += ms.Get_Fuel();
+                mass += ms.Get_Mass();
+                ms.ResetUsage();
             }
 
         }
-        power -= power_drain;
-        fuel -= fuel_drain;
+        power += power_drain;
+        if (power > power_max) {
+            power = power_max;
+        } else if (power == 0) {
+            power = 0;
+        }
+        fuel += fuel_drain;
+        if (rb != null) {
+            rb.mass = mass;
+        }
+        foreach (GameObject e in modules) {
+            ModuleSystemInfo ms = e.GetComponent<ModuleSystemInfo>();
+            if (ms != null) {
+                ms.Set_Values(heat,heat_max, power, power_max,fuel, fuel_max);
+            }
+
+        }
+
+       
+
+
     }
     public value_data Get_Data(enum_system_info info_type) {
         switch (info_type) {
