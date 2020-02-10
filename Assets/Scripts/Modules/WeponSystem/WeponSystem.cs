@@ -32,12 +32,14 @@ public class WeponSystem : ModuleSystemInfo {
     private Coroutine fire_method;
     private LineRenderer line_renderer;
     private SpriteRenderer laser_hit_sprite_renderer;
-
+    [SerializeField] private GameObject fire_point;
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     private void Start() {
         line_renderer = GetComponent<LineRenderer>();
+        fire_point = GameObject.Find("FirePoint");
+
         line_renderer.enabled = false;
         line_renderer.useWorldSpace = true;
         if (laser_hit_sprite != null) {
@@ -61,6 +63,7 @@ public class WeponSystem : ModuleSystemInfo {
 
 
     private void Update() {
+        if (is_in_storage = true) { return; }
         if (wepon_type == enum_wepon_type.beam) {
             Fire_Beam();
         } else {
@@ -121,8 +124,8 @@ public class WeponSystem : ModuleSystemInfo {
         while (true) {
             SingleUpdateUsage();
             if (wepon_type == enum_wepon_type.double_blaster) {
-                Vector3 left_laser = new Vector3(transform.position.x - double_blaster_distance, transform.position.y, transform.position.z);
-                Vector3 right_laser = new Vector3(transform.position.x + double_blaster_distance, transform.position.y, transform.position.z);
+                Vector3 left_laser = new Vector3(fire_point.transform.position.x - double_blaster_distance, fire_point.transform.position.y, fire_point.transform.position.z);
+                Vector3 right_laser = new Vector3(fire_point.transform.position.x + double_blaster_distance, fire_point.transform.position.y , fire_point.transform.position.z);
 
                 GameObject laser1 = Instantiate(prefab_blaster_laser, left_laser, transform.rotation) as GameObject;
                 laser1.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);

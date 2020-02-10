@@ -58,17 +58,23 @@ public class SystemInfo : MonoBehaviour {
        
         UpdateValues();
     }
-    public void AddModule(GameObject module) {
+    public void AddModule(GameObject module,bool is_in_storage = false) {
         Debug.Log("Adding Module" + module.name);
         SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
         ModuleSystemInfo m = module.GetComponent<ModuleSystemInfo>();
-        foreach(KeyMappingModel e in m.key_mappings) {
-            controls.AddKeyBinding(e, module);
+        m.is_in_storage = is_in_storage;
+        if (is_in_storage == false) {
+            GameObject parent_mods = GameObject.Find("Modules");
+            foreach (KeyMappingModel e in m.key_mappings) {
+                controls.AddKeyBinding(e, module);
+            }
+            modules.Add(module);
+            module.transform.parent = parent_mods.transform;
+        } else {
+            GameObject parent_storage_mods = GameObject.Find("Stored_Modules");
+            module.transform.parent = parent_storage_mods.transform;
         }
-        modules.Add(module);
-        GameObject mods = GameObject.Find("Modules");
-
-        module.transform.parent = mods.transform;
+       
     }
     private void UpdateValues() {
         heat = 0;
@@ -80,12 +86,14 @@ public class SystemInfo : MonoBehaviour {
         foreach (GameObject e in modules) {
             ModuleSystemInfo ms = e.GetComponent<ModuleSystemInfo>();
             if (ms != null) {
-                heat += ms.Get_Heat();
-                cpu_usage += ms.Get_CPU();
-                power_drain += ms.Get_Power();
-                fuel_drain += ms.Get_Fuel();
-                mass += ms.Get_Mass();
-                ms.ResetUsage();
+                if (ms.is_in_storage == false) {
+                    heat += ms.Get_Heat();
+                    cpu_usage += ms.Get_CPU();
+                    power_drain += ms.Get_Power();
+                    fuel_drain += ms.Get_Fuel();
+                    mass += ms.Get_Mass();
+                    ms.ResetUsage();
+                }
             }
 
         }

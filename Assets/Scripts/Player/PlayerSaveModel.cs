@@ -10,46 +10,30 @@ public class KeyMappingModel {
     public float value;
 }
 
-
-    [Serializable]
+[Serializable]
 public class PlayerSaveModel {
-
-    [System.NonSerialized]
-    private GameObject PrefabObj;
-
-    [System.NonSerialized]
-    private SystemInfo sys;
-
-    [System.NonSerialized]
-    private ModuleSystemInfo mod_sys;
-
-
-
-
-    public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
-    public string id;//used to hep idetify the module if there are multiple
     public string module_name;//Store the location of prefab and name
     public Vector3 position;
     public Vector3 scale;
     public Quaternion roation;
     public int order_layer;
-    //public string key;
-    // public string value_mapping;
-    //public string value;
 
-    public List<PlayerSaveModel> modules = new List<PlayerSaveModel>();
-    public bool is_player = false;
-    
+    public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
+    public List<ModuleSaveModel> stored_modules = new List<ModuleSaveModel>();
+    public bool is_player = true;
 
-   // public void Set_Object(GameObject PrefabObj) {
-   //     this.PrefabObj = PrefabObj;
-   // }
-
-    public void Write_To_Object(GameObject PrefabObj) {
-
-        PrefabObj.transform.localScale = this.scale;
-
+    public void ReadData(GameObject player_prefab) {
+        SystemInfo sys = player_prefab.GetComponent<SystemInfo>();
+        position = player_prefab.transform.position;
+        roation = player_prefab.transform.rotation;
+        scale = player_prefab.transform.localScale;
+        module_name = sys.name;
     }
+
+    // public void Write_To_Object(GameObject PrefabObj) {
+    //    PrefabObj.transform.localScale = this.scale;
+
+    //}
 
     /*
     public void ReadData(bool is_player) {
@@ -73,7 +57,6 @@ public class PlayerSaveModel {
     }*/
     /*
     public string SavePlayer() {
-
         ReadData(true);
 
         foreach (GameObject e in sys.modules) {
@@ -91,10 +74,34 @@ public class PlayerSaveModel {
     }*/
 
     public static PlayerSaveModel LoadPlayer() {
-
-        Debug.Log(Application.persistentDataPath);
+        //Debug.Log(Application.persistentDataPath);
         string data = File.ReadAllText(Application.persistentDataPath + "/player_config.save");
         PlayerSaveModel gameSaving = JsonUtility.FromJson<PlayerSaveModel>(data);
         return gameSaving;
     }
+}
+
+[Serializable]
+public class ModuleSaveModel {
+
+
+    public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
+    public string id;//used to hep idetify the module if there are multiple
+    public string module_name;//Store the location of prefab and name
+    public int order_layer;
+    public int mount_point;
+    public bool is_in_storage;
+    public bool is_internal_module;
+    public void ReadData(GameObject module) {
+        ModuleSystemInfo sys = module.GetComponent<ModuleSystemInfo>();
+        module_name = sys.ModuleName;
+        id = module.name;
+        mount_point = sys.mount_point;
+        order_layer = sys.order_layer;
+        is_in_storage = sys.is_in_storage;
+        is_internal_module = sys.is_internal_module;
+    }
+
+
+
 }

@@ -7,6 +7,7 @@ public class SpaceShipMovment : MonoBehaviour {
 
     [Header("Zoom")]
     [SerializeField] private float zoom_speed = 20f;
+
     [SerializeField] private float min_zoom = 2f;
     [SerializeField] private float max_zoom = 8.4f;
 
@@ -34,9 +35,8 @@ public class SpaceShipMovment : MonoBehaviour {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float movement_y;
     [SerializeField] private float movement_x;
-    [SerializeField]  private float rotaion_movement;
+    [SerializeField] private float rotaion_movement;
 
- 
     private Vector3 oldEulerAngles;
 
     [Header("Debug Info")]
@@ -47,18 +47,13 @@ public class SpaceShipMovment : MonoBehaviour {
     [SerializeField] private float mag;
 
     public void AddKeyBinding(KeyMappingModel mapping, GameObject module) {
-        if (!string.IsNullOrEmpty(mapping.Key)){
-
-
-
-            Propulsion p= module.GetComponent<Propulsion>();
+        if (!string.IsNullOrEmpty(mapping.Key)) {
+            Propulsion p = module.GetComponent<Propulsion>();
             if (p != null) { p.Set_PlayerObj(gameObject); }
-
-
 
             if (key_bindings.ContainsKey(mapping.Key)) {
                 List<KeyMapping> mappings = key_bindings[mapping.Key] as List<KeyMapping>;
-                KeyMapping map = new KeyMapping();
+                KeyMapping map = ScriptableObject.CreateInstance<KeyMapping>();
                 map.Key = mapping.Key;
                 map.value = mapping.value;
                 map.mapping_value = mapping.mapping_value;
@@ -67,7 +62,8 @@ public class SpaceShipMovment : MonoBehaviour {
                 mappings.Add(map);
             } else {
                 List<KeyMapping> mappings = new List<KeyMapping>();
-                KeyMapping map = new KeyMapping();
+
+                KeyMapping map = ScriptableObject.CreateInstance<KeyMapping>();
                 map.Key = mapping.Key;
                 map.value = mapping.value;
                 map.mapping_value = mapping.mapping_value;
@@ -115,8 +111,10 @@ public class SpaceShipMovment : MonoBehaviour {
         //Get infomation
         //****************
         rotationDelta = oldEulerAngles.z - transform.rotation.eulerAngles.z;
-        verlocity = transform.InverseTransformDirection(rb.velocity);
-        mag = rb.velocity.magnitude;
+        if (rb != null) {
+            verlocity = transform.InverseTransformDirection(rb.velocity);
+            mag = rb.velocity.magnitude;
+        }
         oldEulerAngles = transform.rotation.eulerAngles;
 
         BreakSystem();
@@ -126,6 +124,7 @@ public class SpaceShipMovment : MonoBehaviour {
         //***************
         //Breaking system
         //***************
+        if (rb == null) { return; }
         if (Input.GetKey(KeyCode.X)) {
             if (rotationDelta > -0.01f && rotationDelta < 0.01f) {
                 rb.angularDrag = rotate_break_drag * 4;
@@ -211,6 +210,7 @@ public class SpaceShipMovment : MonoBehaviour {
     }
 
     private void ZoomHandler() {
+        if (rb == null) { return; }
         //**************************
         //This Handles the zoom Mode
         //**************************

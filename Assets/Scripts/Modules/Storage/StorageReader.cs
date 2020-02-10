@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 public class StorageReader : MonoBehaviour {
-    [SerializeField] public Storage.enum_item item_type;
+    [SerializeField] public Enums.enum_item item_type;
     private Storage storage;
     private Text txt;
 

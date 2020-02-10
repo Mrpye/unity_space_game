@@ -7,12 +7,12 @@ using UnityEngine;
 /// Faster processing time
 /// </summary>
 public class Refiner : ModuleSystemInfo {
-    private List<Storage.enum_item> processing_bin = new List<Storage.enum_item>();
+    private List<Enums.enum_item> processing_bin = new List<Enums.enum_item>();
     private float processing_time = 20;
 
     private Storage storage;
     private bool processing = false;
-    private ItemResorce mr;
+    //private ItemResorce mr;
 
     /// <summary>
     /// This gets Moduleinfo settigs and apply to the specific module
@@ -34,12 +34,17 @@ public class Refiner : ModuleSystemInfo {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         float maxbin = Get_Ammount();
-        if (collision.gameObject.tag == "material" && processing_bin.Count< maxbin) {
-            mr = collision.gameObject.GetComponent<ItemResorce>();
-            if (mr != null) {
-                processing_bin.Add(mr.material_type);
-            }
-            Destroy(collision.gameObject);
+        if (collision.gameObject.tag == "material" && processing_bin.Count < maxbin) {
+            ItemResorce mr = collision.gameObject.GetComponent<ItemResorce>();
+            ModuleSystemInfo msi = collision.gameObject.GetComponent<ModuleSystemInfo>();
+            if (mr != null && msi==null) {
+                //Storing material
+                processing_bin.Add(mr.Item_type);
+                Destroy(collision.gameObject);
+            } else if (mr != null && msi != null) {
+                //Storing a module
+                storage.Store_Module(collision.gameObject);
+            }   
         }
     }
 
@@ -49,14 +54,13 @@ public class Refiner : ModuleSystemInfo {
             StartUsage();
             StartCoroutine(ProcessBin());
         }
-
     }
 
     private IEnumerator ProcessBin() {
         processing = true;
         do {
             yield return new WaitForSeconds(processing_time);
-            Storage.enum_item item = processing_bin[0];
+            Enums.enum_item item = processing_bin[0];
             if (storage != null) {
                 storage.Store_Material(item);
             }

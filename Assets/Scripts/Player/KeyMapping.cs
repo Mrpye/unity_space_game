@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeyMapping : MonoBehaviour
+public class KeyMapping : ScriptableObject
 {
     public string Key;
     public GameObject module;

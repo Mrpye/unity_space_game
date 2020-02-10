@@ -21,6 +21,13 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public enum_system_info system_class = enum_system_info.Class_D;
     [SerializeField] public string ModuleName = "";
     [SerializeField] public string id = "";
+    [SerializeField] public int storage_usage = 1;
+    [SerializeField] public bool is_in_storage;//This stop all atributes affectin except mass
+    [SerializeField] public bool is_internal_module;
+    [SerializeField] public int mount_point;
+    [SerializeField] public int order_layer = 100;
+
+    private ItemResorce ir;
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
 
     [Header("Heat")]
@@ -97,6 +104,8 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     [SerializeField] public float ammount = 10;
 
+
+
     [Header("Malfunction")]//This is used for handling malfunctions
     [SerializeField] public float min_offline_malfunction_time = 1;
 
@@ -120,9 +129,34 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     #region methods
 
+
+    public void StoreItem() {
+        this.is_in_storage = true;
+        //GameObject obj = GameObject.Find("Sprite");
+        SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) {
+            sr.enabled = false;
+        }
+        //gameObject.GetComponentInChildren<SpriteRenderer>().enabled = false;
+        //if (obj != null) {
+        //    obj.GetComponent<SpriteRenderer>().enabled = false;
+       // }
+    }
+    public void UseItem() {
+        this.is_in_storage = false;
+        SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) {
+            sr.enabled = true;
+        }
+        //GameObject obj = GameObject.Find("Sprite");
+        //if (obj != null) {
+        //    obj.GetComponent<SpriteRenderer>().enabled = true;
+        //  }
+    }
     public void StartMonitor() {
         online_malfunction_time = Random.Range(min_online_malfunction_time, max_online_malfunction_time);
         offline_malfunction_time = Random.Range(min_offline_malfunction_time, max_offline_malfunction_time);
+        ir = gameObject.GetComponent<ItemResorce>();
         StartCoroutine(Malfunction());
     }
 
@@ -222,6 +256,15 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public float Get_Mass() {
+        float stored_item_mass = 0;
+        if (ir != null) {
+            if(ir.Item_type == Enums.enum_item.module_storage) {
+                Storage storage = gameObject.GetComponent<Storage>();
+                if (storage != null) {
+                    stored_item_mass = storage.Get_Total_Stored_Item_Mass();
+                }
+            }
+        }
         return mass;
     }
 
