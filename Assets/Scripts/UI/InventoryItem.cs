@@ -28,9 +28,25 @@ public class InventoryItem : MonoBehaviour
     [SerializeField] private Sprite power;
     [SerializeField] private Sprite unknown;
     private Image sr;
+    private LineRenderer line_renderer;
     public static void WriteLine(object obj) {
         Debug.Log(JsonUtility.ToJson(obj));
     }
+    private void Start() {
+        line_renderer = GetComponent<LineRenderer>();
+
+        UnHighlight();
+    }
+
+    public void Highlight() {
+        line_renderer.startColor = Color.red;
+        line_renderer.endColor = Color.red;
+    }
+    public void UnHighlight() {
+        line_renderer.startColor = Color.grey;
+        line_renderer.endColor = Color.grey;
+    }
+
     public void SetItem(GameObject  item) {
         Debug.Log("Adding item");
         //WriteLine(item);

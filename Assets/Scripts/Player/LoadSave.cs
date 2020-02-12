@@ -71,7 +71,7 @@ public class LoadSave : MonoBehaviour {
         //********************************************
         //Loop through the modules in our player model
         //********************************************
-        Storage storage = gameObject.GetComponent<Storage>();
+        InventoryManager storage = gameObject.GetComponent<InventoryManager>();
         foreach (ModuleSaveModel module in player_model.stored_modules) {
             //****************
             //Create our modue
@@ -86,33 +86,53 @@ public class LoadSave : MonoBehaviour {
     public GameObject Create_Module(ModuleSaveModel model) {
         GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
         if (refab != null) {
-            GameObject command_module = GameObject.Find("CommandModule (Clone)");
+            GameObject modules = GameObject.Find("Modules");
+            ShipModule sm = modules.GetComponentInChildren<ShipModule>();
 
             GameObject obj_module = null;
 
-            if (command_module == null) {
+            if (sm == null) {
                 //Debug.Log("Loading Model");
                 obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+                sm = obj_module.GetComponent<ShipModule>();
+                if (sm != null) {
+                    sm.LoadMountPoints();
+                }
             } else {
-                ShipModule sm = command_module.GetComponent<ShipModule>();
-                MountPoint mp = sm.mount_points[model.mount_point];
-                if (mp != null) {
-                    obj_module = Instantiate(refab, mp.gameObject.transform.position + gameObject.transform.position, mp.gameObject.transform.rotation) as GameObject;
-                    // obj_module.transform.localScale = mp.gameObject.transform.localScale;
-
-                    //Need to add the keybindings
-                    ModuleSystemInfo mod_sys = obj_module.GetComponent<ModuleSystemInfo>();
-                    mod_sys.key_mappings = model.key_mappings;
-                    mod_sys.ModuleName = model.module_name;
-                    mod_sys.id = model.id;
-                    mod_sys.is_internal_module = model.is_internal_module;
-                    SpriteRenderer sr = obj_module.GetComponent<SpriteRenderer>();
-                    //Debug.Log(model.order_layer);
-                    if (sr != null) { sr.sortingOrder = model.order_layer; }
-                    LineRenderer lr = obj_module.GetComponent<LineRenderer>();
-                    if (lr != null) { lr.sortingOrder = model.order_layer; }
+                if (model.is_internal_module == false) {
+                    MountPoint mp = sm.mount_points[model.mount_point - 1];
+                    if (mp != null) {
+                        obj_module = Instantiate(refab, mp.transform.position, mp.transform.rotation) as GameObject;
+                        //obj_module.transform.localScale = new Vector3(1, 1, 1);
+                        //obj_module.transform.parent = Modules.transform;
+                        //obj_module.transform.position = mp.transform.position;
+                        // obj_module.transform.rotation = mp.transform.rotation;
+                        // obj_module.transform.localScale = new Vector3(1, 1, 1);
+                    }
                 }
             }
+
+            //Need to add the keybindings
+            if (obj_module == null) { return null; }
+
+            ModuleSystemInfo mod_sys = obj_module.GetComponent<ModuleSystemInfo>();
+            mod_sys.key_mappings = model.key_mappings;
+            mod_sys.ModuleName = model.module_name;
+            mod_sys.id = model.id;
+            mod_sys.mount_point = model.mount_point;
+            mod_sys.order_layer = model.order_layer;
+            mod_sys.is_internal_module = model.is_internal_module;
+            mod_sys.UseItem();
+
+            //********************
+            //Sort the order layer
+            //********************
+            SpriteRenderer sr = obj_module.GetComponent<SpriteRenderer>();
+            if (sr != null) { sr.sortingOrder = model.order_layer; }
+            sr = obj_module.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null) { sr.sortingOrder = model.order_layer; }
+            LineRenderer lr = obj_module.GetComponent<LineRenderer>();
+            if (lr != null) { lr.sortingOrder = model.order_layer; }
 
             return obj_module;
         } else {

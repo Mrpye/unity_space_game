@@ -26,6 +26,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public bool is_internal_module;
     [SerializeField] public int mount_point;
     [SerializeField] public int order_layer = 100;
+    [SerializeField] public bool is_command_module ;
 
     private ItemResorce ir;
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
@@ -137,10 +138,6 @@ public class ModuleSystemInfo : MonoBehaviour {
         if (sr != null) {
             sr.enabled = false;
         }
-        //gameObject.GetComponentInChildren<SpriteRenderer>().enabled = false;
-        //if (obj != null) {
-        //    obj.GetComponent<SpriteRenderer>().enabled = false;
-       // }
     }
     public void UseItem() {
         this.is_in_storage = false;
@@ -259,7 +256,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         float stored_item_mass = 0;
         if (ir != null) {
             if(ir.Item_type == Enums.enum_item.module_storage) {
-                Storage storage = gameObject.GetComponent<Storage>();
+                InventoryManager storage = gameObject.GetComponent<InventoryManager>();
                 if (storage != null) {
                     stored_item_mass = storage.Get_Total_Stored_Item_Mass();
                 }

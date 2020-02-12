@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Class to store enum types
+/// </summary>
 public class Enums 
 {
     public enum enum_item {
@@ -21,5 +23,17 @@ public class Enums
         module_thruster,
         module_refiner,
         module_tracktor_beam
+    }
+    public enum emun_Side {
+        front,
+        right,
+        bottom,
+        left,
+        Top
+    }
+
+    public enum emun_inventory {
+        Selected,
+        Unselected
     }
 }

@@ -63,7 +63,7 @@ public class WeponSystem : ModuleSystemInfo {
 
 
     private void Update() {
-        if (is_in_storage = true) { return; }
+        if (is_in_storage == true) { return; }
         if (wepon_type == enum_wepon_type.beam) {
             Fire_Beam();
         } else {

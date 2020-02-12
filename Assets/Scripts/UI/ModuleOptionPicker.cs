@@ -11,8 +11,8 @@ public class ModuleOptionPicker : MonoBehaviour {
 
     public void LoadStorage() {
         //dd = gameObject.GetComponent<Dropdown>();
-        Storage storage = player_prefab.GetComponent<Storage>();
-        stored_modules = storage.GetSToredItems();
+        InventoryManager storage = player_prefab.GetComponent<InventoryManager>();
+        stored_modules = storage.GetStoredItems();
         dd.ClearOptions(); // better approach
         foreach (ModuleSystemInfo n in stored_modules) {
             dd.options.Add(new Dropdown.OptionData(n.ModuleName));

@@ -10,7 +10,7 @@ public class Refiner : ModuleSystemInfo {
     private List<Enums.enum_item> processing_bin = new List<Enums.enum_item>();
     private float processing_time = 20;
 
-    private Storage storage;
+    private InventoryManager storage;
     private bool processing = false;
     //private ItemResorce mr;
 
@@ -23,7 +23,7 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void Start() {
-        storage = GetComponentInParent<Storage>();
+        storage = GetComponentInParent<InventoryManager>();
         UpdateModuleStats();
         StartMonitor();
     }

@@ -54,6 +54,15 @@ public class SystemInfo : MonoBehaviour {
         }
     }
 
+    public GameObject GetCommandModule() {
+        foreach (GameObject g in modules) {
+            ModuleSystemInfo m = g.GetComponent<ModuleSystemInfo>();
+            if (m.is_command_module == true) {
+                return g;
+            }
+        }
+        return null;
+    }
     private void Update() {
        
         UpdateValues();
