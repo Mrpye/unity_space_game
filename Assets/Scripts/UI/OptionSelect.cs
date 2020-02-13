@@ -9,7 +9,7 @@ public class OptionSelect : MonoBehaviour
     [SerializeField] public GameObject panel_left;
     [SerializeField] public GameObject panel_right;
     [SerializeField] public GameObject panel_top;
-    [SerializeField] public Enums.emun_Side side;
+    [SerializeField] public Enums.emun_zone side;
     public void Show() {
         panel_front.SetActive(false);
         panel_bottom.SetActive(false);
@@ -17,19 +17,19 @@ public class OptionSelect : MonoBehaviour
         panel_right.SetActive(false);
         panel_top.SetActive(false);
         switch (side) {
-            case  Enums.emun_Side.front:
+            case  Enums.emun_zone.front:
                 panel_front.SetActive(true);
                 break;
-            case Enums.emun_Side.left:
+            case Enums.emun_zone.left:
                 panel_left.SetActive(true);
                 break;
-            case Enums.emun_Side.right:
+            case Enums.emun_zone.right:
                 panel_right.SetActive(true);
                 break;
-            case Enums.emun_Side.bottom:
+            case Enums.emun_zone.bottom:
                 panel_bottom.SetActive(true);
                 break;
-            case Enums.emun_Side.Top:
+            case Enums.emun_zone.Top:
                 panel_top.SetActive(true);
                 break;
         }

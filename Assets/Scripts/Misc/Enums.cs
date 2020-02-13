@@ -24,12 +24,12 @@ public class Enums
         module_refiner,
         module_tracktor_beam
     }
-    public enum emun_Side {
-        front,
-        right,
-        bottom,
-        left,
-        Top
+    public enum emun_zone {
+        front=0,
+        right=1,
+        bottom=2,
+        left=3,
+        Top=4
     }
 
     public enum emun_inventory {

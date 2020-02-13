@@ -53,12 +53,13 @@ public class LoadSave : MonoBehaviour {
     public void LoadPlayer() {
         PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
         SystemInfo sys = gameObject.GetComponent<SystemInfo>();
-        WriteLine(player_model);
+        InventoryManager storage = gameObject.GetComponent<InventoryManager>();
+      
+
         //********************************************
         //Loop through the modules in our player model
         //********************************************
         foreach (ModuleSaveModel module in player_model.modules) {
-            WriteLine(module);
             //****************
             //Create our modue
             //****************
@@ -71,7 +72,7 @@ public class LoadSave : MonoBehaviour {
         //********************************************
         //Loop through the modules in our player model
         //********************************************
-        InventoryManager storage = gameObject.GetComponent<InventoryManager>();
+       ;
         foreach (ModuleSaveModel module in player_model.stored_modules) {
             //****************
             //Create our modue
@@ -87,6 +88,7 @@ public class LoadSave : MonoBehaviour {
         GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
         if (refab != null) {
             GameObject modules = GameObject.Find("Modules");
+            GameObject stored_modules = GameObject.Find("Stored_Modules");
             ShipModule sm = modules.GetComponentInChildren<ShipModule>();
 
             GameObject obj_module = null;
@@ -103,12 +105,10 @@ public class LoadSave : MonoBehaviour {
                     MountPoint mp = sm.mount_points[model.mount_point - 1];
                     if (mp != null) {
                         obj_module = Instantiate(refab, mp.transform.position, mp.transform.rotation) as GameObject;
-                        //obj_module.transform.localScale = new Vector3(1, 1, 1);
-                        //obj_module.transform.parent = Modules.transform;
-                        //obj_module.transform.position = mp.transform.position;
-                        // obj_module.transform.rotation = mp.transform.rotation;
-                        // obj_module.transform.localScale = new Vector3(1, 1, 1);
                     }
+                } else {
+                    obj_module = Instantiate(refab, stored_modules.transform) as GameObject;
+                    
                 }
             }
 

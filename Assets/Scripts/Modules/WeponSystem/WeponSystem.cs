@@ -97,7 +97,7 @@ public class WeponSystem : ModuleSystemInfo {
             line_renderer.SetPosition(0, transform.position);
             line_renderer.SetPosition(1, laser_hit_sprite.transform.position);
             line_renderer.enabled = true;
-           
+            line_renderer.sortingOrder = this.order_layer-1;
         } else {
             line_renderer.enabled = false;
             laser_hit_sprite_renderer.enabled = false;
@@ -126,21 +126,22 @@ public class WeponSystem : ModuleSystemInfo {
             if (wepon_type == enum_wepon_type.double_blaster) {
                 Vector3 left_laser = new Vector3(fire_point.transform.position.x - double_blaster_distance, fire_point.transform.position.y, fire_point.transform.position.z);
                 Vector3 right_laser = new Vector3(fire_point.transform.position.x + double_blaster_distance, fire_point.transform.position.y , fire_point.transform.position.z);
-
                 GameObject laser1 = Instantiate(prefab_blaster_laser, left_laser, transform.rotation) as GameObject;
+                laser1.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer-1;
                 laser1.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
-
                 GameObject laser2 = Instantiate(prefab_blaster_laser, right_laser, transform.rotation) as GameObject;
+                laser1.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer-1;
                 laser2.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
             } else if (wepon_type == enum_wepon_type.single_blaster) {
                 GameObject laser = Instantiate(prefab_blaster_laser, transform.position, transform.rotation) as GameObject;
+                laser.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer-1;
                 laser.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
             }
             if (laserAudio != null) {
                 AudioSource.PlayClipAtPoint(laserAudio, new Vector3(0, 0, 0));
             }
             yield return new WaitForSeconds(projectileFiringPeriod);
-           
+            if (this.is_in_storage == true) { break; }
         }
     }
 }

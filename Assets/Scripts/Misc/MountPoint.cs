@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class MountPoint : MonoBehaviour
 {
     
-    public Enums.emun_Side side;
+    public Enums.emun_zone zone;
     public int index;
     //public string  name;
     public int max_mounting;
@@ -16,7 +16,7 @@ public class MountPoint : MonoBehaviour
     public void SetValues(MountPoint mp) {
         max_mounting = mp.max_mounting;
         index = mp.index;
-        side = mp.side;
+        zone = mp.zone;
         SetIndex(mp.index.ToString());
         SetText(mp.name.ToString());
     }

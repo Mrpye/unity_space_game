@@ -4,18 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour
 {
-    /*
-    module_storage,
-        module_single_blaster,
-        module_double_blaster,
-        module_mining_laser,
-        module_power_reactor,
-        module_command_module_type1,
-        module_main_engine,
-        module_thruster,
-        module_refiner,
-        module_tracktor_beam
-        */
+  
     [SerializeField] public Enums.enum_item item_type;
     [SerializeField] public GameObject item;
     [SerializeField] private Sprite single_blaster;
