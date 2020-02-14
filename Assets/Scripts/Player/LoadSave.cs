@@ -51,11 +51,11 @@ public class LoadSave : MonoBehaviour {
     }
 
     public void LoadPlayer() {
-        PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
-        SystemInfo sys = gameObject.GetComponent<SystemInfo>();
-        InventoryManager storage = gameObject.GetComponent<InventoryManager>();
-      
 
+        PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
+        ShipManagment ship_mamanmger = gameObject.GetComponent<ShipManagment>();
+
+     
         //********************************************
         //Loop through the modules in our player model
         //********************************************
@@ -65,7 +65,7 @@ public class LoadSave : MonoBehaviour {
             //****************
             GameObject new_module = Create_Module(module);
             if (new_module != null) {
-                sys.AddModule(new_module, false);
+                ship_mamanmger.Equip(new_module);
             }
         }
 
@@ -79,7 +79,7 @@ public class LoadSave : MonoBehaviour {
             //****************
             GameObject new_module = Create_Module(module);
             if (new_module != null) {
-                storage.Store_Module(new_module);
+                ship_mamanmger.Store_Module(new_module);
             }
         }
     }
@@ -87,6 +87,8 @@ public class LoadSave : MonoBehaviour {
     public GameObject Create_Module(ModuleSaveModel model) {
         GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
         if (refab != null) {
+
+
             GameObject modules = GameObject.Find("Modules");
             GameObject stored_modules = GameObject.Find("Stored_Modules");
             ShipModule sm = modules.GetComponentInChildren<ShipModule>();
@@ -114,7 +116,6 @@ public class LoadSave : MonoBehaviour {
 
             //Need to add the keybindings
             if (obj_module == null) { return null; }
-
             ModuleSystemInfo mod_sys = obj_module.GetComponent<ModuleSystemInfo>();
             mod_sys.key_mappings = model.key_mappings;
             mod_sys.ModuleName = model.module_name;
@@ -122,17 +123,6 @@ public class LoadSave : MonoBehaviour {
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
             mod_sys.is_internal_module = model.is_internal_module;
-            mod_sys.UseItem();
-
-            //********************
-            //Sort the order layer
-            //********************
-            SpriteRenderer sr = obj_module.GetComponent<SpriteRenderer>();
-            if (sr != null) { sr.sortingOrder = model.order_layer; }
-            sr = obj_module.GetComponentInChildren<SpriteRenderer>();
-            if (sr != null) { sr.sortingOrder = model.order_layer; }
-            LineRenderer lr = obj_module.GetComponent<LineRenderer>();
-            if (lr != null) { lr.sortingOrder = model.order_layer; }
 
             return obj_module;
         } else {

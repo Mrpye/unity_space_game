@@ -2,6 +2,7 @@
 
 [CustomEditor(typeof(WeponSystem))]
 public class WepomSystemEditor : Editor {
+
     public string[] avaliableSysinfoProperties = new string[] {
         //"idle_heat",
         //"min_idle_heat" ,
@@ -55,7 +56,6 @@ public class WepomSystemEditor : Editor {
             var a = n.FieldType;
             n.SetValue(obj, 0);
         }
-
 
         serializedObject.ApplyModifiedProperties();
     }

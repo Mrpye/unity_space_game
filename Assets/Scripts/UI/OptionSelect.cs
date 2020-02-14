@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class OptionSelect : MonoBehaviour
 {
+    [SerializeField] public GameObject panel_internal;
     [SerializeField] public GameObject panel_front;
     [SerializeField] public GameObject panel_bottom;
     [SerializeField] public GameObject panel_left;
@@ -11,11 +12,13 @@ public class OptionSelect : MonoBehaviour
     [SerializeField] public GameObject panel_top;
     [SerializeField] public Enums.emun_zone side;
     public void Show() {
+        panel_internal.SetActive(false);
         panel_front.SetActive(false);
         panel_bottom.SetActive(false);
         panel_left.SetActive(false);
         panel_right.SetActive(false);
         panel_top.SetActive(false);
+
         switch (side) {
             case  Enums.emun_zone.front:
                 panel_front.SetActive(true);
@@ -31,6 +34,9 @@ public class OptionSelect : MonoBehaviour
                 break;
             case Enums.emun_zone.Top:
                 panel_top.SetActive(true);
+                break;
+            case Enums.emun_zone.intern:
+                panel_internal.SetActive(true);
                 break;
         }
 

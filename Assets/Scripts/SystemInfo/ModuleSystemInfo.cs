@@ -17,7 +17,8 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     #region inspector Fields
 
-    [Header("Class")]
+    
+   
     [SerializeField] public enum_system_info system_class = enum_system_info.Class_D;
     [SerializeField] public string ModuleName = "";
     [SerializeField] public string id = "";
@@ -27,6 +28,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public int mount_point;
     [SerializeField] public int order_layer = 100;
     [SerializeField] public bool is_command_module ;
+    [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory
 
     private ItemResorce ir;
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
@@ -130,8 +132,21 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     #region methods
 
+    public void SetSortOrder(int sort_order) {
 
-    public void StoreItem() {
+        //********************
+        //Sort the order layer
+        //********************
+        order_layer = sort_order;
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null) { sr.sortingOrder = order_layer; }
+        sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) { sr.sortingOrder = order_layer; }
+        LineRenderer lr = GetComponent<LineRenderer>();
+        if (lr != null) { lr.sortingOrder = order_layer; }
+
+    }
+    public void IteminStorage() {
         this.is_in_storage = true;
         //GameObject obj = GameObject.Find("Sprite");
         SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
@@ -139,16 +154,13 @@ public class ModuleSystemInfo : MonoBehaviour {
             sr.enabled = false;
         }
     }
-    public void UseItem() {
+    public void IteminUse(bool is_internal=false) {
         this.is_in_storage = false;
         SpriteRenderer sr = gameObject.GetComponentInChildren<SpriteRenderer>();
         if (sr != null) {
-            sr.enabled = true;
+            sr.enabled = !is_internal;
+            //sr.sortingOrder = sort_order;
         }
-        //GameObject obj = GameObject.Find("Sprite");
-        //if (obj != null) {
-        //    obj.GetComponent<SpriteRenderer>().enabled = true;
-        //  }
     }
     public void StartMonitor() {
         online_malfunction_time = Random.Range(min_online_malfunction_time, max_online_malfunction_time);

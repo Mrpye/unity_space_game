@@ -23,55 +23,14 @@ public class PlayerSaveModel {
     public bool is_player = true;
 
     public void ReadData(GameObject player_prefab) {
-        SystemInfo sys = player_prefab.GetComponent<SystemInfo>();
+        ShipManagment ship_mamanmger = player_prefab.GetComponent<ShipManagment>();
         position = player_prefab.transform.position;
         roation = player_prefab.transform.rotation;
         scale = player_prefab.transform.localScale;
-        module_name = sys.name;
+        module_name = ship_mamanmger.name;
     }
 
-    // public void Write_To_Object(GameObject PrefabObj) {
-    //    PrefabObj.transform.localScale = this.scale;
-
-    //}
-
-    /*
-    public void ReadData(bool is_player) {
-        this.is_player = is_player;
-
-        sys = this.PrefabObj.GetComponent<SystemInfo>();
-        mod_sys = this.PrefabObj.GetComponent<ModuleSystemInfo>();
-
-        //position = Player.transform.position;
-        //roation = Player.transform.rotation;
-        //scale = Player.transform.localScale;
-
-        if (sys != null) {
-            //This is the player
-            this.module_name = sys.name;
-        } else if (mod_sys != null) {
-            //this is a module
-            this.module_name = mod_sys.ModuleName;
-            this.key_mappings = mod_sys.key_mappings;
-        }
-    }*/
-    /*
-    public string SavePlayer() {
-        ReadData(true);
-
-        foreach (GameObject e in sys.modules) {
-            PlayerSaveModel m = new PlayerSaveModel();
-
-            m.Set_Object(e);
-            m.ReadData(false);
-            this.modules.Add(m);
-        }
-
-        string json = JsonUtility.ToJson(this);
-        File.WriteAllText(Application.persistentDataPath + "/player_save.save", json);
-
-        return json;
-    }*/
+  
 
     public static PlayerSaveModel LoadPlayer() {
         //Debug.Log(Application.persistentDataPath);

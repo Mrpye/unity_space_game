@@ -31,7 +31,9 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
                 MountPoint mp = GetComponentInParent<MountPoint>();
                 if (mp != null) {
                     MountPoint amp = mp.associated_mountpoint.GetComponent<MountPoint>();
-                    storage.Equip(amp, inv_item.item);
+                    inv_item.item.GetComponent<ModuleSystemInfo>().mount_point = amp.index;
+                    
+                    storage.Equip(inv_item.item);
                 } 
             } else {
                 storage.Store_Module(inv_item.item);

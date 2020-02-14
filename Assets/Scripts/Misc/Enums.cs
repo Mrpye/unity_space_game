@@ -25,15 +25,24 @@ public class Enums
         module_tracktor_beam
     }
     public enum emun_zone {
-        front=0,
-        right=1,
-        bottom=2,
-        left=3,
-        Top=4
+        intern = 0,
+        front =1,
+        right=2,
+        bottom=3,
+        left=4,
+        Top=5
     }
 
     public enum emun_inventory {
         Selected,
         Unselected
+    }
+
+    public enum enum_system_info {
+        heat,
+        power,
+        cpu,
+        fuel,
+        health
     }
 }

@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SystemInfo : MonoBehaviour {
+public class ShipManagment : InventoryManager {
 
-    public enum enum_system_info {
-        heat,
-        power,
-        cpu,
-        fuel,
-        health
-    }
+ 
 
     public struct value_data {
         public float max_value;
@@ -20,8 +14,7 @@ public class SystemInfo : MonoBehaviour {
             this.value = val;
         }
     }
-
-    [SerializeField] public List<GameObject> modules;
+    [Header("Ship Stats ")]
 
     [SerializeField] private float heat_max;
     [SerializeField] private float heat;
@@ -45,46 +38,16 @@ public class SystemInfo : MonoBehaviour {
     [SerializeField] private Rigidbody2D rb;
 
     private void Start() {
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        GameObject mods = GameObject.Find("Modules");
-        modules = new List<GameObject>();
-        ModuleSystemInfo[] childmods = mods.GetComponentsInChildren<ModuleSystemInfo>();
-        foreach (ModuleSystemInfo c in childmods) {
-            AddModule(c.gameObject);
-        }
+       rb = gameObject.GetComponent<Rigidbody2D>();
+       this.child_Start();
     }
 
-    public GameObject GetCommandModule() {
-        foreach (GameObject g in modules) {
-            ModuleSystemInfo m = g.GetComponent<ModuleSystemInfo>();
-            if (m.is_command_module == true) {
-                return g;
-            }
-        }
-        return null;
-    }
+   
     private void Update() {
        
         UpdateValues();
     }
-    public void AddModule(GameObject module,bool is_in_storage = false) {
-        Debug.Log("Adding Module" + module.name);
-        SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
-        ModuleSystemInfo m = module.GetComponent<ModuleSystemInfo>();
-        m.is_in_storage = is_in_storage;
-        if (is_in_storage == false) {
-            GameObject parent_mods = GameObject.Find("Modules");
-            foreach (KeyMappingModel e in m.key_mappings) {
-                controls.AddKeyBinding(e, module);
-            }
-            modules.Add(module);
-            module.transform.parent = parent_mods.transform;
-        } else {
-            GameObject parent_storage_mods = GameObject.Find("Stored_Modules");
-            module.transform.parent = parent_storage_mods.transform;
-        }
-       
-    }
+    
     private void UpdateValues() {
         heat = 0;
         cpu_usage = 0;
@@ -92,8 +55,7 @@ public class SystemInfo : MonoBehaviour {
         fuel_drain = 0;
         mass = 0;
 
-        foreach (GameObject e in modules) {
-            ModuleSystemInfo ms = e.GetComponent<ModuleSystemInfo>();
+        foreach (ModuleSystemInfo ms in GeEquipedItems()) {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
                     heat += ms.Get_Heat();
@@ -116,8 +78,7 @@ public class SystemInfo : MonoBehaviour {
         if (rb != null) {
             rb.mass = mass;
         }
-        foreach (GameObject e in modules) {
-            ModuleSystemInfo ms = e.GetComponent<ModuleSystemInfo>();
+        foreach (ModuleSystemInfo ms in GeEquipedItems()) {
             if (ms != null) {
                 ms.Set_Values(heat,heat_max, power, power_max,fuel, fuel_max);
             }
@@ -128,21 +89,21 @@ public class SystemInfo : MonoBehaviour {
 
 
     }
-    public value_data Get_Data(enum_system_info info_type) {
+    public value_data Get_Data(Enums.enum_system_info info_type) {
         switch (info_type) {
-            case enum_system_info.heat:
+            case Enums.enum_system_info.heat:
                 return new value_data(heat_max, heat);
 
-            case enum_system_info.power:
+            case Enums.enum_system_info.power:
                 return new value_data(power_max, power);
 
-            case enum_system_info.cpu:
+            case Enums.enum_system_info.cpu:
                 return new value_data(cpu_max, cpu_usage);
 
-            case enum_system_info.fuel:
+            case Enums.enum_system_info.fuel:
                 return new value_data(fuel_max, fuel);
 
-            case enum_system_info.health:
+            case Enums.enum_system_info.health:
                 return new value_data(health_max, health);
 
             default:

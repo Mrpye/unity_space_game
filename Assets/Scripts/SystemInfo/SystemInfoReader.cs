@@ -5,16 +5,16 @@ using UnityEngine.UI;
 /// This will read system info and display on slider bar
 /// </summary>
 public class SystemInfoReader : MonoBehaviour {
-    [SerializeField] private SystemInfo.enum_system_info data_type;
+    [SerializeField] private Enums.enum_system_info data_type;
 
     [SerializeField] private GameObject player_prefab;
-    private SystemInfo sys;
+    private ShipManagment sys;
     private Slider bar;
 
     // Start is called before the first frame update
     private void Start() {
         if (player_prefab == null) { return; }
-        sys = player_prefab.GetComponent<SystemInfo>();
+        sys = player_prefab.GetComponent<ShipManagment>();
         bar = GetComponent<Slider>();
         InvokeRepeating("UpdateDisplayData", 0, 0.1f);
     }
@@ -25,7 +25,7 @@ public class SystemInfoReader : MonoBehaviour {
 
     private void UpdateDisplayData() {
         if (sys != null && bar != null) {
-            SystemInfo.value_data res = sys.Get_Data(data_type);
+            ShipManagment.value_data res = sys.Get_Data(data_type);
             bar.maxValue = res.max_value;
             bar.value = res.value;
         }
