@@ -19,7 +19,8 @@ public class ItemDragHandler : MonoBehaviour ,IBeginDragHandler, IDragHandler,IE
     public void OnDrag(PointerEventData eventData) {
 
         Vector3 pos = Camera.main.ScreenToWorldPoint(eventData.position);// - start_click_pos;
-        transform.position = new Vector3(pos.x, pos.y, 0);
+        transform.position = new Vector3(pos.x, pos.y, 100);
+        transform.parent = GameObject.Find("Panels").gameObject.transform;
        // transform.position = Camera.main.ScreenToViewportPoint(eventData.position);
     }
 

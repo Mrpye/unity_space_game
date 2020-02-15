@@ -12,7 +12,7 @@ public class MountPoint : MonoBehaviour
     [SerializeField]public int render_order=100;
     public GameObject associated_mountpoint;
 
-
+    [SerializeField]  public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
     public void SetValues(MountPoint mp) {
         max_mounting = mp.max_mounting;
         index = mp.index;

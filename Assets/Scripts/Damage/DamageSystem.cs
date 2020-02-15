@@ -23,11 +23,22 @@ public class DamageSystem : MonoBehaviour {
             explosion_force_effector.enabled = true;
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D other) {
+    private void OnCollisionEnter2D(Collision2D other) {
         DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
         if (!damageDealer) { return; }
         ProcessHit(damageDealer);
+    }
+    private void OnTriggerEnter2D(Collider2D other) {
+        ShipManagment sm= other.GetComponent<ShipManagment>();
+        if (sm != null) {
+            //Rigidbody2D rb = other.GetComponent<Rigidbody2D>();
+            float dist=  Vector3.Distance(other.transform.position, transform.position)* (explosion_force_effector.forceMagnitude*0.20f);
+            float factor=(explosion_force_effector.forceMagnitude- dist);
+            if (factor > 0) { 
+                sm.DamageShip( factor*0.2f);
+            }
+        }
+
     }
 
     private void ProcessHit(DamageDealer damageDealer) {

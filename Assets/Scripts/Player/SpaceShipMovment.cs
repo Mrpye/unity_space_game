@@ -126,18 +126,42 @@ public class SpaceShipMovment : MonoBehaviour {
         //***************
         if (rb == null) { return; }
         if (Input.GetKey(KeyCode.X)) {
-            if (rotationDelta > -0.01f && rotationDelta < 0.01f) {
-                rb.angularDrag = rotate_break_drag * 4;
-            } else {
-                rb.angularDrag = rotate_break_drag;
+            if (rotationDelta > 0) {
+                ActivateModule("ROTATE_LEFT");
+            } else if (rotationDelta <0) {
+                ActivateModule("ROTATE_RIGHT");
             }
-            if (rb.velocity.magnitude < 0.2) {
-                rb.drag = speed_break_drag * 100;
-            } else {
-                rb.drag = speed_break_drag;
+            if (verlocity.y > 0) {
+                ActivateModule("BACK");
+            } else if (verlocity.y < 0) {
+                ActivateModule("FORWARD");
+            }
+
+            if (verlocity.x > 0) {
+                ActivateModule("STRIFE_LEFT");
+            } else if (verlocity.x < 0) {
+                ActivateModule("STRIFE_RIGHT");
+            }
+            rb.angularDrag = rotate_break_drag;
+            rb.drag = speed_break_drag;
+        } else if (Input.GetKey(KeyCode.Z)) {
+            if (rotationDelta > 0) {
+                ActivateModule("ROTATE_LEFT");
+            } else if (rotationDelta < 0) {
+                ActivateModule("ROTATE_RIGHT");
             }
             rb.angularDrag = rotate_break_drag;
         } else if (Input.GetKey(KeyCode.C)) {
+            if (verlocity.y > 0) {
+                ActivateModule("BACK");
+            } else if (verlocity.y < 0) {
+                ActivateModule("FORWARD");
+            }
+            if (verlocity.x > 0) {
+                ActivateModule("STRIFE_LEFT");
+            } else if (verlocity.x < 0) {
+                ActivateModule("STRIFE_RIGHT");
+            }
             rb.drag = speed_break_drag;
         } else {
             rb.drag = 0f;
@@ -151,7 +175,7 @@ public class SpaceShipMovment : MonoBehaviour {
             foreach (KeyMapping m in key_mappings) {
                 Propulsion p = m.module.GetComponentInChildren<Propulsion>();
                 if (p != null) {
-                    p.Activate();
+                    p.Activate(m.value);
                 }
             }
         }
@@ -220,6 +244,7 @@ public class SpaceShipMovment : MonoBehaviour {
         zoom = Mathf.Clamp(zoom, min_zoom, max_zoom);
         cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime * zoom_speed);
     }
+
 
     /*
     private void EngineParticles(float movement_x, float movement_y, float rotaion_movement) {

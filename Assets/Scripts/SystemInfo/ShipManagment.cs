@@ -37,6 +37,7 @@ public class ShipManagment : InventoryManager {
     [SerializeField] private float mass;
     [SerializeField] private Rigidbody2D rb;
 
+    [SerializeField] public float kernetic_energy;
     private void Start() {
        rb = gameObject.GetComponent<Rigidbody2D>();
        this.child_Start();
@@ -47,7 +48,27 @@ public class ShipManagment : InventoryManager {
        
         UpdateValues();
     }
-    
+    public static float KineticEnergy(Rigidbody2D rb) {
+        // mass in kg, velocity in meters per second, result is joules
+        return 0.5f * rb.mass * rb.velocity.sqrMagnitude;
+    }
+
+    public void DamageShip(float damage_f = 1) {
+        Rigidbody2D rb1 = GetComponent<Rigidbody2D>();
+        if (damage_f > 0) {
+            float kernetic_energy1 = KineticEnergy(rb);
+            this.health -= damage_f;
+        } else {
+            float kernetic_energy1 = KineticEnergy(rb);
+            this.health -= (kernetic_energy1 * 0.1f);
+        }
+       
+    }
+    private void OnCollisionEnter2D(Collision2D collision) {
+        DamageShip();
+
+
+    }
     private void UpdateValues() {
         heat = 0;
         cpu_usage = 0;

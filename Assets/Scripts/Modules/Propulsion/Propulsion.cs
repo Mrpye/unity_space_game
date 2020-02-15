@@ -32,7 +32,7 @@ public class Propulsion : ModuleSystemInfo
         StopUsage();
     }
 
-    public void Activate() {
+    public void Activate(float overthrust) {
         fx = GetComponent<ParticleSystem>();
         fx.Play();
         ParticleSystem.ShapeModule shape = fx.shape;
@@ -42,7 +42,7 @@ public class Propulsion : ModuleSystemInfo
        
         StartUsage();
         if(player_rb == null) { return; }
-        Vector2 force = transform.up * Time.deltaTime * trust;
+        Vector2 force = -1*transform.up * Time.deltaTime * overthrust;
         player_rb.AddForceAtPosition(force, transform.position,ForceMode2D.Impulse);
   
     }

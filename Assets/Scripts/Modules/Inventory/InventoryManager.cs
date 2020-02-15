@@ -118,9 +118,7 @@ public class InventoryManager : MonoBehaviour {
         ItemResorce ir = obj.GetComponent<ItemResorce>();
         SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
 
-        foreach (KeyMappingModel e in module_info.key_mappings) {
-            controls.AddKeyBinding(e, obj);
-        }
+        
 
         obj.transform.parent = modules_game_object.transform;
 
@@ -134,8 +132,14 @@ public class InventoryManager : MonoBehaviour {
             obj.transform.position = mp.transform.position;
             obj.transform.rotation = mp.transform.rotation;
             module_info.mount_point = mp.index;
+            module_info.key_mappings = mp.key_mappings;
             module_info.SetSortOrder(mp.render_order);
         }
+
+        foreach (KeyMappingModel e in module_info.key_mappings) {
+            controls.AddKeyBinding(e, obj);
+        }
+
         module_info.IteminUse(module_info.is_internal_module);
     }
 

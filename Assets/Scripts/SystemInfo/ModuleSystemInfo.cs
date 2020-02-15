@@ -17,7 +17,7 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     #region inspector Fields
 
-    
+   
    
     [SerializeField] public enum_system_info system_class = enum_system_info.Class_D;
     [SerializeField] public string ModuleName = "";
@@ -144,6 +144,10 @@ public class ModuleSystemInfo : MonoBehaviour {
         if (sr != null) { sr.sortingOrder = order_layer; }
         LineRenderer lr = GetComponent<LineRenderer>();
         if (lr != null) { lr.sortingOrder = order_layer; }
+        ParticleSystem ps = GetComponent<ParticleSystem>();
+        if (ps != null) {
+            ps.GetComponent<Renderer>().sortingOrder = order_layer;
+        }
 
     }
     public void IteminStorage() {

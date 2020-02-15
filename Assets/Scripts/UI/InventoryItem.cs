@@ -18,6 +18,7 @@ public class InventoryItem : MonoBehaviour
     [SerializeField] private Sprite unknown;
     private Image sr;
     private LineRenderer line_renderer;
+    public string description; 
     public static void WriteLine(object obj) {
         Debug.Log(JsonUtility.ToJson(obj));
     }
@@ -36,6 +37,14 @@ public class InventoryItem : MonoBehaviour
         line_renderer.endColor = Color.grey;
     }
 
+    public void SetInfo() {
+        GameObject go = GameObject.Find("InfoPanel");
+        if (go != null) {
+            InfoPanel info_pnel = go.GetComponent<InfoPanel>();
+            info_pnel.SetInfo(this);
+        }
+       
+    }
     public void SetItem(GameObject  item) {
         Debug.Log("Adding item");
         //WriteLine(item);

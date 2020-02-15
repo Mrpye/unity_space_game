@@ -33,14 +33,17 @@ public class WeponSystem : ModuleSystemInfo {
     private Coroutine fire_method;
     private LineRenderer line_renderer;
     private SpriteRenderer laser_hit_sprite_renderer;
-    [SerializeField] private GameObject fire_point;
-
+    [SerializeField] private GameObject fire_point1;
+    [SerializeField] private GameObject fire_point2;
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     private void Start() {
         line_renderer = GetComponent<LineRenderer>();
-        fire_point = gameObject.transform.Find("FirePoint").gameObject;
+        fire_point1 = gameObject.transform.Find("FirePoint").gameObject;
+        Transform wt = gameObject.transform.Find("FirePoint2");
+        if (wt != null) { fire_point2 = wt.gameObject; }
+       
         Transform t = gameObject.transform.Find("HitPoint");
         if (t != null) {
             laser_hit_sprite_renderer = t.GetComponent<SpriteRenderer>();
@@ -127,16 +130,19 @@ public class WeponSystem : ModuleSystemInfo {
         while (true) {
             SingleUpdateUsage();
             if (wepon_type == enum_wepon_type.double_blaster) {
-                Vector3 left_laser = new Vector3(fire_point.transform.position.x - double_blaster_distance, fire_point.transform.position.y, fire_point.transform.position.z);
-                Vector3 right_laser = new Vector3(fire_point.transform.position.x + double_blaster_distance, fire_point.transform.position.y, fire_point.transform.position.z);
+                Vector3 left_laser = new Vector3(fire_point1.transform.position.x, fire_point1.transform.position.y, fire_point1.transform.position.z);
+                Vector3 right_laser = new Vector3(fire_point2.transform.position.x , fire_point2.transform.position.y, fire_point2.transform.position.z);
+
                 GameObject laser1 = Instantiate(prefab_blaster_laser, left_laser, transform.rotation) as GameObject;
                 laser1.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer - 1;
                 laser1.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
+
                 GameObject laser2 = Instantiate(prefab_blaster_laser, right_laser, transform.rotation) as GameObject;
-                laser1.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer - 1;
+                laser2.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer - 1;
                 laser2.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
             } else if (wepon_type == enum_wepon_type.single_blaster) {
-                GameObject laser = Instantiate(prefab_blaster_laser, transform.position, transform.rotation) as GameObject;
+
+                GameObject laser = Instantiate(prefab_blaster_laser, fire_point1.transform.position, fire_point1.transform.rotation) as GameObject;
                 laser.GetComponent<SpriteRenderer>().sortingOrder = this.order_layer - 1;
                 laser.GetComponent<Rigidbody2D>().velocity = transform.TransformDirection(Vector3.up * projectile_speed);
             }

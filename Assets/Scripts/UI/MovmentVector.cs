@@ -18,10 +18,12 @@ public class MovmentVector : MonoBehaviour {
         float s = 1 * dir.magnitude + 1;
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
-        if (s <= 1) {
+       
+        if (s <= 1.1f) {
+            transform.rotation = Quaternion.AngleAxis(0, Vector3.forward);
             sr.enabled = false;
         } else {
+            transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
             sr.enabled = true;
         }
     }
