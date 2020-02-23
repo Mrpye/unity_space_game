@@ -18,7 +18,7 @@ public class MovmentVector : MonoBehaviour {
         float s = 1 * dir.magnitude + 1;
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-       
+
         if (s <= 1.1f) {
             transform.rotation = Quaternion.AngleAxis(0, Vector3.forward);
             sr.enabled = false;

@@ -4,6 +4,8 @@ using UnityEngine;
 public class LoadSave : MonoBehaviour {
     [SerializeField] private bool is_config = false;
     [SerializeField] private float scale = 1f;
+    private Vector3 stored_pos;
+    private Quaternion stored_rotation;
 
     private void Awake() {
         LoadPlayer();
@@ -15,15 +17,13 @@ public class LoadSave : MonoBehaviour {
         }
     }
 
-    /* public void SavePlayer() {
-         PlayerSaveModel sm = new PlayerSaveModel();
-         sm.Set_Object(gameObject);
-         string a = sm.SavePlayer();
-     }*/
-
     public void SavePlayer() {
         PlayerSaveModel player_model = new PlayerSaveModel();
         player_model.ReadData(gameObject);
+        if (is_config) {
+            player_model.position = stored_pos;
+            player_model.roation = stored_rotation;
+        }
 
         //Save Modules
         GameObject go = GameObject.Find("Modules");
@@ -51,11 +51,15 @@ public class LoadSave : MonoBehaviour {
     }
 
     public void LoadPlayer() {
-
         PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
         ShipManagment ship_mamanmger = gameObject.GetComponent<ShipManagment>();
-
-     
+        if (is_config == false) {
+            transform.position = player_model.position;
+            transform.rotation = player_model.roation;
+        } else {
+            stored_pos = player_model.position;
+            stored_rotation = player_model.roation;
+        }
         //********************************************
         //Loop through the modules in our player model
         //********************************************
@@ -87,8 +91,6 @@ public class LoadSave : MonoBehaviour {
     public GameObject Create_Module(ModuleSaveModel model) {
         GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
         if (refab != null) {
-
-
             GameObject modules = GameObject.Find("Modules");
             GameObject stored_modules = GameObject.Find("Stored_Modules");
             ShipModule sm = modules.GetComponentInChildren<ShipModule>();
@@ -110,16 +112,16 @@ public class LoadSave : MonoBehaviour {
                     }
                 } else {
                     obj_module = Instantiate(refab, stored_modules.transform) as GameObject;
-                    
                 }
             }
 
             //Need to add the keybindings
             if (obj_module == null) { return null; }
             ModuleSystemInfo mod_sys = obj_module.GetComponent<ModuleSystemInfo>();
+            ItemResorce ir = obj_module.GetComponent<ItemResorce>();
             mod_sys.key_mappings = model.key_mappings;
-            mod_sys.ModuleName = model.module_name;
             mod_sys.id = model.id;
+            mod_sys.health = model.health;
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
             mod_sys.is_internal_module = model.is_internal_module;

@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpaceShipMovment : MonoBehaviour {
     private Camera cam;
-
+    public bool is_in_docking_zone;
     [Header("Zoom")]
     [SerializeField] private float zoom_speed = 20f;
 
@@ -12,16 +13,11 @@ public class SpaceShipMovment : MonoBehaviour {
     [SerializeField] private float max_zoom = 8.4f;
 
     [Header("Rotation")]
-    // [SerializeField] private bool assited_turning = false;
-    //  [SerializeField] private float assited_rotate_speed = 50f;
-    // [SerializeField] private float rotate_speed = 10f;
     [SerializeField] private bool rotate_player_mode = false;
 
     [SerializeField] private float rotate_break_drag = 2f;
 
     [Header("Speed")]
-    // [SerializeField] private float speed_x = 50f;
-    // [SerializeField] private float speed_y = 100f;
     [SerializeField] private float speed_break_drag = 1f;
 
     [Header("Game Objects")]
@@ -45,7 +41,8 @@ public class SpaceShipMovment : MonoBehaviour {
     [SerializeField] private Vector3 verlocity;
     [SerializeField] private float s;
     [SerializeField] private float mag;
-
+    [SerializeField] private Vector3 localAngleVelo;
+    [SerializeField] public bool flight_assist=true;
     public void AddKeyBinding(KeyMappingModel mapping, GameObject module) {
         if (!string.IsNullOrEmpty(mapping.Key)) {
             Propulsion p = module.GetComponent<Propulsion>();
@@ -99,7 +96,9 @@ public class SpaceShipMovment : MonoBehaviour {
         ZoomHandler();//Handle the zoom
         Get_Player_Input();
     }
-
+    public void Launch() {
+        SceneManager.LoadScene("Game_Scene");
+    }
     private void Get_Player_Input() {
         //***************************
         //This handles players inputs
@@ -107,10 +106,32 @@ public class SpaceShipMovment : MonoBehaviour {
         movement_y = Input.GetAxis("Vertical");
         movement_x = Input.GetAxis("Strife");
         rotaion_movement = Input.GetAxis("Horizontal");
+        if (Input.GetKeyDown(KeyCode.F)) {
+            this.flight_assist =! this.flight_assist;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.L) && is_in_docking_zone) {
+            LoadSave ls = gameObject.GetComponent<LoadSave>();
+            if (ls != null) { ls.SavePlayer(); }
+
+           GameObject go= GameObject.Find("ProcduralGenerator");
+            if (go != null) {
+                ProceduralGenrator pg= go.GetComponent<ProceduralGenrator>();
+                if (pg != null) {
+                    pg.Save();
+                }
+            }
+            SceneManager.LoadScene("Ship_Editor");
+        }
         //****************
         //Get infomation
         //****************
+        //rotationDelta = -1*rb.angularVelocity;
+
         rotationDelta = oldEulerAngles.z - transform.rotation.eulerAngles.z;
+        //Vector3 localAngleVelo = transform.InverseTransformVector(transform.GetComponent<Rigidbod2D>().angularVelocity);
+
         if (rb != null) {
             verlocity = transform.InverseTransformDirection(rb.velocity);
             mag = rb.velocity.magnitude;
@@ -120,62 +141,93 @@ public class SpaceShipMovment : MonoBehaviour {
         BreakSystem();
     }
 
+    private float Calc_Rotation_Trust(float max_trust) {
+        return Mathf.Clamp(Mathf.Abs(rotationDelta * (max_trust * 0.5f)), 0, max_trust);
+    }
+
+    private float Calc_Strife_Trust(float max_trust) {
+        return Mathf.Clamp(Mathf.Abs(verlocity.x * (max_trust * 0.5f)), 0, max_trust);
+    }
+
+    private float Calc_forward_Trust(float max_trust) {
+        return Mathf.Clamp(Mathf.Abs(verlocity.y) * (max_trust * max_trust) * 0.5f, 0, max_trust);
+    }
+
+    private void BreakSystem_Stop_Roatation() {
+
+        if (rotationDelta > 0) {
+            ActivateModule("ROTATE_LEFT", Enums.enum_movment_type.rotation);
+        } else if (rotationDelta < 0) {
+            ActivateModule("ROTATE_RIGHT", Enums.enum_movment_type.rotation);
+        } else {
+            DeActivateModule("ROTATE_RIGHT");
+            DeActivateModule("ROTATE_LEFT");
+        }
+    }
+
+    private void BreakSystem_Stop_Strife() {
+
+        if (verlocity.x > 0) {
+            ActivateModule("STRIFE_LEFT", Enums.enum_movment_type.strife);
+        } else if (verlocity.x < 0) {
+            ActivateModule("STRIFE_RIGHT", Enums.enum_movment_type.strife);
+        } else {
+            DeActivateModule("STRIFE_RIGHT");
+            DeActivateModule("STRIFE_LEFT");
+        }
+    }
+
+    private void BreakSystem_Stop_Forward() {
+
+        if (verlocity.y > 0) {
+            ActivateModule("BACK", Enums.enum_movment_type.forward_backward);
+        } else if (verlocity.y < 0) {
+           ActivateModule("FORWARD", Enums.enum_movment_type.forward_backward);
+        } else {
+            DeActivateModule("FORWARD");
+            DeActivateModule("BACK");
+        }
+    }
+
     private void BreakSystem() {
         //***************
         //Breaking system
         //***************
         if (rb == null) { return; }
         if (Input.GetKey(KeyCode.X)) {
-            if (rotationDelta > 0) {
-                ActivateModule("ROTATE_LEFT");
-            } else if (rotationDelta <0) {
-                ActivateModule("ROTATE_RIGHT");
-            }
-            if (verlocity.y > 0) {
-                ActivateModule("BACK");
-            } else if (verlocity.y < 0) {
-                ActivateModule("FORWARD");
-            }
-
-            if (verlocity.x > 0) {
-                ActivateModule("STRIFE_LEFT");
-            } else if (verlocity.x < 0) {
-                ActivateModule("STRIFE_RIGHT");
-            }
-            rb.angularDrag = rotate_break_drag;
-            rb.drag = speed_break_drag;
+            BreakSystem_Stop_Roatation();
+            BreakSystem_Stop_Strife();
+            BreakSystem_Stop_Forward();
         } else if (Input.GetKey(KeyCode.Z)) {
-            if (rotationDelta > 0) {
-                ActivateModule("ROTATE_LEFT");
-            } else if (rotationDelta < 0) {
-                ActivateModule("ROTATE_RIGHT");
-            }
-            rb.angularDrag = rotate_break_drag;
+            BreakSystem_Stop_Roatation();
         } else if (Input.GetKey(KeyCode.C)) {
-            if (verlocity.y > 0) {
-                ActivateModule("BACK");
-            } else if (verlocity.y < 0) {
-                ActivateModule("FORWARD");
-            }
-            if (verlocity.x > 0) {
-                ActivateModule("STRIFE_LEFT");
-            } else if (verlocity.x < 0) {
-                ActivateModule("STRIFE_RIGHT");
-            }
-            rb.drag = speed_break_drag;
+            BreakSystem_Stop_Strife();
+            BreakSystem_Stop_Forward();
         } else {
             rb.drag = 0f;
-            rb.angularDrag = 0f;
+            //rb.angularDrag = 0f;
         }
     }
 
-    private void ActivateModule(string key) {
+    // private float Thrust_Ammount(float max_trust) {
+    // }
+    private void ActivateModule(string key, Enums.enum_movment_type movtype = Enums.enum_movment_type.none) {
         if (key_bindings.ContainsKey(key)) {
             List<KeyMapping> key_mappings = key_bindings[key] as List<KeyMapping>;
             foreach (KeyMapping m in key_mappings) {
                 Propulsion p = m.module.GetComponentInChildren<Propulsion>();
                 if (p != null) {
-                    p.Activate(m.value);
+                    if (movtype != Enums.enum_movment_type.none) {
+                        if (movtype == Enums.enum_movment_type.rotation) {
+                            p.Activate(Calc_Rotation_Trust(p.max_thrust));
+                        } else if (movtype == Enums.enum_movment_type.strife) {
+                            p.Activate(Calc_Strife_Trust(p.max_thrust));
+                        } else if (movtype == Enums.enum_movment_type.forward_backward) {
+                            p.Activate(Calc_forward_Trust(p.max_thrust));
+                        }
+                    } else {
+                        p.Activate(m.value);
+                    }
                 }
             }
         }
@@ -199,9 +251,9 @@ public class SpaceShipMovment : MonoBehaviour {
         } else if (movement_y < 0) {
             ActivateModule("BACK");
         } else {
-            //main_eng.Deactivate();
             DeActivateModule("FORWARD");
             DeActivateModule("BACK");
+            if (flight_assist == true) { BreakSystem_Stop_Forward(); }
         }
 
         if (movement_x > 0) {
@@ -211,6 +263,9 @@ public class SpaceShipMovment : MonoBehaviour {
         } else {
             DeActivateModule("STRIFE_RIGHT");
             DeActivateModule("STRIFE_LEFT");
+            if (flight_assist == true) {
+                BreakSystem_Stop_Strife();
+            }
         }
 
         if (rotaion_movement > 0) {
@@ -220,13 +275,14 @@ public class SpaceShipMovment : MonoBehaviour {
         } else {
             DeActivateModule("ROTATE_RIGHT");
             DeActivateModule("ROTATE_LEFT");
+            if (flight_assist == true) {
+                BreakSystem_Stop_Roatation();
+            }
         }
 
-        //if (rotate_player_mode == true) {
+
         cam.transform.rotation = Quaternion.Euler(0, 0, 0);
-        //} else {
-        // star_continer.GetComponent<Transform>().Rotate(0, 0, z_rotation);
-        // }
+
     }
 
     private void FixedUpdate() {
@@ -244,100 +300,5 @@ public class SpaceShipMovment : MonoBehaviour {
         zoom = Mathf.Clamp(zoom, min_zoom, max_zoom);
         cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime * zoom_speed);
     }
-
-
-    /*
-    private void EngineParticles(float movement_x, float movement_y, float rotaion_movement) {
-        //****************
-        //Handle y movment
-        //****************
-        if (movement_y > 0) {
-            main_eng_fx.Play();
-            Start_Usage(main_eng_fx.gameObject);
-        } else if (movement_y < 0) {
-            front_eng_left_fx.Play();
-            front_eng_right_fx.Play();
-            Start_Usage(front_eng_left_fx.gameObject);
-            Start_Usage(front_eng_right_fx.gameObject);
-        } else {
-            if (main_eng_fx.isPlaying) { main_eng_fx.Stop(); Stop_Usage(main_eng_fx.gameObject); }
-            if (front_eng_left_fx.isPlaying) { front_eng_left_fx.Stop(); Stop_Usage(front_eng_left_fx.gameObject); }
-            if (front_eng_right_fx.isPlaying) { front_eng_right_fx.Stop(); Stop_Usage(front_eng_right_fx.gameObject); }
-        }
-        */
-    //****************
-    //Handle x movment
-    //****************
-    // if (movement_x > 0) {
-    // left_eng_top_fx.Play();
-    // left_eng_bottom_fx.Play();
-    // Start_Usage(left_eng_top_fx.gameObject);
-    // Start_Usage(left_eng_bottom_fx.gameObject);
-    //} else if (movement_x < 0) {
-    // right_eng_top_fx.Play();
-    //  right_eng_bottom_fx.Play();
-    //  Start_Usage(right_eng_top_fx.gameObject);
-    // Start_Usage(right_eng_bottom_fx.gameObject);
-    //   } else {
-    // if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); Stop_Usage(left_eng_top_fx.gameObject); }
-    //  if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); Stop_Usage(left_eng_bottom_fx.gameObject); }
-    //  if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); Stop_Usage(right_eng_top_fx.gameObject); }
-    //  if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); Stop_Usage(right_eng_bottom_fx.gameObject); }
 }
-
-//***********************
-//Handle rotation movment
-//***********************
-//  if (rotaion_movement > 0) {
-//  left_eng_top_fx.Play();
-//  right_eng_bottom_fx.Play();
-
-//   Start_Usage(left_eng_top_fx.gameObject);
-//   Start_Usage(right_eng_bottom_fx.gameObject);
-
-// } else if (rotaion_movement < 0) {
-//   right_eng_top_fx.Play();
-//   left_eng_bottom_fx.Play();
-
-// Start_Usage(right_eng_top_fx.gameObject);
-// Start_Usage(left_eng_bottom_fx.gameObject);
-//    } else if (movement_x == 0 && rotaion_movement == 0) {
-//  if (left_eng_top_fx.isPlaying) { left_eng_top_fx.Stop(); Stop_Usage(left_eng_top_fx.gameObject); }
-//   if (left_eng_bottom_fx.isPlaying) { left_eng_bottom_fx.Stop(); Stop_Usage(left_eng_bottom_fx.gameObject); }
-//  if (right_eng_top_fx.isPlaying) { right_eng_top_fx.Stop(); Stop_Usage(right_eng_top_fx.gameObject); }
-//    if (right_eng_bottom_fx.isPlaying) { right_eng_bottom_fx.Stop(); Stop_Usage(right_eng_bottom_fx.gameObject); }
-//    }
-// }
-
-//   private void MoveChar(float movement_x, float movement_y, float rotaion_movement) {
-//***************************************
-//This Handles Forward and reverse Motion
-//***************************************
-//if (movement_y > 0) { movement_y = movement_y * 2; }
-//  Vector2 force = Vector2.up * Time.deltaTime * speed_y * movement_y;
-//  rb.AddRelativeForce(force);
-
-//   Vector2 force2 = Vector2.right * Time.deltaTime * speed_x * movement_x;
-//   rb.AddRelativeForce(force2);
-
-//********************
-//This handles turning
-//********************
-//    float z_rotation = 0;
-//   if (assited_turning) {
-//       z_rotation = (rotaion_movement * assited_rotate_speed) * Time.deltaTime;
-//      transform.Rotate(new Vector3(0, 0, -z_rotation));
-//  } else {
-//       z_rotation = (rotaion_movement * rotate_speed) * Time.deltaTime;
-//      rb.AddTorque(-z_rotation);
-//    }
-
-//  if (rotate_player_mode == true) {
-//       cam.transform.rotation = Quaternion.Euler(0, 0, 0);
-//    } else {
-//      star_continer.GetComponent<Transform>().Rotate(0, 0, z_rotation);
-//   }
-
-//   }
-
-//}
+  

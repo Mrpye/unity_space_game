@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// This is assigned to blaster
+/// </summary>
 public class DamageDealer : MonoBehaviour {
     [SerializeField] private int damage = 100;
 

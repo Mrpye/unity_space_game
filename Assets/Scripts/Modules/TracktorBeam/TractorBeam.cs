@@ -6,10 +6,10 @@ public class TractorBeam : ModuleSystemInfo {
     private BoxCollider2D tractor_collider;
     private ParticleSystem.ShapeModule shape;
     private ParticleSystem.MainModule main;
+
     [Header("Tractorbeam")]
     [SerializeField] private float width = 0.3f;
 
-   
     private void Start() {
         //Lets set up the range and width
         tractor_beam_fx = gameObject.GetComponent<ParticleSystem>();
@@ -20,7 +20,7 @@ public class TractorBeam : ModuleSystemInfo {
     }
 
     private void UpdateTracktorBeam() {
-        shape.position = new Vector3(0, this.Get_Range()+0.1f, 0);
+        shape.position = new Vector3(0, this.Get_Range() + 0.1f, 0);
         main.startSpeed = 1.8f * this.Get_Range();
         tractor_collider.offset = new Vector2(0, this.Get_Range() * 0.5f);
         tractor_collider.size = new Vector2(width, this.Get_Range());
@@ -29,10 +29,12 @@ public class TractorBeam : ModuleSystemInfo {
 
     private void Update() {
         if (Input.GetKey(KeyCode.T)) {
-            UpdateTracktorBeam();
-            tractor_pull.enabled = true;
-            tractor_beam_fx.Play();
-            StartUsage();
+            if (this.Is_Online()) {
+                UpdateTracktorBeam();
+                tractor_pull.enabled = true;
+                tractor_beam_fx.Play();
+                StartUsage();
+            }
         } else {
             tractor_pull.enabled = false;
             tractor_beam_fx.Stop();

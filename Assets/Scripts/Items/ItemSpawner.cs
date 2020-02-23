@@ -59,9 +59,7 @@ public class ItemSpawner : MonoBehaviour {
             GameObject material = Instantiate(item, hitpoint, Quaternion.identity) as GameObject;
             Rotator R = material.GetComponent<Rotator>();
             if (R != null) { R.Set_rotation_Speed(Random.Range(-item_rotate_speed_min, item_rotate_speed_max)); }
-            float move_speed_x = Random.Range(item_move_speed_min, item_move_speed_max);
-            float move_speed_y = Random.Range(item_move_speed_min, item_move_speed_max);
-            material.GetComponent<Rigidbody2D>().velocity = new Vector3(Random.Range(-move_speed_x, move_speed_x), Random.Range(-move_speed_y, move_speed_y), 0);
+            UnityFunctions.Move_RB_Random(material.GetComponent<Rigidbody2D>(), item_move_speed_min, item_move_speed_max);
             if (time_to_live > 0) {
                 Destroy(material, time_to_live);
             }
