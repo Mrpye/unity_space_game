@@ -30,12 +30,14 @@ public class Propulsion : ModuleSystemInfo {
     public void ResetCurrentThrust() {
     }
 
-    public void Activate(float overthrust) {
+    public void Activate(float overthrust=-1) {
         if (Is_Online()) {
-            if (overthrust < current_Thrust && this.IsInUse()) { return; }
-            current_Thrust = overthrust;
-            if (current_Thrust > max_thrust) {
-                current_Thrust = max_thrust;
+            //if (overthrust < current_Thrust && this.IsInUse()) { return; }
+
+
+            if (overthrust > -1) { current_Thrust = overthrust; }
+            if (current_Thrust > settings.Thrust_start) {
+                current_Thrust = settings.Thrust_start;
             }
             fx = GetComponent<ParticleSystem>();
             fx.Play();
@@ -46,7 +48,7 @@ public class Propulsion : ModuleSystemInfo {
             }
 
             ParticleSystem.MainModule s = fx.main;
-            s.startLifetime = UnityFunctions.normValue(current_Thrust + 20, 0, max_thrust);
+            s.startLifetime = UnityFunctions.normValue(current_Thrust + 20, 0, settings.Thrust_start);
 
             StartUsage();
 

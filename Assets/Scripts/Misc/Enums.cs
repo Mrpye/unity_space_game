@@ -13,6 +13,7 @@ public class Enums {
         single_blaster,
         double_blaster,
         beam,
+        rotary
     }
 
     public enum enum_item {
@@ -25,6 +26,7 @@ public class Enums {
         module_storage,
         module_single_blaster,
         module_double_blaster,
+        module_turret,
         module_mining_laser,
         module_power_reactor,
         module_command_module_type1,

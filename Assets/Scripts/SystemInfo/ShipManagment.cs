@@ -57,6 +57,20 @@ public class ShipManagment : InventoryManager {
             this.health -= (kernetic_energy1 * 0.05f);
         }
     }
+    private void OnTriggerEnter2D(Collider2D other) {
+        DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
+        if (damageDealer) {
+            ProcessHit(damageDealer);
+        }
+    }
+
+    private void ProcessHit(DamageDealer damageDealer) {
+        health -= damageDealer.GetDamage();
+        damageDealer.Hit();
+        if (health <= 0) {
+           
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision) {
         DamageShip();
@@ -74,19 +88,20 @@ public class ShipManagment : InventoryManager {
         foreach (ModuleSystemInfo ms in GeEquipedItems()) {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
-                    heat += ms.Get_Heat();
-                    cpu_usage += ms.Get_CPU();
-                    power_drain += ms.Get_Power();
-                    fuel_drain += ms.Get_Fuel();
-                    mass += ms.Get_Mass();
+                    heat += ms.current_heat;  
+                   cpu_usage += ms.settings.Cpu;
+                    power_drain += ms.current_power;
+                    fuel_drain += ms.current_fuel;
+                    mass += ms.Get_Calculated_Mass();
                     ms.ResetUsage();
                 }
             }
         }
+        if (heat < 0) { heat = 0; }
         power += power_drain;
         power = Mathf.Clamp(power, 0, power_max);
         fuel += fuel_drain;
-        power = Mathf.Clamp(fuel, 0, fuel);
+        fuel = Mathf.Clamp(fuel, 0, fuel);
         if (rb != null) {rb.mass = mass;}
         //******************************************
         //This feeds back information to each module

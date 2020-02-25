@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(WeponSystem))]
+//[CustomEditor(typeof(WeponSystem))]
 public class WepomSystemEditor : Editor {
 
     public string[] avaliableSysinfoProperties = new string[] {

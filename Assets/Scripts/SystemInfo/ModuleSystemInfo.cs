@@ -4,119 +4,40 @@ using UnityEngine;
 
 public class ModuleSystemInfo : MonoBehaviour {
 
-    #region inspector Fields
+    #region Public Fields
 
-    [SerializeField] public Enums.enum_class system_class = Enums.enum_class.Class_D;
-
+    [Header("Storage Info")]
     [SerializeField] public string id = "";
+
     [SerializeField] public int storage_usage = 1;
-    [SerializeField] public bool is_in_storage;//This stop all atributes affectin except mass
+    [SerializeField] public bool is_in_storage;
     [SerializeField] public bool is_internal_module;
     [SerializeField] public int mount_point;
     [SerializeField] public int order_layer = 100;
     [SerializeField] public bool is_command_module;
     [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory
+    [SerializeField] public bool use_continuous_usage = true;
+    [SerializeField] public Module_Settings settings;
 
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
 
-    [Header("Heat")]
-    [SerializeField] public float idle_heat = 0;
+    #endregion Public Fields
 
-    [SerializeField] public float min_idle_heat = 0;
-    [SerializeField] public float usage_factor_heat = 1f;
-    [SerializeField] public float min_usage_factor_heat = 0.1f;
-    [SerializeField] public float max_heat_saftey = 90;
-    [SerializeField] public float head_damage_factor = 0.1f;
-
-    [Header("Power")]
-    [SerializeField] public float idle_power = 0f;
-
-    [SerializeField] public float min_idle_power = 0f;
-    [SerializeField] public float power_usage_factor = -5f;
-    [SerializeField] public float min_power_usage_factor = -1f;
-
-    [Header("Fuel")]
-    [SerializeField] public float idle_fuel = 0;
-
-    [SerializeField] public float min_idle_fuel = 0;
-    [SerializeField] public float fuel_usage_factor = -5f;
-    [SerializeField] public float min_fuel_usage_factor = -1f;
-
-    [Header("CPU")]
-    [SerializeField] public float cpu = 1;
-
-    [SerializeField] public float min_cpu = 1;
-
-    [Header("Health")]
-    [SerializeField] public float health = 100;
-
-    [SerializeField] public float health_malfunction = 30;
-    [SerializeField] public float health_offline = 10;
-    [SerializeField] public float eff_fall_off_at = 80;
-
-    [Header("Mass")]
-    [SerializeField] public float mass = 10;
-
-    [SerializeField] public float min_mass = 10;
-
-    [Header("Thrust")]
-    [SerializeField] public float max_thrust;
-
-    [SerializeField] public float thrust;
-
-    [Header("Damage")]
-    [SerializeField] public float max_Damage = 100;
-
-    [SerializeField] public float damage = 10;
-
-    [Header("Action Speed")]//can be used for rate of fire
-    [SerializeField] public float max_action_speed = 2;
-
-    [SerializeField] public float min_action_speed = 0.1f;
-    [SerializeField] public float action_speed = 0.5f;
-
-    [Header("Speed")]//Can be used for speed of bullets
-    [SerializeField] public float max_speed = 100;
-
-    [SerializeField] public float min_speed = 10;
-    [SerializeField] public float speed = 6;
-
-    [Header("Items")]//storage items
-    [SerializeField] public float max_items = 20;
-
-    [SerializeField] public int items = 10;
-
-    [Header("Range")]//Range of wepon or tractor beam
-    [SerializeField] public float max_range = 30;
-
-    [SerializeField] public float range = 10;
-
-    [Header("Ammount")]//Can be used for how much the tractor bbeam pulls
-    [SerializeField] public float max_ammount = 10;
-
-    [SerializeField] public float ammount = 10;
-
-    [Header("Malfunction")]//This is used for handling malfunctions
-    [SerializeField] public float min_offline_malfunction_time = 1;
-
-    [SerializeField] public float max_offline_malfunction_time = 2;
-    [SerializeField] public float min_online_malfunction_time = 2;
-    [SerializeField] public float max_online_malfunction_time = 5;
-
-    #endregion inspector Fields
-
-    #region private fileds
+    #region private Fields
 
     private float offline_malfunction_time;
     private float online_malfunction_time;
+    private bool is_malfunctioning = false;
     private bool in_use = false;
-    [SerializeField] private float current_heat = 0;
-    private float current_power = 0;
-    private float current_fuel = 0;
-    [SerializeField] private bool is_malfunctioning = false;
+    public float current_heat = 0;
+    public float current_health = 0;
+    public float current_power = 0;
+    public float current_fuel = 0;
+    public float current_thrust = 0;
+
     private ItemResorce ir;
 
-    #endregion private fileds
+    #endregion private Fields
 
     #region methods
 
@@ -124,7 +45,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     /// This sorts the sprite and line render
     /// </summary>
     /// <param name="sort_order"></param>
-    public void SetSortOrder(int sort_order) {
+    public void SetRenderOrder(int sort_order) {
         //********************
         //Sort the order layer
         //********************
@@ -141,27 +62,27 @@ public class ModuleSystemInfo : MonoBehaviour {
         }
     }
 
-    public float Get_Trust_USeage_Factor() {
-        if (thrust > 0 && max_thrust > 0) {
-            return thrust / max_thrust;
+    public float Get_Trust_Useage_Factor() {
+        if (current_thrust > 0 && settings.Thrust_start > 0) {
+            return current_thrust / settings.Thrust_start;
         } else {
             return 1;
         }
     }
 
-    public float Get_Posotive_EffFactor() {
-        if (health <= eff_fall_off_at) {
+    public float Get_Posotive_Eff_Factor() {
+        if (current_health <= settings.Health_efficiency_fall_off_at) {
             return 1;
         } else {
-            return (100 / health);
+            return (100 / current_health);
         }
     }
 
     public float Get_negative_EffFactor() {
-        if (health <= eff_fall_off_at) {
+        if (current_health <= settings.Health_efficiency_fall_off_at) {
             return 1;
         } else {
-            return (health / 100);
+            return (current_health / 100);
         }
     }
 
@@ -182,8 +103,8 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public void StartMonitor() {
-        online_malfunction_time = Random.Range(min_online_malfunction_time, max_online_malfunction_time);
-        offline_malfunction_time = Random.Range(min_offline_malfunction_time, max_offline_malfunction_time);
+        online_malfunction_time = Random.Range(settings.Malfunction_min_online_time, settings.Malfunction_max_online_time);
+        offline_malfunction_time = Random.Range(settings.Malfunction_min_offline_time, settings.Malfunction_max_offline_time);
         ir = gameObject.GetComponent<ItemResorce>();
         StartCoroutine(Malfunction());
     }
@@ -195,10 +116,10 @@ public class ModuleSystemInfo : MonoBehaviour {
     private IEnumerator Malfunction() {
         while (true) {
             yield return new WaitForSeconds(online_malfunction_time);
-            if (health <= 0) {
+            if (current_health <= 0) {
                 is_malfunctioning = true;
-            } else if (health < health_malfunction) {
-                float chance = 100 - health;
+            } else if (current_health < settings.Health_malfunction_at) {
+                float chance = 100 - current_health;
                 if (Random.Range(0, 100) < chance) {
                     is_malfunctioning = true;
                 } else {
@@ -212,20 +133,26 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public void ResetUsage() {
-        current_power = idle_power;
-        current_fuel = idle_fuel;
+        current_power = settings.Power_idle;
+        current_fuel = settings.Fuel_idle;
     }
 
     public void UpdateUsage() {
-        if (in_use == true) {
-            current_heat += usage_factor_heat * Time.deltaTime;
-            if (current_heat > max_heat_saftey) {
-                health -= head_damage_factor * Time.deltaTime;
+        if (use_continuous_usage) {
+            if (in_use == true) {
+                current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
+                if (current_heat > settings.Heat_damage_at) {
+                    current_health -= settings.Heat_damage_factor * Time.deltaTime;
+                }
+                current_power = this.Get_Calculated_Power() * Time.deltaTime;
+                current_fuel = this.Get_Calculated_Fuel() * Time.deltaTime;
+            } else {
+                current_fuel = this.Get_Calculated_Fuel_Idle() * Time.deltaTime;
+                current_power = this.Get_Calculated_Power_idle() * Time.deltaTime;
+                current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
             }
-            current_power += power_usage_factor * Time.deltaTime;
-            current_fuel += fuel_usage_factor * Time.deltaTime;
         } else {
-            current_heat -= usage_factor_heat * Time.deltaTime; if (current_heat <= idle_heat) { current_heat = idle_heat; }
+            current_heat += this.Get_Calculated_Heat_Idle() * Time.deltaTime;
         }
     }
 
@@ -233,101 +160,34 @@ public class ModuleSystemInfo : MonoBehaviour {
     /// Used for things like wepons when they are fired
     /// </summary>
     public void SingleUpdateUsage() {
-        current_heat += usage_factor_heat;
-        current_power += power_usage_factor;
-        current_fuel += fuel_usage_factor;
+        in_use = true;
+        current_heat += this.Get_Calculated_Heat();
+        current_power = this.Get_Calculated_Power();
+        current_fuel = this.Get_Calculated_Fuel();
+        in_use = false;
     }
 
     #endregion methods
 
     #region functions
 
-    /// <summary>
-    /// This will say if the system has malfunctioned
-    /// </summary>
-    /// <returns></returns>
+    public virtual void Set_Values(float heat, float max_heat, float power, float max_power, float fuel, float max_fuel) {
+    }
+
     public bool Is_Online() {
         return !is_malfunctioning;
     }
 
-    public virtual void Set_Values(float heat, float max_heat, float power, float max_power, float fuel, float max_fuel) {
-    }
-
     public bool Is_OffLine() {
-        return health <= health_offline;
-    }
-
-    public float Get_Ammount() {
-        return ammount;
-    }
-
-    public Enums.enum_class Get_Class() {
-        return system_class;
-    }
-
-    public float Get_Items() {
-        return items;
-    }
-
-    public float Get_Range() {
-        return range;
-    }
-
-    public float Get_ActionSpeed() {
-        return action_speed;
-    }
-
-    public float Get_Health() {
-        return health;
-    }
-
-    public float Get_Speed() {
-        return speed * Get_negative_EffFactor();
-    }
-
-    public float Get_Thrust() {
-        return thrust * Get_negative_EffFactor();
-    }
-
-    public float Get_Damage() {
-        return damage;
-    }
-
-    public float Get_Mass() {
-        float stored_item_mass = 0;
-        if (ir != null) {
-            if (ir.Item_type == Enums.enum_item.module_storage) {
-                InventoryManager storage = gameObject.GetComponent<InventoryManager>();
-                if (storage != null) {
-                    stored_item_mass = storage.Get_Total_Stored_Item_Mass();
-                }
-            }
-        }
-        return mass + stored_item_mass;
-    }
-
-    public float Get_Heat() {
-        return current_heat * Get_Posotive_EffFactor();
-    }
-
-    public float Get_CPU() {
-        return cpu;
-    }
-
-    public float Get_Power() {
-        float val = current_power * Get_Posotive_EffFactor() * Get_Trust_USeage_Factor();
-        current_power = 0;
-        return val;
-    }
-
-    public float Get_Fuel() {
-        float val = (current_fuel * Get_Posotive_EffFactor()) * Get_Trust_USeage_Factor();
-        current_fuel = 0;
-        return val;
+        return current_health <= settings.Health_offline_at;
     }
 
     public bool IsInUse() {
         return in_use;
+    }
+
+    public int IsInUseInt() {
+        if (in_use) { return 1; } else { return 0; };
     }
 
     public void StartUsage() {
@@ -337,6 +197,58 @@ public class ModuleSystemInfo : MonoBehaviour {
     public void StopUsage() {
         in_use = false;
     }
+
+    #region Calulated Values
+
+    public float Get_Calculated_Speed() {
+        return settings.Speed * Get_negative_EffFactor();
+    }
+
+    public float Get_Calculated_Thrust() {
+        return settings.Thrust_start * Get_negative_EffFactor();
+    }
+    public float Get_Calculated_Thrust(float thrust) {
+        float percentage = thrust / 100;
+        return settings.Thrust_start * percentage * Get_negative_EffFactor();
+    }
+    public float Get_Calculated_Mass() {
+        float stored_item_mass = 0;
+        if (ir != null) {
+            if (ir.Item_type == Enums.enum_item.module_storage) {
+                InventoryManager storage = gameObject.GetComponent<InventoryManager>();
+                if (storage != null) {
+                    stored_item_mass = storage.Get_Total_Stored_Item_Mass();
+                }
+            }
+        }
+        return settings.Mass + stored_item_mass;
+    }
+
+    public float Get_Calculated_Heat() {
+        return this.IsInUseInt() * this.settings.Heat_usage * Get_Posotive_Eff_Factor();
+    }
+
+    public float Get_Calculated_Heat_Idle() {
+        return this.settings.Heat_idle * Get_Posotive_Eff_Factor();
+    }
+
+    public float Get_Calculated_Power() {
+        return this.IsInUseInt() * this.settings.Power_usage * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor(); ;
+    }
+
+    public float Get_Calculated_Power_idle() {
+        return this.settings.Power_idle * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor(); ;
+    }
+
+    public float Get_Calculated_Fuel() {
+        return this.IsInUseInt() * this.settings.Fuel_usage * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor();
+    }
+
+    public float Get_Calculated_Fuel_Idle() {
+        return this.settings.Fuel_idle * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor();
+    }
+
+    #endregion Calulated Values
 
     #endregion functions
 }

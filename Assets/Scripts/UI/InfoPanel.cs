@@ -18,11 +18,11 @@ public class InfoPanel : MonoBehaviour {
         SetText("txtTitle", inv.item_type.ToString().Replace("_"," "));
         SetText("txtDescription", ir.GetDescription());
         SetImg("Image", inv.GetComponent<Image>().sprite);
-        SetInfo("txtInfo(0)", "Mass: "+ module_info.mass.ToString());
-        SetInfo("txtInfo(1)", "Power: " + module_info.power_usage_factor.ToString());
-        SetInfo("txtInfo(2)", "Cpu: " + module_info.cpu.ToString());
-        SetInfo("txtInfo(3)", "Fuel: " + module_info.idle_fuel.ToString());
-        SetInfo("txtInfo(4)", "Heat: " + module_info.usage_factor_heat.ToString());
+        SetInfo("txtInfo(0)", "Mass: "+ module_info.settings.Mass.ToString());
+        SetInfo("txtInfo(1)", "Power: " + module_info.settings.Power_usage.ToString());
+        SetInfo("txtInfo(2)", "Cpu: " + module_info.settings.Cpu.ToString());
+        SetInfo("txtInfo(3)", "Fuel: " + module_info.settings.Fuel_usage.ToString());
+        SetInfo("txtInfo(4)", "Heat: " + module_info.settings.Heat_usage.ToString());
 
 
     }

@@ -28,6 +28,9 @@ public class ItemResorce : MonoBehaviour {
         resource_data.Add(Enums.enum_item.module_storage.ToString(), new ItemResorceData("storage", "This is a ship storage", Enums.enum_item.module_storage));
         resource_data.Add(Enums.enum_item.module_double_blaster.ToString(), new ItemResorceData("Modules\\WeponSystems\\WeponSystem-BlasterDouble", "Wepon Fires a Double shot", Enums.enum_item.module_double_blaster));
         resource_data.Add(Enums.enum_item.module_single_blaster.ToString(), new ItemResorceData("Modules\\WeponSystems\\WeponSystem-BlasterSingle", "Wepon Fires a Single shot", Enums.enum_item.module_single_blaster));
+        resource_data.Add(Enums.enum_item.module_turret.ToString(), new ItemResorceData("Modules\\WeponSystems\\WeponSystem-Turret", "Rotation", Enums.enum_item.module_turret));
+
+
         resource_data.Add(Enums.enum_item.module_mining_laser.ToString(), new ItemResorceData("Modules\\WeponSystems\\WeponSystem-Laser", "Used for mining asteroids", Enums.enum_item.module_mining_laser));
         resource_data.Add(Enums.enum_item.module_power_reactor.ToString(), new ItemResorceData("Modules\\Power\\PowerReactor", "Used to power your ship", Enums.enum_item.module_power_reactor));
         resource_data.Add(Enums.enum_item.module_command_module_type1.ToString(), new ItemResorceData("Modules\\CommandModule\\CommandModuleType1", "Type1 command module", Enums.enum_item.module_command_module_type1));
@@ -35,10 +38,10 @@ public class ItemResorce : MonoBehaviour {
         resource_data.Add(Enums.enum_item.module_thruster.ToString(), new ItemResorceData("Modules\\Engines\\Thruster", "Thrusters used to maneuver your ship", Enums.enum_item.module_thruster));
         resource_data.Add(Enums.enum_item.module_refiner.ToString(), new ItemResorceData("Modules\\Refiner\\Refiner", "Used to refine materials", Enums.enum_item.module_refiner));
         resource_data.Add(Enums.enum_item.module_tracktor_beam.ToString(), new ItemResorceData("Modules\\TracktorBeam\\TracktorBeam", "This is a Tracktor Beam", Enums.enum_item.module_tracktor_beam));
-        resource_data.Add(Enums.enum_item.asset_asteroid_large.ToString(), new ItemResorceData("GameAssets\\Asteroid_large", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_large));
-        resource_data.Add(Enums.enum_item.asset_asteroid_med.ToString(), new ItemResorceData("GameAssets\\Asteroid_med", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_med));
-        resource_data.Add(Enums.enum_item.asset_small_enemy.ToString(), new ItemResorceData("GameAssets\\SmallEnemy", "Small Enemy", Enums.enum_item.asset_small_enemy));
-        resource_data.Add(Enums.enum_item.asset_large_enemy.ToString(), new ItemResorceData("GameAssets\\LargeEnemy", "Large Enemy", Enums.enum_item.asset_large_enemy));
+        resource_data.Add(Enums.enum_item.asset_asteroid_large.ToString(), new ItemResorceData("GameAssets\\Asteroid\\Asteroid_large", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_large));
+        resource_data.Add(Enums.enum_item.asset_asteroid_med.ToString(), new ItemResorceData("GameAssets\\Asteroid\\Asteroid_med", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_med));
+        resource_data.Add(Enums.enum_item.asset_small_enemy.ToString(), new ItemResorceData("GameAssets\\Enemy\\SmallEnemy", "Small Enemy", Enums.enum_item.asset_small_enemy));
+        resource_data.Add(Enums.enum_item.asset_large_enemy.ToString(), new ItemResorceData("GameAssets\\Enemy\\LargeEnemy", "Large Enemy", Enums.enum_item.asset_large_enemy));
         resource_data.Add(Enums.enum_item.asset_player.ToString(), new ItemResorceData("GameAssets\\LargeEnemy", "Player", Enums.enum_item.asset_player));
     }
 

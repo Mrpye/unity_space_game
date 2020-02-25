@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class KeyMappingModel {
     public string Key;
-    public string mapping_value;
+    public Enums.enum_movment_type movement_type = Enums.enum_movment_type.none;
     public float value;
 }
 
@@ -55,7 +55,7 @@ public class ModuleSaveModel {
         module_name = ir.GetResorceLocation();
         id = module.name;
         mount_point = sys.mount_point;
-        health = sys.Get_Health();
+        health = sys.current_health;
         order_layer = sys.order_layer;
         is_in_storage = sys.is_in_storage;
         is_internal_module = sys.is_internal_module;

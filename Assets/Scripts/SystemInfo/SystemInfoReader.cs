@@ -27,9 +27,9 @@ public class SystemInfoReader : MonoBehaviour {
             //*************************
             ship_movment = player_prefab.GetComponent<SpaceShipMovment>();
             sr = GetComponent<Image>();
-        } else if (data_type== Enums.enum_system_info.refiner ) {
+        } else if (data_type == Enums.enum_system_info.refiner) {
             GameObject r = GameObject.Find("Refiner(Clone)");
-
+            bar = GetComponent<Slider>();
         } else {
             //**************************************
             //This is slider data from ShipManagment
@@ -43,15 +43,18 @@ public class SystemInfoReader : MonoBehaviour {
         InvokeRepeating("UpdateDisplayData", 0, 0.1f);
     }
 
-
     private void UpdateDisplayData() {
         if (sys != null && bar != null) {
             ShipManagment.value_data res = sys.Get_Data(data_type);
             bar.maxValue = res.max_value;
             bar.value = res.value;
         } else if (data_type == Enums.enum_system_info.flight_assist) {
-            if (ship_movment.flight_assist == true) {
+            if (ship_movment.flight_assist == 1) {
                 sr.enabled = true;
+                sr.color = Color.white;
+            } else if (ship_movment.flight_assist == 2) {
+                sr.enabled = true;
+                sr.color = Color.red;
             } else {
                 sr.enabled = false;
             }
@@ -61,13 +64,13 @@ public class SystemInfoReader : MonoBehaviour {
             } else {
                 sr.enabled = false;
             }
-        }else if (data_type == Enums.enum_system_info.refiner) {
+        } else if (data_type == Enums.enum_system_info.refiner) {
             if (refiner == null) {
                 GameObject r = GameObject.Find("Refiner(Clone)");
                 if (r != null) { refiner = r.GetComponent<Refiner>(); }
             }
             if (refiner != null && bar != null) {
-                bar.maxValue = refiner.Get_Items();
+                bar.maxValue = refiner.settings.Items_max;
                 bar.value = refiner.Bin_Item_Count();
             }
         }

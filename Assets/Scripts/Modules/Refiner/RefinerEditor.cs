@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(Refiner))]
+//[CustomEditor(typeof(Refiner))]
 
 public class RefinerEditor : Editor {
     public string[] avaliableSysinfoProperties = new string[] {

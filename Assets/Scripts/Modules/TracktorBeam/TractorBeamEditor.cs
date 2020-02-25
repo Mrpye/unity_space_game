@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(TractorBeam))]
+//[CustomEditor(typeof(TractorBeam))]
 public class TractorBeamEditor : Editor {
     public string[] avaliableSysinfoProperties = new string[] {
         //"idle_heat",

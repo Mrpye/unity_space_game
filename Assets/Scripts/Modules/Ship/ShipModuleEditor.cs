@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(ShipModule))]
+//[CustomEditor(typeof(ShipModule))]
 public class ShipModuleEditor : Editor {
     public string[] avaliableSysinfoProperties = new string[] {
         "idle_heat",

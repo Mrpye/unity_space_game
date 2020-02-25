@@ -9,30 +9,16 @@ public class DamageSystem : MonoBehaviour {
 
     [SerializeField] private GameObject shockwave;
     [SerializeField] private float durationOfExplosion = 0.5f;
-
-    private CircleCollider2D explosion_force_collider;
-    private PointEffector2D explosion_force_effector;
+    [SerializeField] private float explosion_range = 10f;
+    [SerializeField] private float force_of_explosion = 10f;
+    [SerializeField] private float shockwave_damagefactor = 10f;
+    [SerializeField] private bool shockwave_force;
     private bool death_running = false;
 
-    private void Start() {
-        explosion_force_collider = gameObject.GetComponent<CircleCollider2D>();
-        explosion_force_effector = gameObject.GetComponent<PointEffector2D>();
-    }
-
     private void OnTriggerEnter2D(Collider2D other) {
-        ShipManagment ship_managment = other.GetComponent<ShipManagment>();
-        if (ship_managment != null) {
-            //If near a ship appy force and damage
-            float dist = Vector3.Distance(other.transform.position, transform.position) * (explosion_force_effector.forceMagnitude * 0.20f);
-            float factor = (explosion_force_effector.forceMagnitude - dist);
-            if (factor > 0) {
-                ship_managment.DamageShip(factor * 0.2f);
-            }
-        } else {
-            DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
-            if (damageDealer) {
-                ProcessHit(damageDealer);
-            }
+        DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
+        if (damageDealer) {
+            ProcessHit(damageDealer);
         }
     }
 
@@ -46,15 +32,21 @@ public class DamageSystem : MonoBehaviour {
 
     private IEnumerator DeathProcesses() {
         death_running = true;
-        ApplyExplosionForce();
+        if (shockwave_force == true) { ApplyExplosionForce(transform.position, explosion_range, force_of_explosion); }
+        //AppyExplosionForce();
         SpriteRenderer sr = null;
-
 
         //***************
         //Disable Sprites
         //***************
         sr = gameObject.GetComponent<SpriteRenderer>();
         if (sr != null) { sr.enabled = false; }
+        SpriteRenderer[] sr_col = gameObject.GetComponentsInChildren<SpriteRenderer>();
+        if (sr_col != null) {
+            foreach (SpriteRenderer s in sr_col) {
+                s.enabled = false;
+            }
+        }
         Transform obj = gameObject.transform.Find("Sprint");
         if (obj != null) { if (sr != null) { sr.enabled = false; } }
 
@@ -85,14 +77,48 @@ public class DamageSystem : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    private void ApplyExplosionForce() {
+    /*private void ApplyExplosionForce() {
         if (explosion_force_collider != null && explosion_force_effector != null) {
             explosion_force_collider.enabled = true;
             explosion_force_effector.enabled = true;
         }
-    }
+    }*/
 
     private void Die() {
         if (death_running == false) { StartCoroutine(DeathProcesses()); }
+    }
+
+    //******************************************
+    //Lets see whats in range and give it damage
+    //******************************************
+    private void ApplyExplosionForce(Vector2 center, float radius, float forceMultiplier) {
+        int hit_mask = (1 << LayerMask.NameToLayer("Player"));
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius, hit_mask);
+        int i = 0;
+        while (i < hitColliders.Length) {
+            ItemResorce ir = hitColliders[i].GetComponent<ItemResorce>();
+            if (ir != null && ir.GetItemType() == Enums.enum_item.asset_player) {
+                Vector2 force = (hitColliders[i].gameObject.transform.position - transform.position) * (forceMultiplier * 100);
+                Rigidbody2D rb = hitColliders[i].gameObject.transform.GetComponent<Rigidbody2D>();
+                ApplyDamageByForce(hitColliders[i].gameObject, transform);
+                rb.AddForce(force);
+            }
+            i++;
+        }
+    }
+
+    private void ApplyDamageByForce(GameObject game_obj, Transform source_transform = null) {
+        ShipManagment ship_managment = game_obj.GetComponent<ShipManagment>();
+        if (ship_managment != null && source_transform != null) {
+            float ratio = 1 / (source_transform.position - game_obj.transform.position).sqrMagnitude;
+            if (ratio > 0) {
+                ship_managment.DamageShip(shockwave_damagefactor * ratio);
+            }
+        } else {
+            DamageDealer damageDealer = game_obj.gameObject.GetComponent<DamageDealer>();
+            if (damageDealer) {
+                ProcessHit(damageDealer);
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-[CustomEditor(typeof(Propulsion))]
+//[CustomEditor(typeof(Propulsion))]
 public class PropulsionEditor : Editor {
     public string[] avaliableSysinfoProperties = new string[] {
         //"idle_heat",

@@ -6,7 +6,6 @@ public class KeyMapping : ScriptableObject
 {
     public string Key;
     public GameObject module;
-    public string mapping_value;
+    public Enums.enum_movment_type movement_type=  Enums.enum_movment_type.none;
     public float value;
-
 }

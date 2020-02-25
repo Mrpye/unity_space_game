@@ -10,7 +10,7 @@ public class StorageReader : MonoBehaviour, Reader {
     private void Start() {
         storage = GetComponentInParent<InventoryManager>();
         txt = GetComponentInChildren<Text>();
-        InvokeRepeating("UpdateDisplayData", 0, 1.0f);
+        InvokeRepeating("Reader.UpdateDisplayData", 0, 1.0f);
     }
 
     void Reader.UpdateDisplayData() {

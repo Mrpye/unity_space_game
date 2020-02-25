@@ -87,17 +87,17 @@ public class ProceduralGenrator : MonoBehaviour {
                 if (newres == 5 || newres == 1) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
-                    temp_prefab  = Resources.Load("GameAssets\\Asteroid_large") as GameObject;
+                    temp_prefab  = Resources.Load("GameAssets\\Asteroid\\Asteroid_large") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
                 } else if (newres == 3 || newres == 7 || newres == 2) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
-                    temp_prefab = Resources.Load("GameAssets\\Asteroid_med") as GameObject;
+                    temp_prefab = Resources.Load("GameAssets\\Asteroid\\Asteroid_med") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
                 } else if (newres == 4 || newres == 8 || newres == 2) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
-                    temp_prefab = Resources.Load("GameAssets\\SmallEnemy") as GameObject;
+                    temp_prefab = Resources.Load("GameAssets\\Enemy\\SmallEnemy") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
                 }
             }

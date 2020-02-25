@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -14,11 +15,17 @@ public class WeponSystem : ModuleSystemInfo {
     [SerializeField] private GameObject prefab_blaster_laser;
     [SerializeField] private GameObject laser_hit_sprite;
     [SerializeField] private AudioClip laserAudio;
+    private Rigidbody2D rb;
+
+
 
     [Header("Wepon Attibutes")]
     [SerializeField] public Enums.enum_wepon_type wepon_type = Enums.enum_wepon_type.single_blaster;
 
+
+    private Targeting target;
     private float laser_range = 10f;
+    private float rotate_speed = 1;
     private float projectile_speed = 10f;
     private float projectileFiringPeriod = 0.1f;
     [SerializeField] private float double_blaster_distance = 0.5f;
@@ -26,17 +33,28 @@ public class WeponSystem : ModuleSystemInfo {
     private Coroutine fire_method;
     private LineRenderer line_renderer;
     private SpriteRenderer laser_hit_sprite_renderer;
-    [SerializeField] private GameObject fire_point1;
-    [SerializeField] private GameObject fire_point2;
+    [SerializeField] private List<GameObject> fire_points;
+
 
     /// <summary>
     /// Start is called before the first frame update
     /// </summary>
     private void Start() {
+
+        GameObject p_obj = GameObject.Find("Player");
+        if (p_obj != null) {
+            rb = p_obj.GetComponent<Rigidbody2D>();
+        }
+        
         line_renderer = GetComponent<LineRenderer>();
-        fire_point1 = gameObject.transform.Find("FirePoint").gameObject;
-        Transform wt = gameObject.transform.Find("FirePoint2");
-        if (wt != null) { fire_point2 = wt.gameObject; }
+        target = GetComponent<Targeting>();
+       
+        fire_points = new List<GameObject>();
+        foreach (Transform child in transform) {
+            if(child.name== "FirePoint") {
+                fire_points.Add(child.gameObject);
+            }
+        }
 
         Transform t = gameObject.transform.Find("HitPoint");
         if (t != null) {
@@ -58,14 +76,26 @@ public class WeponSystem : ModuleSystemInfo {
     /// This gets Moduleinfo settigs and apply to the specific module
     /// </summary>
     public void UpdateModuleStats() {
-        laser_range = this.Get_Range();
-        projectile_speed = this.Get_Speed();
-        projectileFiringPeriod = this.Get_ActionSpeed();
+        laser_range = this.settings.Range;
+        rotate_speed = this.settings.Action_speed2;
+        projectile_speed = this.Get_Calculated_Speed();
+        projectileFiringPeriod = this.settings.Action_speed;
+
     }
 
     private void Update() {
         if (is_in_storage == true) { return; }
         if (this.Is_Online()) {
+            if (target != null) {
+                //Left make the trurret target
+                target.range = this.settings.Range;
+
+                target.TargetingRange(transform.position);
+                if (target.target_object != null) {
+
+                    UnityFunctions.LookAt2D(transform, target.target_object.transform, rotate_speed, Enums.enum_facing_direction.Up);
+                } 
+            }
             if (wepon_type == Enums.enum_wepon_type.beam) {
                 Fire_Beam();
             } else {
@@ -85,7 +115,7 @@ public class WeponSystem : ModuleSystemInfo {
         }
             
         if (Input.GetButton("Fire2") && Is_Online()) {
-            int hit_mask = (1 << LayerMask.NameToLayer("Asteroid")) | (1 << LayerMask.NameToLayer("Enemy")) | (1 << LayerMask.NameToLayer("Material"));
+            int hit_mask = (1 << LayerMask.NameToLayer("game-assets")) | (1 << LayerMask.NameToLayer("Enemy"));
             StartUsage();
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, transform.up, laser_range, hit_mask);
             if (hit2D) {
@@ -132,12 +162,18 @@ public class WeponSystem : ModuleSystemInfo {
     private IEnumerator FireConinuous() {
         while (true) {
             SingleUpdateUsage();
-            if (wepon_type == Enums.enum_wepon_type.double_blaster) {
-                UnityFunctions.FireProjectile(prefab_blaster_laser, fire_point1, this.order_layer - 1);
-                UnityFunctions.FireProjectile(prefab_blaster_laser, fire_point2, this.order_layer - 1);
-            } else if (wepon_type == Enums.enum_wepon_type.single_blaster) {
-                UnityFunctions.FireProjectile(prefab_blaster_laser, fire_point1, this.order_layer - 1);
+            if (wepon_type == Enums.enum_wepon_type.double_blaster || wepon_type == Enums.enum_wepon_type.single_blaster) {
+                foreach(GameObject fp in this.fire_points) {
+                    UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1,this.settings.Action_speed2+ rb.velocity.magnitude);
+                }
+            }else if(wepon_type == Enums.enum_wepon_type.rotary){
+                if (target.target_object != null) {
+                    foreach (GameObject fp in this.fire_points) {
+                        UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1, this.settings.Action_speed2+ rb.velocity.magnitude);
+                    }
+                }
             }
+
             if (laserAudio != null) {
                 AudioSource.PlayClipAtPoint(laserAudio, new Vector3(0, 0, 0));
             }

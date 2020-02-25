@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-[CustomEditor(typeof(Power))]
+//[CustomEditor(typeof(Power))]
 public class PowerEditor : Editor {
     public string[] avaliableSysinfoProperties = new string[] {
         //"idle_heat",

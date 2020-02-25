@@ -20,11 +20,11 @@ public class TractorBeam : ModuleSystemInfo {
     }
 
     private void UpdateTracktorBeam() {
-        shape.position = new Vector3(0, this.Get_Range() + 0.1f, 0);
-        main.startSpeed = 1.8f * this.Get_Range();
-        tractor_collider.offset = new Vector2(0, this.Get_Range() * 0.5f);
-        tractor_collider.size = new Vector2(width, this.Get_Range());
-        tractor_pull.forceMagnitude = this.Get_Ammount();
+        shape.position = new Vector3(0, this.settings.Range + 0.1f, 0);
+        main.startSpeed = 1.8f * this.settings.Range;
+        tractor_collider.offset = new Vector2(0, this.settings.Range * 0.5f);
+        tractor_collider.size = new Vector2(width, this.settings.Range);
+        tractor_pull.forceMagnitude = this.settings.Ammount;
     }
 
     private void Update() {
@@ -41,18 +41,6 @@ public class TractorBeam : ModuleSystemInfo {
             StopUsage();
         }
         UpdateUsage();
-        /* if (Input.GetButton("Fire1")) {
-             Vector2 ray =  Camera.main.ScreenToWorldPoint(Input.mousePosition);
-             Debug.DrawRay(transform.position, ray * 100, Color.green);
-             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, ray, 100);
-             if (hit2D) {
-                 if (hit2D.transform.tag == "Pullable") {       // move the object hit!
-                     target.GetComponent<Rigidbody2D>().velocity = Vector2.up;
-
-                     hit2D.transform.position = Vector3.MoveTowards(hit2D.transform.position, target.position, Time.deltaTime * 5);
-                    // print("I'm looking at " + hit2D.transform.name);
-                 }
-             }
-         }*/
+       
     }
 }

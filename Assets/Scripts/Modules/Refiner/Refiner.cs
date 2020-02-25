@@ -18,7 +18,7 @@ public class Refiner : ModuleSystemInfo {
     /// This gets Moduleinfo settigs and apply to the specific module
     /// </summary>
     public void UpdateModuleStats() {
-        processing_time = this.Get_ActionSpeed();
+        processing_time = this.settings.Action_speed;
         if (processing_time == 0) { processing_time = 1; }
     }
 
@@ -33,7 +33,7 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        float maxbin = Get_Ammount();
+        float maxbin = this.settings.Items_max;
         if (collision.gameObject.tag == "material" && processing_bin.Count < maxbin) {
             ItemResorce mr = collision.gameObject.GetComponent<ItemResorce>();
             ModuleSystemInfo msi = collision.gameObject.GetComponent<ModuleSystemInfo>();

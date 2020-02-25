@@ -121,7 +121,7 @@ public class LoadSave : MonoBehaviour {
             ItemResorce ir = obj_module.GetComponent<ItemResorce>();
             mod_sys.key_mappings = model.key_mappings;
             mod_sys.id = model.id;
-            mod_sys.health = model.health;
+            mod_sys.current_health = model.health;
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
             mod_sys.is_internal_module = model.is_internal_module;

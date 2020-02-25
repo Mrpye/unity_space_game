@@ -12,12 +12,22 @@ public class InventoryManager : MonoBehaviour {
 
     public class Item {
 
+        #region Public Fields
+
+        public GameObject item;
+
         /// <summary>
         /// Class to store module or material
         /// </summary>
-        public Enums.enum_item item_type; //Enum of the item type
+        public Enums.enum_item item_type;
 
-        public GameObject item; //Ref to the item
+        #endregion Public Fields
+
+        //Enum of the item type
+
+        //Ref to the item
+
+        #region Public Constructors
 
         public Item(Enums.enum_item item_type) {
             this.item_type = item_type;
@@ -28,36 +38,61 @@ public class InventoryManager : MonoBehaviour {
             this.item_type = item_type;
             this.item = item;
         }
+
+        #endregion Public Constructors
     }
 
     #endregion Class
 
     #region Fields
 
+    [SerializeField] public List<GameObject> modules = new List<GameObject>();
+
+    [SerializeField] private ShipModule command_module;
+
     [Header("Storage ")]
     [SerializeField] private List<InventoryManager.Item> inventory = new List<InventoryManager.Item>();// Inventory items
 
-    [SerializeField] public List<GameObject> modules = new List<GameObject>();
-    [SerializeField] private ShipModule command_module;
-
-    [SerializeField] private int max_storage_items = 10; //Max items that can be stored in our inventory
-    private GameObject Stored_Modules_game_object;
-    private GameObject modules_game_object;
+    [SerializeField] private GameObject inventory_item;
 
     [Header("Config Inventory")]
-    [SerializeField] private GameObject inventory_panel; // This is used in the config screen for object
+    [SerializeField] private GameObject inventory_panel;
 
-    [SerializeField] private GameObject inventory_item; //
+    [SerializeField] private int max_storage_items = 10; //Max items that can be stored in our inventory
+    private GameObject modules_game_object;
 
     [Header("Config Mount Point")]
     [SerializeField] private GameObject mount_point_drop_zone;
 
+    //
     [SerializeField] private GameObject mount_point_drop_zone_grid;
 
-    [SerializeField] private List<GameObject> mount_point_panels;//Panels the lists are on
-    private GameObject[] mount_point_drop_zone_list;//Panels the lists are on
+    private GameObject[] mount_point_drop_zone_list;
+
+    // This is used in the config screen for object
+    [SerializeField] private List<GameObject> mount_point_panels;
+
+    private GameObject Stored_Modules_game_object;
+    //Panels the lists are on
+    //Panels the lists are on
 
     #endregion Fields
+
+    #region Public Methods
+
+    public void Build_Inventory_List_Items() {
+        //*************************
+        //Load stored Items in list
+        //*************************
+        ModuleSystemInfo[] modules = GetStoredItems();
+        foreach (ModuleSystemInfo module in modules) {
+            GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
+            //Lets config it
+            InventoryItem inv = item.GetComponent<InventoryItem>();
+            inv.SetItem(module.gameObject);
+            item.transform.parent = inventory_panel.transform;
+        }
+    }
 
     public void child_Start() {
         // Load_Modules();
@@ -72,8 +107,52 @@ public class InventoryManager : MonoBehaviour {
         }
     }
 
+    public void Equip(GameObject obj) {
+        if (modules_game_object == null) { modules_game_object = GameObject.Find("Modules"); }
+        ModuleSystemInfo module_info = obj.GetComponent<ModuleSystemInfo>();
+        ItemResorce ir = obj.GetComponent<ItemResorce>();
+        SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
+
+        obj.transform.parent = modules_game_object.transform;
+
+        if (ir.Item_type == Enums.enum_item.module_command_module_type1) {
+            command_module = obj.GetComponent<ShipModule>(); //First we need to store the item
+            MountPoint mp = command_module.mount_points[0];//Set the max storage
+            max_storage_items = module_info.max_storage_items;
+            mp.max_mounting = max_storage_items;
+        } else {
+            MountPoint mp = command_module.mount_points[module_info.mount_point];
+            obj.transform.position = mp.transform.position;
+            obj.transform.rotation = mp.transform.rotation;
+            module_info.mount_point = mp.index;
+            module_info.key_mappings = mp.key_mappings;
+            module_info.SetRenderOrder(mp.render_order);
+        }
+
+        foreach (KeyMappingModel e in module_info.key_mappings) {
+            controls.AddKeyBinding(e, obj);
+        }
+
+        module_info.IteminUse(module_info.is_internal_module);
+    }
+
+    public ModuleSystemInfo[] GeEquipedItems() {
+        modules_game_object = GameObject.Find("Modules");
+        return modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
+    }
+
     public float Get_Total_Stored_Item_Mass() {
         return 1;
+    }
+
+    public ModuleSystemInfo[] GetStoredItems() {
+        Stored_Modules_game_object = GameObject.Find("Stored_Modules");
+        return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
+    }
+
+    public int Item_Count(Enums.enum_item material) {
+        var res = (from n in inventory where n.item_type == material select n).Count();
+        return res;
     }
 
     public void Set_Max_Storage(int max) {
@@ -82,21 +161,6 @@ public class InventoryManager : MonoBehaviour {
 
     public void Store_Material(Enums.enum_item material) {
         inventory.Add(new InventoryManager.Item(material));
-    }
-
-    public ModuleSystemInfo[] GetStoredItems() {
-        Stored_Modules_game_object = GameObject.Find("Stored_Modules");
-        return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
-    }
-
-    public ModuleSystemInfo[] GeEquipedItems() {
-        modules_game_object = GameObject.Find("Modules");
-        return modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
-    }
-
-    public int Item_Count(Enums.enum_item material) {
-        var res = (from n in inventory where n.item_type == material select n).Count();
-        return res;
     }
 
     /// <summary>
@@ -112,71 +176,11 @@ public class InventoryManager : MonoBehaviour {
         inventory.Add(new InventoryManager.Item(ir.Item_type, module));
     }
 
-    public void Equip(GameObject obj) {
-        if (modules_game_object == null) { modules_game_object = GameObject.Find("Modules"); }
-        ModuleSystemInfo module_info = obj.GetComponent<ModuleSystemInfo>();
-        ItemResorce ir = obj.GetComponent<ItemResorce>();
-        SpaceShipMovment controls = gameObject.GetComponent<SpaceShipMovment>();
-
-        
-
-        obj.transform.parent = modules_game_object.transform;
-
-        if (ir.Item_type == Enums.enum_item.module_command_module_type1) {
-            command_module = obj.GetComponent<ShipModule>(); //First we need to store the item
-            MountPoint mp = command_module.mount_points[0];//Set the max storage
-            max_storage_items = module_info.max_storage_items;
-            mp.max_mounting = max_storage_items;
-        } else {
-            MountPoint mp = command_module.mount_points[module_info.mount_point];
-            obj.transform.position = mp.transform.position;
-            obj.transform.rotation = mp.transform.rotation;
-            module_info.mount_point = mp.index;
-            module_info.key_mappings = mp.key_mappings;
-            module_info.SetSortOrder(mp.render_order);
-        }
-
-        foreach (KeyMappingModel e in module_info.key_mappings) {
-            controls.AddKeyBinding(e, obj);
-        }
-
-        module_info.IteminUse(module_info.is_internal_module);
-    }
+    #endregion Public Methods
 
     //public void
 
-    private void Populate_Mount_Point_Drop_Panels() {
-        ModuleSystemInfo[] modules = GeEquipedItems();
-        foreach (ModuleSystemInfo module in modules) {
-            if (module.is_internal_module == false) {
-                if (module.mount_point > 0) {
-                    GameObject item = Instantiate(inventory_item, inventory_panel.transform);
-
-                    item.transform.parent = mount_point_drop_zone_list[module.mount_point].transform;
-                    //GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
-                    //Lets config it
-                    InventoryItem inv = item.GetComponent<InventoryItem>();
-                    inv.SetItem(module.gameObject);
-
-                    //this.Equip(,inv.item);
-                }
-            }
-        }
-    }
-
-    public void Build_Inventory_List_Items() {
-        //*************************
-        //Load stored Items in list
-        //*************************
-        ModuleSystemInfo[] modules = GetStoredItems();
-        foreach (ModuleSystemInfo module in modules) {
-            GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
-            //Lets config it
-            InventoryItem inv = item.GetComponent<InventoryItem>();
-            inv.SetItem(module.gameObject);
-            item.transform.parent = inventory_panel.transform;
-        }
-    }
+    #region Private Methods
 
     private void Build_Mount_Point_Drop_Panels() {
         //****************************
@@ -204,4 +208,25 @@ public class InventoryManager : MonoBehaviour {
             dh.max_items = m.max_mounting;
         }
     }
+
+    private void Populate_Mount_Point_Drop_Panels() {
+        ModuleSystemInfo[] modules = GeEquipedItems();
+        foreach (ModuleSystemInfo module in modules) {
+            if (module.is_internal_module == false) {
+                if (module.mount_point > 0) {
+                    GameObject item = Instantiate(inventory_item, inventory_panel.transform);
+
+                    item.transform.parent = mount_point_drop_zone_list[module.mount_point].transform;
+                    //GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
+                    //Lets config it
+                    InventoryItem inv = item.GetComponent<InventoryItem>();
+                    inv.SetItem(module.gameObject);
+
+                    //this.Equip(,inv.item);
+                }
+            }
+        }
+    }
+
+    #endregion Private Methods
 }
