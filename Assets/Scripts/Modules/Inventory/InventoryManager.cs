@@ -224,6 +224,14 @@ public class InventoryManager : MonoBehaviour {
 
                     //this.Equip(,inv.item);
                 }
+            } else {
+                GameObject item = Instantiate(inventory_item, inventory_panel.transform);
+
+                item.transform.parent = mount_point_drop_zone_list[module.mount_point].transform;
+                //GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
+                //Lets config it
+                InventoryItem inv = item.GetComponent<InventoryItem>();
+                inv.SetItem(module.gameObject);
             }
         }
     }

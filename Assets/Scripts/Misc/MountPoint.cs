@@ -6,6 +6,7 @@ public class MountPoint : MonoBehaviour
 {
     
     public Enums.emun_zone zone;
+    public Enums.emun_sub_zone sub_zone;
     public int index;
     //public string  name;
     public int max_mounting;

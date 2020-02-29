@@ -24,7 +24,7 @@ public class SpaceShipMovment : MonoBehaviour {
     [SerializeField] private float thrust_rotate_affect = 1f;
     [SerializeField] private float thrust_strife_affect = 1f;
     [SerializeField] private float thrust_forward_affect = 1f;
-    [SerializeField] private float cruse_control_speed =20f;
+    [SerializeField] private float cruse_control_speed = 20f;
     [SerializeField] private bool cruse_control = false;
 
     [Header("Game Objects")]
@@ -116,7 +116,7 @@ public class SpaceShipMovment : MonoBehaviour {
         thrust_forward_affect = 1f;
 
         if (Mathf.Abs(movement_y) > 0 && Mathf.Abs(rotaion_movement) > 0) {
-            thrust_rotate_affect = 0.1f;
+            //thrust_rotate_affect = 0.1f;
             //thrust_strife_affect = 1f;
             //thrust_forward_affect = 1f;
         }
@@ -135,16 +135,13 @@ public class SpaceShipMovment : MonoBehaviour {
             this.cruse_control_speed = rb.velocity.magnitude;
         }
 
-
         if (movement_y < 0) {
             cruse_control = false;
-        } else if( cruse_control == true && mag < cruse_control_speed) {
+        } else if (cruse_control == true && mag < cruse_control_speed) {
             movement_y = 1;
         }
 
-       
-
-            CalcThrustFactor();
+        CalcThrustFactor();
         if (Input.GetKeyDown(KeyCode.F)) {
             this.flight_assist += 1;
             if (this.flight_assist > 2) {
@@ -269,14 +266,20 @@ public class SpaceShipMovment : MonoBehaviour {
                         } else if (m.movement_type == Enums.enum_movment_type.strife) {
                             p.Activate(Mathf.Abs(Calc_Strife_Trust(p.Get_Calculated_Thrust(m.value))));
                         } else if (m.movement_type == Enums.enum_movment_type.forward_backward) {
-                            p.Activate(Mathf.Abs(Calc_forward_Trust(p.Get_Calculated_Thrust(m.value))));
+                            p.Activate(p.Get_Calculated_Thrust(m.value)* Calc_Percentage_Forward());
+                           // p.Activate(Mathf.Abs(Calc_forward_Trust(p.Get_Calculated_Thrust(m.value), Calc_Percentage_Forward())));
                         } else {
-                            p.Activate(m.value);
+                            p.Activate(p.Get_Calculated_Thrust(m.value));
                         }
                     }
                 }
             }
         }
+    }
+
+    private float Calc_Percentage_Forward() {
+        float result = (this.mag / 100)* 3;
+        return result;
     }
 
     private void DeActivateModule(string key) {
@@ -363,7 +366,7 @@ public class SpaceShipMovment : MonoBehaviour {
         if (key_S == "") {
             DeActivateModule("STRIFE_RIGHT");
             DeActivateModule("STRIFE_LEFT");
-            if (flight_assist > 0 && MultiKey ==false) {
+            if (flight_assist > 0 && MultiKey == false) {
                 BreakSystem_Stop_Strife();
             }
         }

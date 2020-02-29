@@ -8,7 +8,6 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     [Header("Storage Info")]
     [SerializeField] public string id = "";
-
     [SerializeField] public int storage_usage = 1;
     [SerializeField] public bool is_in_storage;
     [SerializeField] public bool is_internal_module;
@@ -18,6 +17,12 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory
     [SerializeField] public bool use_continuous_usage = true;
     [SerializeField] public Module_Settings settings;
+
+    [Header("Mounting Position")]
+    [SerializeField] public bool sub_zone_middle = true;
+    [SerializeField] public bool sub_zone_corner = true;
+    [SerializeField] public bool sub_zone_top = true;
+
 
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
 
@@ -79,7 +84,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public float Get_negative_EffFactor() {
-        if (current_health <= settings.Health_efficiency_fall_off_at) {
+        if (current_health >= settings.Health_efficiency_fall_off_at) {
             return 1;
         } else {
             return (current_health / 100);

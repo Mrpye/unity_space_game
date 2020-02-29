@@ -50,6 +50,11 @@ public class Enums {
         left = 4,
         Top = 5
     }
+    public enum emun_sub_zone {
+        middle = 0,
+        corner = 1,
+        top = 2,
+    }
     public enum enum_facing_direction {
         Down = 270,
         Right = 180,
