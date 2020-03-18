@@ -25,8 +25,8 @@ public class ShipManagment : InventoryManager {
     [SerializeField] private float fuel;
     [SerializeField] private float fuel_drain;
 
-    [SerializeField] private float cpu_max;
-    [SerializeField] private float cpu_usage;
+    [SerializeField] private float cpu_max=0;
+    [SerializeField] private float cpu_usage=0;
 
     [SerializeField] private float health_max;
     [SerializeField] private float health;
@@ -79,6 +79,7 @@ public class ShipManagment : InventoryManager {
     private void UpdateValues() {
         heat = 0;
         cpu_usage = 0;
+        cpu_max = 0;
         power_drain = 0;
         fuel_drain = 0;
         mass = 0;
@@ -88,8 +89,17 @@ public class ShipManagment : InventoryManager {
         foreach (ModuleSystemInfo ms in GeEquipedItems()) {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
-                    heat += ms.current_heat;  
-                   cpu_usage += ms.settings.Cpu;
+                    heat += ms.current_heat;
+                    //************
+                    //Calc The Cpu
+                    //************
+                    float cpu = ms.Get_Calculated_CPU();
+                    if (cpu > 0) {
+                        cpu_max += cpu;
+                    } else {
+                        cpu_usage += Mathf.Abs(cpu);
+                    }
+                    
                     power_drain += ms.current_power;
                     fuel_drain += ms.current_fuel;
                     mass += ms.Get_Calculated_Mass();

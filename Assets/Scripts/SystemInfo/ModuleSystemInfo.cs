@@ -17,11 +17,14 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory
     [SerializeField] public bool use_continuous_usage = true;
     [SerializeField] public Module_Settings settings;
+    [SerializeField] public List<Upgrade_Settings> upgrades;
 
     [Header("Mounting Position")]
-    [SerializeField] public bool sub_zone_middle = true;
-    [SerializeField] public bool sub_zone_corner = true;
-    [SerializeField] public bool sub_zone_top = true;
+    [SerializeField] public bool mount_type_util_top = true;
+    [SerializeField] public bool mount_type_util_side = true;
+    [SerializeField] public bool mount_type_thruster = true;
+    [SerializeField] public bool mount_type_engine = true;
+ 
 
 
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
@@ -35,6 +38,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     private bool is_malfunctioning = false;
     private bool in_use = false;
     public float current_heat = 0;
+    private float caled_current_heat = 0;
     public float current_health = 0;
     public float current_power = 0;
     public float current_fuel = 0;
@@ -145,7 +149,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     public void UpdateUsage() {
         if (use_continuous_usage) {
             if (in_use == true) {
-                current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
+                caled_current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
                 if (current_heat > settings.Heat_damage_at) {
                     current_health -= settings.Heat_damage_factor * Time.deltaTime;
                 }
@@ -154,10 +158,18 @@ public class ModuleSystemInfo : MonoBehaviour {
             } else {
                 current_fuel = this.Get_Calculated_Fuel_Idle() * Time.deltaTime;
                 current_power = this.Get_Calculated_Power_idle() * Time.deltaTime;
-                current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
+                current_heat += this.Get_Calculated_Heat_Idle() * Time.deltaTime;
             }
         } else {
-            current_heat += this.Get_Calculated_Heat_Idle() * Time.deltaTime;
+            caled_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
+            if (current_heat < 0) {
+                current_heat = 0;
+            }
+        }
+
+        current_heat += caled_current_heat;
+        if (current_heat < 0) {
+            current_heat = 0;
         }
     }
 
@@ -253,6 +265,13 @@ public class ModuleSystemInfo : MonoBehaviour {
         return this.settings.Fuel_idle * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor();
     }
 
+    public float Get_Calculated_CPU() {
+        float total_cpu= this.settings.Cpu;
+        foreach(Upgrade_Settings u in this.upgrades) {
+            total_cpu += u.Cpu;
+        }
+        return total_cpu;
+    }
     #endregion Calulated Values
 
     #endregion functions

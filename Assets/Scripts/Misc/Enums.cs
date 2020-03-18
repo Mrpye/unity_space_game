@@ -34,12 +34,12 @@ public class Enums {
         module_thruster,
         module_refiner,
         module_tracktor_beam,
-
         asset_asteroid_large,
         asset_asteroid_med,
         asset_small_enemy,
         asset_large_enemy,
-        asset_player
+        asset_player,
+        None
     }
 
     public enum emun_zone {
@@ -50,10 +50,10 @@ public class Enums {
         left = 4,
         Top = 5
     }
-    public enum emun_sub_zone {
-        middle = 0,
-        corner = 1,
-        top = 2,
+    public enum emun_mount_point_type {
+        propulsion = 0,
+        utility = 1,
+        intern =3
     }
     public enum enum_facing_direction {
         Down = 270,

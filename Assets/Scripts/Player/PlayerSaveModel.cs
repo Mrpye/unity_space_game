@@ -19,6 +19,8 @@ public class PlayerSaveModel {
     public int order_layer;
     public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
     public List<ModuleSaveModel> stored_modules = new List<ModuleSaveModel>();
+    public List<string> upgrades = new List<string>();
+    public List<string> stored_upgrades = new List<string>();
     public bool is_player = true;
 
     public void ReadData(GameObject player_prefab) {
@@ -27,6 +29,15 @@ public class PlayerSaveModel {
         roation = player_prefab.transform.rotation;
         scale = player_prefab.transform.localScale;
         module_name = ship_mamanmger.name;
+
+        //*****************
+        //Same the upgrades
+        //*****************
+        upgrades.Clear();
+        foreach (Upgrade_Settings e in ship_mamanmger.stored_upgrades) {
+            //Upgrade_Settings refab = Resources.Load(e.ToString()) as Upgrade_Settings;
+            upgrades.Add(e.Full_name);
+        }
     }
 
     public static PlayerSaveModel LoadPlayer() {
@@ -40,6 +51,7 @@ public class PlayerSaveModel {
 [Serializable]
 public class ModuleSaveModel {
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
+    public List<string> upgrades = new List<string>();
     public string id;//used to hep idetify the module if there are multiple
     public string module_name;//Store the location of prefab and name
     public int order_layer;
@@ -51,7 +63,10 @@ public class ModuleSaveModel {
     public void ReadData(GameObject module) {
         ModuleSystemInfo sys = module.GetComponent<ModuleSystemInfo>();
         ItemResorce ir = module.GetComponent<ItemResorce>();
-
+        //Save the upgrades
+        foreach (Upgrade_Settings u in sys.upgrades) {
+            upgrades.Add(u.Full_name);
+        }
         module_name = ir.GetResorceLocation();
         id = module.name;
         mount_point = sys.mount_point;

@@ -25,7 +25,9 @@ public class LoadSave : MonoBehaviour {
             player_model.roation = stored_rotation;
         }
 
-        //Save Modules
+        //************
+        //Used Modules
+        //************
         GameObject go = GameObject.Find("Modules");
         ModuleSystemInfo[] modules = go.GetComponentsInChildren<ModuleSystemInfo>();
         foreach (ModuleSystemInfo e in modules) {
@@ -34,7 +36,11 @@ public class LoadSave : MonoBehaviour {
             player_model.modules.Add(m);
         }
 
+       
+
+        //**************
         //Stored Modules
+        //**************
         go = GameObject.Find("Stored_Modules");
         modules = go.GetComponentsInChildren<ModuleSystemInfo>();
         foreach (ModuleSystemInfo e in modules) {
@@ -60,6 +66,16 @@ public class LoadSave : MonoBehaviour {
             stored_pos = player_model.position;
             stored_rotation = player_model.roation;
         }
+
+        //*****************
+        //Load the upgrades
+        //*****************
+        ship_mamanmger.stored_upgrades.Clear();
+        foreach (string e in player_model.upgrades) {
+            Upgrade_Settings refab = Resources.Load(e) as Upgrade_Settings;
+            ship_mamanmger.stored_upgrades.Add(refab);
+         }
+
         //********************************************
         //Loop through the modules in our player model
         //********************************************
@@ -69,6 +85,10 @@ public class LoadSave : MonoBehaviour {
             //****************
             GameObject new_module = Create_Module(module);
             if (new_module != null) {
+                //************
+                //Add upgrades
+                //************
+
                 ship_mamanmger.Equip(new_module);
             }
         }
@@ -125,7 +145,12 @@ public class LoadSave : MonoBehaviour {
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
             mod_sys.is_internal_module = model.is_internal_module;
-
+            mod_sys.upgrades.Clear();
+            //Load upgrades
+            foreach (string s in model.upgrades) {
+                Upgrade_Settings upgrade = Resources.Load(s) as Upgrade_Settings;
+                mod_sys.upgrades.Add(upgrade);
+            }
             return obj_module;
         } else {
             return null;

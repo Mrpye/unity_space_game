@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class UnityFunctions 
 {
@@ -40,4 +41,11 @@ public class UnityFunctions
     public static float Calc_Kinetic_Energy(Rigidbody2D rb) {
         return 0.5f * rb.mass * rb.velocity.sqrMagnitude;
     }
+    public static void AddListener(ref  EventTrigger trigger, EventTriggerType eventType, System.Action<PointerEventData> listener) {
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = eventType;
+        entry.callback.AddListener(data => listener.Invoke((PointerEventData)data));
+        trigger.triggers.Add(entry);
+    }
+
 }

@@ -15,10 +15,12 @@ public class InventoryItem : MonoBehaviour {
     [SerializeField] private Sprite unknown;
 
     [Header("Mounting Position")]
-    [SerializeField] public bool sub_zone_middle = true;
-    [SerializeField] public bool sub_zone_corner = true;
-    [SerializeField] public bool sub_zone_top = true;
-    [SerializeField] public bool sub_zone_internal = true;
+    [SerializeField] public bool mount_type_util_top = true;
+    [SerializeField] public bool mount_type_util_side = true;
+    [SerializeField] public bool mount_type_thruster = true;
+    [SerializeField] public bool mount_type_engine = true;
+    [SerializeField] public bool mount_type_internal = true;
+    [SerializeField] public bool is_command_module = true;
 
     public bool is_disabled = false;
     private Image sr;
@@ -62,7 +64,7 @@ public class InventoryItem : MonoBehaviour {
         GameObject go = GameObject.Find("InfoPanel");
         if (go != null) {
             InfoPanel info_pnel = go.GetComponent<InfoPanel>();
-            info_pnel.SetInfo(this);
+            info_pnel.SetInvetoryInfo(this);
         }
     }
 
@@ -74,10 +76,12 @@ public class InventoryItem : MonoBehaviour {
         this.item_type = ir.Item_type;
 
         ModuleSystemInfo module_sys = item.GetComponent<ModuleSystemInfo>();
-        this.sub_zone_corner = module_sys.sub_zone_corner;
-        this.sub_zone_internal = module_sys.is_internal_module;
-        this.sub_zone_middle = module_sys.sub_zone_middle;
-        this.sub_zone_top = module_sys.sub_zone_top;
+        this.mount_type_util_side = module_sys.mount_type_util_side;
+        this.mount_type_util_top = module_sys.mount_type_util_top;
+        this.mount_type_internal = module_sys.is_internal_module;
+        this.mount_type_thruster = module_sys.mount_type_thruster;
+        this.mount_type_engine = module_sys.mount_type_engine;
+        this.is_command_module = module_sys.is_command_module;
         this.item = item;
         //*************
         //Set the image

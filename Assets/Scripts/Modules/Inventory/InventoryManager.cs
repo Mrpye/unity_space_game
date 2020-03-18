@@ -55,6 +55,9 @@ public class InventoryManager : MonoBehaviour {
 
     [SerializeField] private GameObject inventory_item;
 
+    [SerializeField] public List<Upgrade_Settings> stored_upgrades;
+    //public List<string> stored_upgrades = new List<string>();
+
     [Header("Config Inventory")]
     [SerializeField] private GameObject inventory_panel;
 
@@ -73,6 +76,7 @@ public class InventoryManager : MonoBehaviour {
     [SerializeField] private List<GameObject> mount_point_panels;
 
     private GameObject Stored_Modules_game_object;
+    private GameObject Stored_Upgrades_game_object;
     //Panels the lists are on
     //Panels the lists are on
 
@@ -93,6 +97,8 @@ public class InventoryManager : MonoBehaviour {
             item.transform.parent = inventory_panel.transform;
         }
     }
+
+
 
     public void child_Start() {
         // Load_Modules();
@@ -150,6 +156,11 @@ public class InventoryManager : MonoBehaviour {
         return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
     }
 
+    public Upgrade_Settings[] GetStoredUpgrades() {
+        Stored_Upgrades_game_object = GameObject.Find("Stored_Upgrades");
+        return Stored_Upgrades_game_object.GetComponentsInChildren<Upgrade_Settings>();
+    }
+
     public int Item_Count(Enums.enum_item material) {
         var res = (from n in inventory where n.item_type == material select n).Count();
         return res;
@@ -202,6 +213,11 @@ public class InventoryManager : MonoBehaviour {
             MountPoint omp = g.GetComponent<MountPoint>();
             omp.SetValues(m);
             omp.SetSize(new Vector2(100 + (m.max_mounting * 50), 50));
+            omp.mount_type_util_top = m.mount_type_util_top;
+            omp.mount_type_util_side = m.mount_type_util_side;
+            omp.mount_type_thruster = m.mount_type_thruster;
+            omp.mount_type_engine = m.mount_type_engine;
+
             omp.associated_mountpoint = m.gameObject;
             ItemDropHandler dh = g.GetComponentInChildren<ItemDropHandler>();
             dh.enforce_max = true;

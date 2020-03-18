@@ -46,8 +46,14 @@ public class ItemResorce : MonoBehaviour {
     }
 
     public string GetDescription() {
-        ItemResorceData item = (ItemResorceData)resource_data[Item_type.ToString()];
-        return item.description;
+        if( resource_data.ContainsKey(Item_type.ToString())){
+            ItemResorceData item = (ItemResorceData)resource_data[Item_type.ToString()];
+            return item.description;
+        } else {
+            return "";
+        }
+
+       
     }
 
     public string GetResorceLocation() {

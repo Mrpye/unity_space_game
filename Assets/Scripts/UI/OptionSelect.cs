@@ -11,11 +11,11 @@ public class OptionSelect : MonoBehaviour {
     [SerializeField] public GameObject invetory_panel;
     private FilterInventoryItem invetory_filter;
 
-    private void FilterItems(bool intern, bool Corner, bool middle, bool top) {
+    private void FilterItems(bool intern, bool truster, bool engine, bool util_top,bool util_side,bool command) {
         if (!invetory_panel) { return; }
         FilterInventoryItem invetory_filter = invetory_panel.GetComponent<FilterInventoryItem>();
         if (invetory_filter != null) {
-            invetory_filter.FilterItems(intern, Corner, middle, top);
+            invetory_filter.FilterItems(intern, truster,  engine, util_top,util_side,command);
         }
     }
 
@@ -30,32 +30,32 @@ public class OptionSelect : MonoBehaviour {
         switch (side) {
             case Enums.emun_zone.front:
                 panel_front.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(false, true,true, false, true, false);
                 break;
 
             case Enums.emun_zone.left:
                 panel_left.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(false, true, true, false, true, false);
                 break;
 
             case Enums.emun_zone.right:
                 panel_right.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(false, true, true, false, true, false);
                 break;
 
             case Enums.emun_zone.bottom:
                 panel_bottom.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(false, true, true, false, true, false);
                 break;
 
             case Enums.emun_zone.Top:
                 panel_top.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(false, false, false, true, false, false);
                 break;
 
             case Enums.emun_zone.intern:
                 panel_internal.SetActive(true);
-                FilterItems(false, false, true, false);
+                FilterItems(true, false, false, false, false, false);
                 break;
         }
     }
