@@ -10,6 +10,10 @@ public class KeyMappingModel {
     public float value;
 }
 
+
+
+
+
 [Serializable]
 public class PlayerSaveModel {
     public string module_name;//Store the location of prefab and name
@@ -17,10 +21,15 @@ public class PlayerSaveModel {
     public Vector3 scale;
     public Quaternion roation;
     public int order_layer;
+
+    //public List<ShipSaveModel> ships = new List<ShipSaveModel>();
     public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
+    public List<Enums.enum_item> inventory = new List<Enums.enum_item>();
     public List<ModuleSaveModel> stored_modules = new List<ModuleSaveModel>();
-    public List<string> upgrades = new List<string>();
+
+    //public List<string> upgrades = new List<string>();
     public List<string> stored_upgrades = new List<string>();
+
     public bool is_player = true;
 
     public void ReadData(GameObject player_prefab) {
@@ -29,14 +38,19 @@ public class PlayerSaveModel {
         roation = player_prefab.transform.rotation;
         scale = player_prefab.transform.localScale;
         module_name = ship_mamanmger.name;
-
+        InventoryManager inv = player_prefab.GetComponent<InventoryManager>();
+        this.inventory.Clear();
+        foreach (InventoryManager.Item e in inv.inventory) {
+            this.inventory.Add(e.item_type);
+        }
+ 
         //*****************
         //Same the upgrades
         //*****************
-        upgrades.Clear();
+        stored_upgrades.Clear();
         foreach (Upgrade_Settings e in ship_mamanmger.stored_upgrades) {
             //Upgrade_Settings refab = Resources.Load(e.ToString()) as Upgrade_Settings;
-            upgrades.Add(e.Full_name);
+            stored_upgrades.Add(e.Full_name);
         }
     }
 
@@ -46,6 +60,10 @@ public class PlayerSaveModel {
         PlayerSaveModel gameSaving = JsonUtility.FromJson<PlayerSaveModel>(data);
         return gameSaving;
     }
+}
+
+public class ShipSaveModel {
+    public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
 }
 
 [Serializable]

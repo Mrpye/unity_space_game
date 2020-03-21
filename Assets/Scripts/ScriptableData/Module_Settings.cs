@@ -6,6 +6,7 @@ public class Module_Settings : ScriptableObject {
     #region inspector Fields
 
     [SerializeField] private Enums.enum_class basic_info_system_class = Enums.enum_class.Class_D;
+    [SerializeField] private Sprite sprite;
     [SerializeField] private string basic_info_name = "";
     [SerializeField] private float heat_idle = -1;
     [SerializeField] private float heat_usage = 1f;
@@ -67,5 +68,6 @@ public class Module_Settings : ScriptableObject {
     public float Malfunction_max_offline_time { get => malfunction_max_offline_time; set => malfunction_max_offline_time = value; }
     public float Malfunction_min_online_time { get => malfunction_min_online_time; set => malfunction_min_online_time = value; }
     public float Malfunction_max_online_time { get => malfunction_max_online_time; set => malfunction_max_online_time = value; }
+    public Sprite Sprite { get => sprite; set => sprite = value; }
     #endregion Properties
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 public class OptionSelect : MonoBehaviour {
+    [SerializeField] public GameObject panel_command;
     [SerializeField] public GameObject panel_internal;
     [SerializeField] public GameObject panel_front;
     [SerializeField] public GameObject panel_bottom;
@@ -26,6 +27,7 @@ public class OptionSelect : MonoBehaviour {
         panel_left.SetActive(false);
         panel_right.SetActive(false);
         panel_top.SetActive(false);
+        panel_command.SetActive(false);
 
         switch (side) {
             case Enums.emun_zone.front:
@@ -56,6 +58,10 @@ public class OptionSelect : MonoBehaviour {
             case Enums.emun_zone.intern:
                 panel_internal.SetActive(true);
                 FilterItems(true, false, false, false, false, false);
+                break;
+            case Enums.emun_zone.Command:
+                panel_command.SetActive(true);
+                FilterItems(false, false, false, false, false, true);
                 break;
         }
     }

@@ -2,6 +2,7 @@
 /// Class to store enum types
 /// </summary>
 public class Enums {
+
     public enum enum_class {
         Class_A,
         Class_B,
@@ -43,18 +44,22 @@ public class Enums {
     }
 
     public enum emun_zone {
-        intern = 0,
-        front = 1,
-        right = 2,
-        bottom = 3,
-        left = 4,
-        Top = 5
+        Command = 0,
+        intern = 1,
+        front = 2,
+        right = 3,
+        bottom = 4,
+        left = 5,
+        Top = 6
+        
     }
+
     public enum emun_mount_point_type {
         propulsion = 0,
         utility = 1,
-        intern =3
+        intern = 3
     }
+
     public enum enum_facing_direction {
         Down = 270,
         Right = 180,

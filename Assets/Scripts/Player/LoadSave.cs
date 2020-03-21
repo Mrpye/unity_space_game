@@ -67,11 +67,20 @@ public class LoadSave : MonoBehaviour {
             stored_rotation = player_model.roation;
         }
 
+        //*************
+        //Load invetory
+        //*************
+        InventoryManager inv = gameObject.GetComponent<InventoryManager>();
+        if(inv!=null && player_model.inventory != null) {
+            foreach (Enums.enum_item e in player_model.inventory) {
+                inv.inventory.Add( new InventoryManager.Item(e));
+            }
+        }
         //*****************
         //Load the upgrades
         //*****************
         ship_mamanmger.stored_upgrades.Clear();
-        foreach (string e in player_model.upgrades) {
+        foreach (string e in player_model.stored_upgrades) {
             Upgrade_Settings refab = Resources.Load(e) as Upgrade_Settings;
             ship_mamanmger.stored_upgrades.Add(refab);
          }
@@ -88,7 +97,6 @@ public class LoadSave : MonoBehaviour {
                 //************
                 //Add upgrades
                 //************
-
                 ship_mamanmger.Equip(new_module);
             }
         }

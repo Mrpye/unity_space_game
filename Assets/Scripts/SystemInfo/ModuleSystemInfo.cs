@@ -24,7 +24,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public bool mount_type_util_side = true;
     [SerializeField] public bool mount_type_thruster = true;
     [SerializeField] public bool mount_type_engine = true;
- 
+
 
 
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();

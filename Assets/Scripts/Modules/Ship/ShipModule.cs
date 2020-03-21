@@ -7,6 +7,16 @@ public class ShipModule : ModuleSystemInfo {
     [Header("Mount Points")]
     [SerializeField] public List<MountPoint> mount_points = new List<MountPoint>();
 
+    public void ShowMountPoints() {
+        foreach(MountPoint mp in mount_points) {
+            mp.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        }
+    }
+    public void HideMountPoints() {
+        foreach (MountPoint mp in mount_points) {
+            mp.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        }
+    }
     private void Start() {
         //LoadMountPoints();
     }

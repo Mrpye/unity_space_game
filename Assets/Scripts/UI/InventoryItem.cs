@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour {
     [SerializeField] public Enums.enum_item item_type;
     [SerializeField] public GameObject item;
-    [SerializeField] private Sprite single_blaster;
+   /* [SerializeField] private Sprite single_blaster;
     [SerializeField] private Sprite double_blaster;
     [SerializeField] private Sprite mining_laser;
     [SerializeField] private Sprite main_engine;
@@ -12,10 +12,11 @@ public class InventoryItem : MonoBehaviour {
     [SerializeField] private Sprite refiner;
     [SerializeField] private Sprite tracktor_beam;
     [SerializeField] private Sprite power;
-    [SerializeField] private Sprite unknown;
+    [SerializeField] private Sprite unknown;*/
 
     [Header("Mounting Position")]
     [SerializeField] public bool mount_type_util_top = true;
+
     [SerializeField] public bool mount_type_util_side = true;
     [SerializeField] public bool mount_type_thruster = true;
     [SerializeField] public bool mount_type_engine = true;
@@ -40,12 +41,13 @@ public class InventoryItem : MonoBehaviour {
     public void Disable() {
         is_disabled = true;
         sr.color = Color.gray;
-        UnHighlight();
+        Disabled();
     }
 
     public void Enabled() {
         sr.color = Color.white;
         is_disabled = false;
+        UnHighlight();
     }
 
     public void Highlight() {
@@ -55,9 +57,19 @@ public class InventoryItem : MonoBehaviour {
         }
     }
 
+    public void Disabled() {
+        if (!line_renderer) {
+            line_renderer = GetComponent<LineRenderer>();
+        }
+        line_renderer.startColor = Color.black;
+        line_renderer.endColor = Color.black;
+    }
+
     public void UnHighlight() {
-        line_renderer.startColor = Color.grey;
-        line_renderer.endColor = Color.grey;
+        if (line_renderer && is_disabled == false) {
+            line_renderer.startColor = Color.grey;
+            line_renderer.endColor = Color.grey;
+        }
     }
 
     public void SetInfo() {
@@ -83,45 +95,53 @@ public class InventoryItem : MonoBehaviour {
         this.mount_type_engine = module_sys.mount_type_engine;
         this.is_command_module = module_sys.is_command_module;
         this.item = item;
+
+        //SpriteRenderer isr = item.GetComponent<SpriteRenderer>();
+        sr.sprite = module_sys.settings.Sprite;
+        //module_sys.settings.ico
         //*************
         //Set the image
         //*************
-        switch (this.item_type) {
-            case Enums.enum_item.module_single_blaster:
-                sr.sprite = single_blaster;
-                break;
+        /* switch (this.item_type) {
+             case Enums.enum_item.module_command_module_type1:
+                 sr.sprite = single_blaster;
+                 break;
 
-            case Enums.enum_item.module_double_blaster:
-                sr.sprite = double_blaster;
-                break;
+             case Enums.enum_item.module_single_blaster:
+                 sr.sprite = single_blaster;
+                 break;
 
-            case Enums.enum_item.module_mining_laser:
-                sr.sprite = mining_laser;
-                break;
+             case Enums.enum_item.module_double_blaster:
+                 sr.sprite = double_blaster;
+                 break;
 
-            case Enums.enum_item.module_main_engine:
-                sr.sprite = main_engine;
-                break;
+             case Enums.enum_item.module_mining_laser:
+                 sr.sprite = mining_laser;
+                 break;
 
-            case Enums.enum_item.module_thruster:
-                sr.sprite = thruster;
-                break;
+             case Enums.enum_item.module_main_engine:
+                 sr.sprite = main_engine;
+                 break;
 
-            case Enums.enum_item.module_refiner:
-                sr.sprite = refiner;
-                break;
+             case Enums.enum_item.module_thruster:
+                 sr.sprite = thruster;
+                 break;
 
-            case Enums.enum_item.module_tracktor_beam:
-                sr.sprite = tracktor_beam;
-                break;
+             case Enums.enum_item.module_refiner:
+                 sr.sprite = refiner;
+                 break;
 
-            case Enums.enum_item.module_power_reactor:
-                sr.sprite = power;
-                break;
+             case Enums.enum_item.module_tracktor_beam:
+                 sr.sprite = tracktor_beam;
+                 break;
 
-            default:
-                sr.sprite = unknown;
-                break;
-        }
+             case Enums.enum_item.module_power_reactor:
+                 sr.sprite = power;
+                 break;
+
+             default:
+                 sr.sprite = unknown;
+                 break;
+         }*/
     }
 }

@@ -24,17 +24,20 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
         is_disabled = true;
     }
 
+
     public void OnDrop(PointerEventData eventData) {
-        //Debug.Log("Item Dropped");
         ItemDragHandler d = eventData.pointerDrag.GetComponent<ItemDragHandler>();
         InventoryItem inv_item = eventData.pointerDrag.gameObject.GetComponent<InventoryItem>();
         EnabledDisabled enable_disable = gameObject.GetComponentInParent<EnabledDisabled>();
+
+        //*****************************************************
+        //Couple of test to make sure we can drop the item here
+        //*****************************************************
         if (enable_disable != null) {
             if (enable_disable.Is_Enabled == false) {
                 return;
             }
         }
-
         if (inv_item != null) {
             if (inv_item.is_disabled) { d.parentToReturnTo = this.transform; return; }
         }
@@ -50,13 +53,19 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
             if (inventory_box == Enums.emun_inventory.Selected) {
                 MountPoint mp = GetComponentInParent<MountPoint>();
                 if (mp != null) {
-                    MountPoint amp = mp.associated_mountpoint.GetComponent<MountPoint>();
-                    inv_item.item.GetComponent<ModuleSystemInfo>().mount_point = amp.index;
-
-                    storage.Equip(inv_item.item);
+                    if (inv_item.is_command_module) {
+                        storage.Equip(inv_item.item);
+                        storage.Build_Mount_Point_Drop_Panels();
+                    } else {
+                        MountPoint amp = mp.associated_mountpoint.GetComponent<MountPoint>();
+                        inv_item.item.GetComponent<ModuleSystemInfo>().mount_point = amp.index;
+                        storage.Equip(inv_item.item);
+                    }
                 }
             } else {
                 storage.Store_Module(inv_item.item);
+                Destroy(eventData.pointerDrag.gameObject);
+                storage.SetScreenNoCommandModule();
             }
 
             d.parentToReturnTo = this.transform;
