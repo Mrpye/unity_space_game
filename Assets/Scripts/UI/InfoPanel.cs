@@ -32,9 +32,9 @@ public class InfoPanel : MonoBehaviour {
         if (player == null) { return; }
         ship_managment = player.GetComponent<ShipManagment>();
         if (ship_managment == null) { return; }
-        //********************
-        //Populate the options
-        //********************
+        //*****************************************************
+        //Populate the options Filter the items based on module
+        //*****************************************************
 
         //*********************
         //Set the default value
@@ -45,14 +45,18 @@ public class InfoPanel : MonoBehaviour {
                     upgrade_item2.gameObject.SetActive(true);
                     upgrade_item1.options.Add(new Dropdown.OptionData("None"));
                     foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
-                        upgrade_item1.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        if (e.IsAvalible(module_info.gameObject.GetComponent<ItemResorce>().Item_type)) { 
+                            upgrade_item1.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        }
                     }
                     upgrade_item1.options.Add(new Dropdown.OptionData(module_info.upgrades[i].name, module_info.upgrades[i].Sprite));
                     
                     //Populate 
                     upgrade_item2.options.Add(new Dropdown.OptionData("None"));
                     foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
-                        upgrade_item2.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        if (e.IsAvalible(module_info.gameObject.GetComponent<ItemResorce>().Item_type)) {
+                            upgrade_item2.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        }
                     }
                     upgrade_item1.value = GetIndexByName(upgrade_item1, module_info.upgrades[i].name) ;
                     upgrade_item1.RefreshShownValue(); // this is the key
@@ -65,7 +69,9 @@ public class InfoPanel : MonoBehaviour {
                     //Populate 3
                     upgrade_item3.options.Add(new Dropdown.OptionData("None"));
                     foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
-                        upgrade_item3.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        if (e.IsAvalible(module_info.gameObject.GetComponent<ItemResorce>().Item_type)) {
+                            upgrade_item3.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                        }
                     }
                     upgrade_item2.value = GetIndexByName(upgrade_item2, module_info.upgrades[i].name);
                     upgrade_item2.RefreshShownValue(); // this is the key
@@ -84,7 +90,9 @@ public class InfoPanel : MonoBehaviour {
             //Load the first item with data
             upgrade_item1.options.Add(new Dropdown.OptionData("None"));
             foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
-                upgrade_item1.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                if (e.IsAvalible(module_info.gameObject.GetComponent<ItemResorce>().Item_type)) {
+                    upgrade_item1.options.Add(new Dropdown.OptionData(e.name, e.Sprite));
+                }
             }
             upgrade_item1.value = GetIndexByName(upgrade_item1, "None");
         }

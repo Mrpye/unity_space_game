@@ -64,8 +64,12 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
                 }
             } else {
                 storage.Store_Module(inv_item.item);
-                Destroy(eventData.pointerDrag.gameObject);
-                storage.SetScreenNoCommandModule();
+                
+               if(inv_item.item.GetComponent<ModuleSystemInfo>().is_command_module) {
+                    Destroy(eventData.pointerDrag.gameObject);
+                    storage.SetScreenNoCommandModule();
+                }
+                
             }
 
             d.parentToReturnTo = this.transform;

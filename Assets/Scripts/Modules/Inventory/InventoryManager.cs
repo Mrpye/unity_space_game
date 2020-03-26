@@ -305,6 +305,7 @@ public class InventoryManager : MonoBehaviour {
             }
             DisableEnableButtons(true);
             Populate_Mount_Point_Drop_Panels();
+            Build_Inventory_List_Items();
             drop_panels_loaded = true;
         }
     }
