@@ -166,6 +166,8 @@ public class InventoryManager : MonoBehaviour {
         return 1;
     }
 
+   
+
     public ModuleSystemInfo[] GetStoredItems() {
         Stored_Modules_game_object = GameObject.Find("Stored_Modules");
         return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();

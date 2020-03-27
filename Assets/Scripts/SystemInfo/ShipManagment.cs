@@ -83,6 +83,8 @@ public class ShipManagment : InventoryManager {
         power_drain = 0;
         fuel_drain = 0;
         mass = 0;
+
+       int heat_generating_module = 0;
         //****************************************
         //Loop through each module and gather data
         //****************************************
@@ -90,6 +92,7 @@ public class ShipManagment : InventoryManager {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
                     heat += ms.current_heat;
+                    if( ms.Generates_Heat()) { heat_generating_module += 1; }
                     //************
                     //Calc The Cpu
                     //************
@@ -108,6 +111,7 @@ public class ShipManagment : InventoryManager {
             }
         }
         if (heat < 0) { heat = 0; }
+        heat_max = (heat_generating_module * 100);
         power += power_drain;
         power = Mathf.Clamp(power, 0, power_max);
         fuel += fuel_drain;

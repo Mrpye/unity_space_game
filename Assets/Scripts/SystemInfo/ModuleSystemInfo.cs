@@ -5,45 +5,51 @@ using UnityEngine;
 public class ModuleSystemInfo : MonoBehaviour {
 
     #region Public Fields
+    //[SerializeField] public int storage_usage = 1;
 
-    [Header("Storage Info")]
+    [Header("Module Info")]
     [SerializeField] public string id = "";
-    [SerializeField] public int storage_usage = 1;
+    [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory 
     [SerializeField] public bool is_in_storage;
     [SerializeField] public bool is_internal_module;
-    [SerializeField] public int mount_point;
-    [SerializeField] public int order_layer = 100;
     [SerializeField] public bool is_command_module;
-    [SerializeField] public int max_storage_items = 10; //Max items that can be stored in our inventory
-    [SerializeField] public bool use_continuous_usage = true;
+
+    [Header("Config Info")]
     [SerializeField] public Module_Settings settings;
     [SerializeField] public List<Upgrade_Settings> upgrades;
 
     [Header("Mounting Position")]
+    [SerializeField] public int mount_point;
+
     [SerializeField] public bool mount_type_util_top = true;
     [SerializeField] public bool mount_type_util_side = true;
     [SerializeField] public bool mount_type_thruster = true;
     [SerializeField] public bool mount_type_engine = true;
 
-
-
+    [Header("Key Mapping")]
     public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
 
-    #endregion Public Fields
-
-    #region private Fields
-
-    private float offline_malfunction_time;
-    private float online_malfunction_time;
-    private bool is_malfunctioning = false;
-    private bool in_use = false;
+    [Header("Module Usage Infomation")]
     public float current_heat = 0;
-    private float caled_current_heat = 0;
+    
     public float current_health = 0;
     public float current_power = 0;
     public float current_fuel = 0;
     public float current_thrust = 0;
 
+    [Header("Render Info")]
+    [SerializeField] public int order_layer = 100;
+
+    #endregion Public Fields
+
+    #region private Fields
+    private bool use_continuous_usage = true;
+    private float calced_current_heat = 0;
+    private bool is_malfunctioning = false;
+    private bool in_use = false;
+    
+    private float offline_malfunction_time;
+    private float online_malfunction_time;
     private ItemResorce ir;
 
     #endregion private Fields
@@ -71,6 +77,14 @@ public class ModuleSystemInfo : MonoBehaviour {
         }
     }
 
+    public bool Generates_Heat() {
+        if (this.settings.Heat_usage != 0) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     public float Get_Trust_Useage_Factor() {
         if (current_thrust > 0 && settings.Thrust_start > 0) {
             return current_thrust / settings.Thrust_start;
@@ -80,7 +94,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public float Get_Posotive_Eff_Factor() {
-        if (current_health <= settings.Health_efficiency_fall_off_at) {
+        if (current_health >= settings.Health_efficiency_fall_off_at) {
             return 1;
         } else {
             return (100 / current_health);
@@ -147,9 +161,14 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public void UpdateUsage() {
+        if (this.settings.name== "Settings_Thruster_ClassD (Module_Settings)") {
+
+        }
+
+
         if (use_continuous_usage) {
             if (in_use == true) {
-                caled_current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
+                calced_current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
                 if (current_heat > settings.Heat_damage_at) {
                     current_health -= settings.Heat_damage_factor * Time.deltaTime;
                 }
@@ -158,19 +177,17 @@ public class ModuleSystemInfo : MonoBehaviour {
             } else {
                 current_fuel = this.Get_Calculated_Fuel_Idle() * Time.deltaTime;
                 current_power = this.Get_Calculated_Power_idle() * Time.deltaTime;
-                current_heat += this.Get_Calculated_Heat_Idle() * Time.deltaTime;
+                calced_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
             }
         } else {
-            caled_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
-            if (current_heat < 0) {
-                current_heat = 0;
-            }
+            calced_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
         }
 
-        current_heat += caled_current_heat;
+        current_heat += calced_current_heat;
+
         if (current_heat < 0) {
             current_heat = 0;
-        }
+        } 
     }
 
     /// <summary>
@@ -224,10 +241,12 @@ public class ModuleSystemInfo : MonoBehaviour {
     public float Get_Calculated_Thrust() {
         return settings.Thrust_start * Get_negative_EffFactor();
     }
+
     public float Get_Calculated_Thrust(float thrust) {
         float percentage = thrust / 100;
         return settings.Thrust_start * percentage * Get_negative_EffFactor();
     }
+
     public float Get_Calculated_Mass() {
         float stored_item_mass = 0;
         if (ir != null) {
@@ -266,12 +285,13 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public float Get_Calculated_CPU() {
-        float total_cpu= this.settings.Cpu;
-        foreach(Upgrade_Settings u in this.upgrades) {
+        float total_cpu = this.settings.Cpu;
+        foreach (Upgrade_Settings u in this.upgrades) {
             total_cpu += u.Cpu;
         }
         return total_cpu;
     }
+
     #endregion Calulated Values
 
     #endregion functions
