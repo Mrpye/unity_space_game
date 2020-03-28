@@ -27,15 +27,18 @@ public class SystemInfoReader : MonoBehaviour {
             //*************************
             ship_movment = player_prefab.GetComponent<SpaceShipMovment>();
             sr = GetComponent<Image>();
+            if (sr == null) { sr = GetComponentInChildren<Image>(); }
         } else if (data_type == Enums.enum_system_info.refiner) {
             GameObject r = GameObject.Find("Refiner(Clone)");
             bar = GetComponent<Slider>();
+            if (bar == null) { bar = GetComponentInChildren<Slider>(); }
         } else {
             //**************************************
             //This is slider data from ShipManagment
             //**************************************
             sys = player_prefab.GetComponent<ShipManagment>();
             bar = GetComponent<Slider>();
+            if (bar == null) { bar = GetComponentInChildren<Slider>(); }
         }
         //*******************************************
         //Lets start te reading
