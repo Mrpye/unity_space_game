@@ -110,10 +110,13 @@ public class InfoPanel : MonoBehaviour {
                 ship_managment.stored_upgrades.Add(module_info.upgrades[0]);
                 module_info.upgrades.RemoveAt(0);
             } else {
-                int i = GetIndexByName(upgrade_item1, data.text);
-                module_info.upgrades.Add(ship_managment.stored_upgrades[i-1]);
-                ship_managment.stored_upgrades.RemoveAt(i-1);
-
+                foreach(Upgrade_Settings e  in ship_managment.stored_upgrades) {
+                    if(e.name == data.text) {
+                        module_info.upgrades.Add(e);
+                        ship_managment.stored_upgrades.Remove(e);
+                        break;
+                    }
+                }
             }
             LoadUpgradeList();
         }
@@ -132,9 +135,13 @@ public class InfoPanel : MonoBehaviour {
                 ship_managment.stored_upgrades.Add(module_info.upgrades[0]);
                 module_info.upgrades.RemoveAt(0);
             } else {
-                int i = GetIndexByName(upgrade_item2, data.text);
-                module_info.upgrades.Add(ship_managment.stored_upgrades[i-1]);
-                ship_managment.stored_upgrades.RemoveAt(i-1);
+                foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
+                    if (e.name == data.text) {
+                        module_info.upgrades.Add(e);
+                        ship_managment.stored_upgrades.Remove(e);
+                        break;
+                    }
+                }
             }
             
             LoadUpgradeList();
@@ -151,10 +158,13 @@ public class InfoPanel : MonoBehaviour {
                 ship_managment.stored_upgrades.Add(module_info.upgrades[0]);
                 module_info.upgrades.RemoveAt(0);
             } else {
-                int i = GetIndexByName(upgrade_item3, data.text);
-
-                module_info.upgrades.Add(ship_managment.stored_upgrades[i-1]);
-                ship_managment.stored_upgrades.RemoveAt(i-1);
+                foreach (Upgrade_Settings e in ship_managment.stored_upgrades) {
+                    if (e.name == data.text) {
+                        module_info.upgrades.Add(e);
+                        ship_managment.stored_upgrades.Remove(e);
+                        break;
+                    }
+                }
 
             }
             LoadUpgradeList();
@@ -196,7 +206,7 @@ public class InfoPanel : MonoBehaviour {
         InfoPaneSetImg("Image", this.inv.GetComponent<Image>().sprite);
         InfoPaneSetInfo("txtInfo(0)", "Mass: " + module_info.settings.Mass.ToString());
         InfoPaneSetInfo("txtInfo(1)", "Power: " + module_info.settings.Power_usage.ToString());
-        InfoPaneSetInfo("txtInfo(2)", "Cpu: " + Mathf.Abs(module_info.Get_Calculated_CPU()).ToString());
+        InfoPaneSetInfo("txtInfo(2)", "Cpu: " + Mathf.Abs(module_info.Get_Calculated_CPU_V()).ToString());
         InfoPaneSetInfo("txtInfo(3)", "Fuel: " + module_info.settings.Fuel_usage.ToString());
         InfoPaneSetInfo("txtInfo(4)", "Heat: " + module_info.settings.Heat_usage.ToString());
     }

@@ -6,6 +6,10 @@
 public class DamageDealer : MonoBehaviour {
     [SerializeField] private int damage = 100;
 
+    public void SetDamage(int damage) {
+        this.damage= damage;
+    }
+
     public int GetDamage() {
         return damage;
     }

@@ -6,10 +6,11 @@ public class Turret : Targeting {
     [SerializeField] private GameObject prefab_blaster_laser;
     [SerializeField] public float fire_range;
     [SerializeField] public float fire_speed = 30;
+    [SerializeField] public int damage = 2;
     Coroutine fireing;
     private IEnumerator FireConinuous() {
         while (true) {
-            UnityFunctions.FireProjectile(prefab_blaster_laser, fire_point1,100, fire_speed);
+            UnityFunctions.FireProjectile(prefab_blaster_laser, fire_point1,100, fire_speed, damage);
             yield return new WaitForSeconds(1);
         }
     }

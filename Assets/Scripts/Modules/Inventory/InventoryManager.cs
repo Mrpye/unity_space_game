@@ -50,7 +50,7 @@ public class InventoryManager : MonoBehaviour {
 
     #region Fields
 
-    [SerializeField] public List<GameObject> modules = new List<GameObject>();
+    //[SerializeField] public List<GameObject> modules = new List<GameObject>();
     [SerializeField] private ShipModule command_module;
 
     [Header("Storage ")]
@@ -207,9 +207,9 @@ public class InventoryManager : MonoBehaviour {
         ItemResorce ir = module.GetComponent<ItemResorce>();
         module_info.IteminStorage();
         module.transform.parent = Stored_Modules_game_object.transform;
-        if (!module_info.is_command_module) {
-            inventory.Add(new InventoryManager.Item(ir.Item_type, module));
-        }
+       // if (!module_info.is_command_module) {
+       //     inventory.Add(new InventoryManager.Item(ir.Item_type, module));
+       // }
             
     }
 

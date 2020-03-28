@@ -20,11 +20,12 @@ public class TractorBeam : ModuleSystemInfo {
     }
 
     private void UpdateTracktorBeam() {
-        shape.position = new Vector3(0, this.settings.Range + 0.1f, 0);
+        float range = this.Get_Calculated_Range();
+        shape.position = new Vector3(0, range + 0.1f, 0);
         main.startSpeed = 1.8f * this.settings.Range;
-        tractor_collider.offset = new Vector2(0, this.settings.Range * 0.5f);
-        tractor_collider.size = new Vector2(width, this.settings.Range);
-        tractor_pull.forceMagnitude = this.settings.Ammount;
+        tractor_collider.offset = new Vector2(0, range * 0.5f);
+        tractor_collider.size = new Vector2(width, range);
+        tractor_pull.forceMagnitude = this.Get_Calculated_Ammount();
     }
 
     private void Update() {

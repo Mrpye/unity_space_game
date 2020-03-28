@@ -27,6 +27,7 @@ public class WeponSystem : ModuleSystemInfo {
     private float laser_range = 10f;
     private float rotate_speed = 1;
     private float projectile_speed = 10f;
+    private int projectile_damage = 2;
     private float projectileFiringPeriod = 0.1f;
     [SerializeField] private float double_blaster_distance = 0.5f;
 
@@ -68,6 +69,7 @@ public class WeponSystem : ModuleSystemInfo {
             laser_hit_sprite_renderer.enabled = false;
         }
         //Lets get module info if exist
+        this.CalcUpgrades();
         UpdateModuleStats();
         StartMonitor();
     }
@@ -76,10 +78,11 @@ public class WeponSystem : ModuleSystemInfo {
     /// This gets Moduleinfo settigs and apply to the specific module
     /// </summary>
     public void UpdateModuleStats() {
-        laser_range = this.settings.Range;
-        rotate_speed = this.settings.Action_speed2;
+        laser_range = this.Get_Calculated_Range();
         projectile_speed = this.Get_Calculated_Speed();
-        projectileFiringPeriod = this.settings.Action_speed;
+        projectileFiringPeriod = this.Get_Calculated_Action_Speed();
+        rotate_speed = this.Get_Calculated_Action_Speed2();
+        projectile_damage = this.Get_Calculated_Damage();
 
     }
 
@@ -88,7 +91,7 @@ public class WeponSystem : ModuleSystemInfo {
         if (this.Is_Online()) {
             if (target != null) {
                 //Left make the trurret target
-                target.range = this.settings.Range;
+                target.range = this.Get_Calculated_Range();
 
                 target.TargetingRange(transform.position);
                 if (target.target_object != null) {
@@ -150,6 +153,7 @@ public class WeponSystem : ModuleSystemInfo {
             return;
         }
         if (Input.GetButtonDown("Fire1") && Is_Online()) {
+            if (fire_method != null) { StopCoroutine(fire_method); }
             fire_method = StartCoroutine(FireConinuous());
         }
         if (Input.GetButtonUp("Fire1")) {
@@ -164,12 +168,12 @@ public class WeponSystem : ModuleSystemInfo {
             SingleUpdateUsage();
             if (wepon_type == Enums.enum_wepon_type.double_blaster || wepon_type == Enums.enum_wepon_type.single_blaster) {
                 foreach(GameObject fp in this.fire_points) {
-                    UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1,this.settings.Action_speed2+ rb.velocity.magnitude);
+                    UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1, projectile_speed + rb.velocity.magnitude, projectile_damage);
                 }
             }else if(wepon_type == Enums.enum_wepon_type.rotary){
                 if (target.target_object != null) {
                     foreach (GameObject fp in this.fire_points) {
-                        UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1, this.settings.Action_speed2+ rb.velocity.magnitude);
+                        UnityFunctions.FireProjectile(prefab_blaster_laser, fp, this.order_layer - 1, projectile_speed + rb.velocity.magnitude, projectile_damage);
                     }
                 }
             }

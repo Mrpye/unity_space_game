@@ -71,6 +71,7 @@ public class LoadSave : MonoBehaviour {
         //Load invetory
         //*************
         InventoryManager inv = gameObject.GetComponent<InventoryManager>();
+        inv.inventory.Clear();
         if(inv!=null && player_model.inventory != null) {
             foreach (Enums.enum_item e in player_model.inventory) {
                 inv.inventory.Add( new InventoryManager.Item(e));

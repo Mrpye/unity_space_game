@@ -18,12 +18,13 @@ public class Refiner : ModuleSystemInfo {
     /// This gets Moduleinfo settigs and apply to the specific module
     /// </summary>
     public void UpdateModuleStats() {
-        processing_time = this.settings.Action_speed;
+        processing_time = this.Get_Calculated_Action_Speed()  ;
         if (processing_time == 0) { processing_time = 1; }
     }
 
     private void Start() {
         storage = GetComponentInParent<InventoryManager>();
+        this.CalcUpgrades();
         UpdateModuleStats();
         StartMonitor();
     }

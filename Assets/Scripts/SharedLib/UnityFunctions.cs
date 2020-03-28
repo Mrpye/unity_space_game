@@ -24,8 +24,9 @@ public class UnityFunctions
         rb.velocity = new Vector3(Random.Range(-move_speed_x, move_speed_x), Random.Range(-move_speed_y, move_speed_y), 0);
     }
 
-    public static GameObject FireProjectile(GameObject projectile_prefab,GameObject fire_point,int sort_order,float speed =0 ) {
+    public static GameObject FireProjectile(GameObject projectile_prefab,GameObject fire_point,int sort_order,float speed =0,int damage=2 ) {
         GameObject laser = Object.Instantiate(projectile_prefab, fire_point.transform.position, fire_point.transform.rotation) as GameObject;
+        laser.GetComponent<DamageDealer>().SetDamage(damage);
         laser.GetComponent<SpriteRenderer>().sortingOrder = 100;
         laser.GetComponent<Rigidbody2D>().velocity = fire_point.transform.TransformDirection(Vector3.up * speed);
         return laser;
