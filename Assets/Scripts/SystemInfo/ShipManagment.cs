@@ -98,7 +98,7 @@ public class ShipManagment : InventoryManager {
                     //*********************************
                     //Calc the module internal upgrades
                     //*********************************
-                    ms.CalcUpgrades();
+                    //ms.CalcUpgrades();
 
                     //**************
                     //heat

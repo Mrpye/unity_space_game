@@ -6,6 +6,11 @@ public class ShipModule : ModuleSystemInfo {
 
     [Header("Mount Points")]
     [SerializeField] public List<MountPoint> mount_points = new List<MountPoint>();
+    
+
+
+
+
 
     public void ShowMountPoints() {
         foreach(MountPoint mp in mount_points) {
@@ -18,6 +23,7 @@ public class ShipModule : ModuleSystemInfo {
         }
     }
     private void Start() {
+        this.CalcUpgrades();
         //LoadMountPoints();
     }
 

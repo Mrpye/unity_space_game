@@ -17,6 +17,7 @@ public class TractorBeam : ModuleSystemInfo {
         tractor_collider = gameObject.GetComponent<BoxCollider2D>();
         shape = tractor_beam_fx.shape;
         main = tractor_beam_fx.main;
+        this.CalcUpgrades();
     }
 
     private void UpdateTracktorBeam() {
