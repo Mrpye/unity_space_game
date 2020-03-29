@@ -8,6 +8,7 @@ public class Propulsion : ModuleSystemInfo {
 
     private void Start() {
         fx = GetComponent<ParticleSystem>();
+        this.CalcUpgrades();
         this.StartMonitor();
     }
 
