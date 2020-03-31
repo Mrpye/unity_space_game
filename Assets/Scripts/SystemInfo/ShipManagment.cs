@@ -43,9 +43,12 @@ public class ShipManagment : InventoryManager {
 
     private float total_upgrade_battery_max;
     private float total_upgrade_fuel_max;
-
+    private ModuleSystemInfo command_mod_system_info;
     private void Start() {
         rb = gameObject.GetComponent<Rigidbody2D>();
+        if (command_module != null) {
+            this.command_mod_system_info = command_module.GetComponent<ModuleSystemInfo>();
+        }
         this.child_Start();
         CalcUpgrades();
     }
@@ -54,7 +57,7 @@ public class ShipManagment : InventoryManager {
         UpdateValues();
     }
 
-    public void DamageShip(float damage_f = 0) {
+    /*public void DamageShip(float damage_f = 0) {
         Rigidbody2D rb1 = GetComponent<Rigidbody2D>();
         if (damage_f > 0) {
             this.health -= damage_f;
@@ -62,31 +65,33 @@ public class ShipManagment : InventoryManager {
             float kernetic_energy1 = UnityFunctions.Calc_Kinetic_Energy(rb);
             this.health -= (kernetic_energy1 * 0.05f);
         }
-    }
+    }*/
 
-    private void OnTriggerEnter2D(Collider2D other) {
+    /*private void OnTriggerEnter2D(Collider2D other) {
         DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
         if (damageDealer) {
             ProcessHit(damageDealer);
         }
-    }
+    }*/
 
-    private void ProcessHit(DamageDealer damageDealer) {
+    /*private void ProcessHit(DamageDealer damageDealer) {
         health -= damageDealer.GetDamage();
         damageDealer.Hit();
         if (health <= 0) {
         }
-    }
+    }*/
 
-    private void OnCollisionEnter2D(Collision2D collision) {
+    /*private void OnCollisionEnter2D(Collision2D collision) {
         DamageShip();
-    }
+    }*/
 
     private void CalcUpgrades() {
-        //************************
-        //Run once to calc modules
-        //************************
-        total_upgrade_battery_max = 1;
+
+        
+            //************************
+            //Run once to calc modules
+            //************************
+            total_upgrade_battery_max = 1;
         total_upgrade_fuel_max = 1;
         total_upgrade_cpu = 0;
         cpu_usage = 0;
@@ -198,6 +203,12 @@ public class ShipManagment : InventoryManager {
         //Mass
         //*******
         if (rb != null) { rb.mass = mass; }
+
+        //******
+        //health
+        //******
+        this.health_max = command_mod_system_info.settings.Health_start;
+        this.health = command_mod_system_info.current_health;
 
         //******************************************
         //This feeds back information to each module

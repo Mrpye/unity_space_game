@@ -3,6 +3,18 @@
 /// </summary>
 public class Enums {
 
+    public enum enum_status {
+        Info,
+        Warning,
+        Danger
+    }
+    public enum enum_staus_type {
+        Online,
+        Malfunction,
+        Offline,
+        Destroyed
+    }
+
     public enum enum_class {
         Class_A,
         Class_B,

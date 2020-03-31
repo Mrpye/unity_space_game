@@ -23,7 +23,7 @@ public class ShipModule : ModuleSystemInfo {
         }
     }
     private void Start() {
-        this.CalcUpgrades();
+        this.Run_Start();
         //LoadMountPoints();
     }
 

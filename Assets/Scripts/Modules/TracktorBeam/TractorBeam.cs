@@ -17,7 +17,7 @@ public class TractorBeam : ModuleSystemInfo {
         tractor_collider = gameObject.GetComponent<BoxCollider2D>();
         shape = tractor_beam_fx.shape;
         main = tractor_beam_fx.main;
-        this.CalcUpgrades();
+        this.Run_Start();
     }
 
     private void UpdateTracktorBeam() {
@@ -31,7 +31,7 @@ public class TractorBeam : ModuleSystemInfo {
 
     private void Update() {
         if (Input.GetKey(KeyCode.T)) {
-            if (this.Is_Online()) {
+            if (this.Is_Malfunctioning()) {
                 UpdateTracktorBeam();
                 tractor_pull.enabled = true;
                 tractor_beam_fx.Play();

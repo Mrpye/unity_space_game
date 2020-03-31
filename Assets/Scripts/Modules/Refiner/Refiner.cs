@@ -24,7 +24,7 @@ public class Refiner : ModuleSystemInfo {
 
     private void Start() {
         storage = GetComponentInParent<InventoryManager>();
-        this.CalcUpgrades();
+        this.Run_Start();
         UpdateModuleStats();
         StartMonitor();
     }
@@ -33,7 +33,7 @@ public class Refiner : ModuleSystemInfo {
         return processing_bin.Count;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
+    public void OnTriggerEnter2D(Collider2D collision) {
         float maxbin = this.settings.Items_max;
         if (collision.gameObject.tag == "material" && processing_bin.Count < maxbin) {
             ItemResorce mr = collision.gameObject.GetComponent<ItemResorce>();

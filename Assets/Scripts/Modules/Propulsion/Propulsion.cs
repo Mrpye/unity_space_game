@@ -8,7 +8,7 @@ public class Propulsion : ModuleSystemInfo {
 
     private void Start() {
         fx = GetComponent<ParticleSystem>();
-        this.CalcUpgrades();
+        this.Run_Start();
         this.StartMonitor();
     }
 
@@ -32,7 +32,7 @@ public class Propulsion : ModuleSystemInfo {
     }
 
     public void Activate(float overthrust=-1) {
-        if (Is_Online()) {
+        if (Is_Malfunctioning()) {
             //if (overthrust < current_Thrust && this.IsInUse()) { return; }
 
 

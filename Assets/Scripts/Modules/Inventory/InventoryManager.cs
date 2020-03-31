@@ -51,7 +51,7 @@ public class InventoryManager : MonoBehaviour {
     #region Fields
 
     //[SerializeField] public List<GameObject> modules = new List<GameObject>();
-    [SerializeField] private ShipModule command_module;
+    [SerializeField] public ShipModule command_module;
 
     [Header("Storage ")]
     [SerializeField] public List<InventoryManager.Item> inventory = new List<InventoryManager.Item>();// Inventory items

@@ -93,22 +93,29 @@ public class DamageSystem : MonoBehaviour {
     //******************************************
     private void ApplyExplosionForce(Vector2 center, float radius, float forceMultiplier) {
         int hit_mask = (1 << LayerMask.NameToLayer("Player"));
+        
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(center, radius, hit_mask);
         int i = 0;
+        //Apply force
+        if (hitColliders.Length>0) {
+            GameObject player = GameObject.Find("Player");
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            Vector2 force = (player.transform.position - transform.position) * (forceMultiplier * 100);
+            rb.AddForce(force);
+        }
+
+
         while (i < hitColliders.Length) {
-            ItemResorce ir = hitColliders[i].GetComponent<ItemResorce>();
-            if (ir != null && ir.GetItemType() == Enums.enum_item.asset_player) {
-                Vector2 force = (hitColliders[i].gameObject.transform.position - transform.position) * (forceMultiplier * 100);
-                Rigidbody2D rb = hitColliders[i].gameObject.transform.GetComponent<Rigidbody2D>();
-                ApplyDamageByForce(hitColliders[i].gameObject, transform);
-                rb.AddForce(force);
+            ModuleSystemInfo ir = hitColliders[i].GetComponent<ModuleSystemInfo>();
+            if (ir != null) {
+                ApplyDamageByForce(hitColliders[i].gameObject, transform); 
             }
             i++;
         }
     }
 
     private void ApplyDamageByForce(GameObject game_obj, Transform source_transform = null) {
-        ShipManagment ship_managment = game_obj.GetComponent<ShipManagment>();
+        ModuleSystemInfo ship_managment = game_obj.GetComponent<ModuleSystemInfo>();
         if (ship_managment != null && source_transform != null) {
             float ratio = 1 / (source_transform.position - game_obj.transform.position).sqrMagnitude;
             if (ratio > 0) {

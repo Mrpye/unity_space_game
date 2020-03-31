@@ -69,7 +69,7 @@ public class WeponSystem : ModuleSystemInfo {
             laser_hit_sprite_renderer.enabled = false;
         }
         //Lets get module info if exist
-        this.CalcUpgrades();
+        this.Run_Start();
         UpdateModuleStats();
         StartMonitor();
     }
@@ -88,7 +88,7 @@ public class WeponSystem : ModuleSystemInfo {
 
     private void Update() {
         if (is_in_storage == true) { return; }
-        if (this.Is_Online()) {
+        if (this.Is_Malfunctioning()) {
             if (target != null) {
                 //Left make the trurret target
                 target.range = this.Get_Calculated_Range();
@@ -117,7 +117,7 @@ public class WeponSystem : ModuleSystemInfo {
             return;
         }
             
-        if (Input.GetButton("Fire2") && Is_Online()) {
+        if (Input.GetButton("Fire2") && Is_Malfunctioning()) {
             int hit_mask = (1 << LayerMask.NameToLayer("game-assets")) | (1 << LayerMask.NameToLayer("Enemy"));
             StartUsage();
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, transform.up, laser_range, hit_mask);
@@ -152,7 +152,7 @@ public class WeponSystem : ModuleSystemInfo {
         if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             return;
         }
-        if (Input.GetButtonDown("Fire1") && Is_Online()) {
+        if (Input.GetButtonDown("Fire1") && Is_Malfunctioning()) {
             if (fire_method != null) { StopCoroutine(fire_method); }
             fire_method = StartCoroutine(FireConinuous());
         }
