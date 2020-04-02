@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using static Enums;
+using static ItemResorce;
 
 public class ModuleSystemInfo : MonoBehaviour {
 
@@ -60,6 +61,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     private enum_staus_type status = enum_staus_type.Online;
     private enum_staus_type last_mafuntion_message_sent = enum_staus_type.Online;
     private Refiner refiner;
+
     #endregion private Fields
 
     #region methods
@@ -86,6 +88,7 @@ public class ModuleSystemInfo : MonoBehaviour {
             ps.GetComponent<Renderer>().sortingOrder = order_layer;
         }
     }
+
     private float total_upgrade_power_usage;
     private float total_upgrade_fuel_usage;
     private float total_upgrade_heat_usage;
@@ -98,12 +101,14 @@ public class ModuleSystemInfo : MonoBehaviour {
     private float total_upgrade_damage;
     private float total_upgrade_damage_resistance;
     private float total_mass;
+
     public void SendAlert(enum_status status, string message) {
         if (this.alerts != null) {
             message = message.Replace("(Clone)", "");
             this.alerts.RaiseAlert(status, message);
         }
     }
+
     public void Run_Start() {
         GameObject go = GameObject.Find("Alerts");
         if (go != null) {
@@ -135,24 +140,46 @@ public class ModuleSystemInfo : MonoBehaviour {
             total_upgrade_damage_resistance += u.Damage_resistance_P;
             total_mass += u.Mass_P;
         }
-
     }
 
     #region Damage
+
     private void OnTriggerEnter2D(Collider2D other) {
         DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
         if (damageDealer) {
             ProcessHit(damageDealer);
         } else {
-            refiner = gameObject.transform.parent.GetComponentInChildren<Refiner>();
-            if (refiner != null) {
-                refiner.OnTriggerEnter2D(other);
+            //**********************************
+            //We need to see if this is a pickup
+            //**********************************
+            ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
+            if (ir != null && ir.Item_type == enum_item.pickup) {
+                ItemResorceData item = ir.Spawn_Any_Module_Upgrade_Material();
+                InventoryManager storage = GetComponentInParent<InventoryManager>();
+                if (item.resorce_type == enum_resorce_type.material) {
+                    storage.Store_Material(item.item_type);
+                } else if (item.resorce_type == enum_resorce_type.module) {
+                   GameObject refab = Resources.Load(item.resorce) as GameObject;
+                    GameObject obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+                    storage.Store_Module(obj_module);
+                    Destroy(other.gameObject);
+                }
+            } else {
+                //************************************************
+                //Else must be a material this goes to the refiner
+                //************************************************
+                refiner = gameObject.transform.parent.GetComponentInChildren<Refiner>();
+                if (refiner != null) {
+                    refiner.OnTriggerEnter2D(other);
+                }
             }
         }
     }
+
     private void OnCollisionEnter2D(Collision2D collision) {
         DamageShip();
     }
+
     private void ProcessHit(DamageDealer damageDealer) {
         current_health -= damageDealer.GetDamage();
         damageDealer.Hit();
@@ -161,17 +188,19 @@ public class ModuleSystemInfo : MonoBehaviour {
         }
         this.SendAlert(enum_status.Danger, this.name + " is taking Damage!");
     }
+
     public void DamageShip(float damage_f = 0) {
         Rigidbody2D rb = GetComponentInParent<Rigidbody2D>();
         if (damage_f > 0) {
-            this.current_health -= damage_f* total_upgrade_damage_resistance;
+            this.current_health -= damage_f * total_upgrade_damage_resistance;
         } else {
             float kernetic_energy1 = UnityFunctions.Calc_Kinetic_Energy(rb);
-            this.current_health -= (kernetic_energy1 * 0.05f)* total_upgrade_damage_resistance;
+            this.current_health -= (kernetic_energy1 * 0.05f) * total_upgrade_damage_resistance;
         }
-        this.SendAlert(enum_status.Danger, this.name + " is taking Damage!" );
+        this.SendAlert(enum_status.Danger, this.name + " is taking Damage!");
     }
-    #endregion
+
+    #endregion Damage
 
     public bool Generates_Heat() {
         //This returns if the item Generates Heat
@@ -211,7 +240,6 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public void UpdateUsage() {
-      
         if (use_continuous_usage) {
             if (in_use == true) {
                 calced_current_heat = this.Get_Calculated_Heat() * Time.deltaTime;
@@ -287,14 +315,15 @@ public class ModuleSystemInfo : MonoBehaviour {
         }
         return value;
     }
-   
+
     public float Get_Calculated_Extra_Fuel_Capacity_P() {
-        float value= 0;
+        float value = 0;
         foreach (Upgrade_Settings u in this.upgrades) {
             value += u.Fuel_capacity_P;
         }
         return value;
     }
+
     public float Get_Calculated_Extra_Battery_Capacity_P() {
         float value = 0;
         foreach (Upgrade_Settings u in this.upgrades) {
@@ -303,7 +332,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         return value;
     }
 
-    #endregion Calculated Values
+    #endregion Calculated Values for upgrades
 
     #endregion public
 
@@ -357,7 +386,6 @@ public class ModuleSystemInfo : MonoBehaviour {
                 status = enum_staus_type.Online;
             }
 
-
             if (status != last_mafuntion_message_sent) {
                 this.SendAlert(enum_status.Warning, this.name + " is " + status.ToString());
                 last_mafuntion_message_sent = status;
@@ -368,22 +396,27 @@ public class ModuleSystemInfo : MonoBehaviour {
     #region Calulated Values
 
     public float Get_Calculated_Speed() {
-        return settings.Speed * Get_negative_EffFactor()* total_upgrade_speed;
+        return settings.Speed * Get_negative_EffFactor() * total_upgrade_speed;
     }
+
     public float Get_Calculated_Action_Speed() {
         return settings.Action_speed * Get_negative_EffFactor() * total_upgrade_action_speed;
     }
+
     public float Get_Calculated_Action_Speed2() {
-        return settings.Action_speed2 * Get_negative_EffFactor()*total_upgrade_action_speed2;
+        return settings.Action_speed2 * Get_negative_EffFactor() * total_upgrade_action_speed2;
     }
+
     public float Get_Calculated_Range() {
-        return settings.Range * Get_negative_EffFactor()* total_upgrade_range;
+        return settings.Range * Get_negative_EffFactor() * total_upgrade_range;
     }
+
     public float Get_Calculated_Ammount() {
         return settings.Ammount * Get_negative_EffFactor() * total_upgrade_ammount;
     }
+
     public float Get_Calculated_Thrust() {
-        return settings.Thrust_start * Get_negative_EffFactor()* total_upgrade_thrust;
+        return settings.Thrust_start * Get_negative_EffFactor() * total_upgrade_thrust;
     }
 
     public int Get_Calculated_Damage() {
@@ -405,7 +438,7 @@ public class ModuleSystemInfo : MonoBehaviour {
                 }
             }
         }
-        return (settings.Mass* total_mass) + stored_item_mass;
+        return (settings.Mass * total_mass) + stored_item_mass;
     }
 
     private float Get_Calculated_Heat() {
@@ -417,7 +450,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     private float Get_Calculated_Power() {
-        return this.IsInUseInt() * this.settings.Power_usage * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor() * total_upgrade_power_usage; 
+        return this.IsInUseInt() * this.settings.Power_usage * Get_Posotive_Eff_Factor() * Get_Trust_Useage_Factor() * total_upgrade_power_usage;
     }
 
     private float Get_Calculated_Power_idle() {

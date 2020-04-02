@@ -28,7 +28,12 @@ public class Enums {
         beam,
         rotary
     }
-
+    public enum enum_resorce_type {
+        module,
+        material,
+        asset,
+        upgrade
+    }
     public enum enum_item {
         material_gold,
         material_iron,
@@ -52,6 +57,7 @@ public class Enums {
         asset_small_enemy,
         asset_large_enemy,
         asset_player,
+        pickup,
         None
     }
 

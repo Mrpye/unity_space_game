@@ -84,20 +84,25 @@ public class ProceduralGenrator : MonoBehaviour {
                 double res = Random.Range(1, 1000);
                 int newres = (int)res;
 
-                if (newres == 5 || newres == 1) {
+                if (newres == 1 || newres == 5) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
                     temp_prefab  = Resources.Load("GameAssets\\Asteroid\\Asteroid_large") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
-                } else if (newres == 3 || newres == 7 || newres == 2) {
+                } else if (newres == 2 || newres == 7 || newres == 9) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
                     temp_prefab = Resources.Load("GameAssets\\Asteroid\\Asteroid_med") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
-                } else if (newres == 4 || newres == 8 || newres == 2) {
+                } else if (newres == 4 ) {
                     string key = (x).ToString() + "x" + (y).ToString();
                     object t = items[key];
                     temp_prefab = Resources.Load("GameAssets\\Enemy\\SmallEnemy") as GameObject;
+                    if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
+                } else if ( newres == 20|| newres == 30) {
+                    string key = (x).ToString() + "x" + (y).ToString();
+                    object t = items[key];
+                    temp_prefab = Resources.Load("Material\\PickUp") as GameObject;
                     if (t == null) { items.Add(key, true); Instantiate(temp_prefab, new Vector3(x, y, 0), transform.rotation, gameenelmets_object.transform); }
                 }
             }
