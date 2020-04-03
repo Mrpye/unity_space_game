@@ -33,18 +33,18 @@ public class Refiner : ModuleSystemInfo {
         return processing_bin.Count;
     }
 
-    public void OnTriggerEnter2D(Collider2D collision) {
+    public void AddItemToRefiner(GameObject go) {
         float maxbin = this.settings.Items_max;
-        if (collision.gameObject.tag == "material" && processing_bin.Count < maxbin) {
-            ItemResorce mr = collision.gameObject.GetComponent<ItemResorce>();
-            ModuleSystemInfo msi = collision.gameObject.GetComponent<ModuleSystemInfo>();
+        if (go.tag == "material" && processing_bin.Count < maxbin) {
+            ItemResorce mr = go.GetComponent<ItemResorce>();
+            ModuleSystemInfo msi = go.GetComponent<ModuleSystemInfo>();
             if (mr != null && msi==null) {
                 //Storing material
                 processing_bin.Add(mr.Item_type);
-                Destroy(collision.gameObject);
+                Destroy(go);
             } else if (mr != null && msi != null) {
                 //Storing a module
-                storage.Store_Module(collision.gameObject);
+                storage.Store_Module(go);
             }   
         }
     }

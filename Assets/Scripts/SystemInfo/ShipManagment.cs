@@ -19,12 +19,12 @@ public class ShipManagment : InventoryManager {
 
     [SerializeField] private float battery_max;
     [SerializeField] private float upgraded_battery_max;
-    [SerializeField] private float battery;
+    [SerializeField] public float battery;
     [SerializeField] private float battery_drain;
 
     [SerializeField] private float fuel_max;
     [SerializeField] private float upgraded_fuel_max;
-    [SerializeField] private float fuel;
+    [SerializeField] public float fuel;
     [SerializeField] private float fuel_drain;
 
     [SerializeField] private float cpu_max = 0;

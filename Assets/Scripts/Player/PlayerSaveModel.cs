@@ -21,6 +21,8 @@ public class PlayerSaveModel {
     public Vector3 scale;
     public Quaternion roation;
     public int order_layer;
+    public float battery;
+    public float fuel;
 
     //public List<ShipSaveModel> ships = new List<ShipSaveModel>();
     public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
@@ -38,6 +40,8 @@ public class PlayerSaveModel {
         roation = player_prefab.transform.rotation;
         scale = player_prefab.transform.localScale;
         module_name = ship_mamanmger.name;
+        battery = ship_mamanmger.battery;
+        fuel = ship_mamanmger.fuel;
         InventoryManager inv = player_prefab.GetComponent<InventoryManager>();
         this.inventory.Clear();
         foreach (InventoryManager.Item e in inv.inventory) {

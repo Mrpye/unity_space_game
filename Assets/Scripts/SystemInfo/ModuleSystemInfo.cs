@@ -148,19 +148,29 @@ public class ModuleSystemInfo : MonoBehaviour {
         DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
         if (damageDealer) {
             ProcessHit(damageDealer);
-        } else {
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) {
+       ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
+        if (ir != null&& (ir.GetResorceType()==  enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup)) {
             //**********************************
             //We need to see if this is a pickup
             //**********************************
-            ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
             if (ir != null && ir.Item_type == enum_item.pickup) {
                 ItemResorceData item = ir.Spawn_Any_Module_Upgrade_Material();
                 InventoryManager storage = GetComponentInParent<InventoryManager>();
                 if (item.resorce_type == enum_resorce_type.material) {
+                    UnityFunctions.SendAlert(  enum_status.Info,"Collected Item: " + item.item_type.ToString());
                     storage.Store_Material(item.item_type);
+                    Destroy(other.gameObject);
                 } else if (item.resorce_type == enum_resorce_type.module) {
-                   GameObject refab = Resources.Load(item.resorce) as GameObject;
+                    GameObject refab = Resources.Load(item.resorce) as GameObject;
+                    if(refab == null) {
+                        UnityFunctions.SendAlert(enum_status.Info, "Null object" );
+                    }
                     GameObject obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+                    UnityFunctions.SendAlert(enum_status.Info, "Collected Module: " + obj_module.name.ToString());
                     storage.Store_Module(obj_module);
                     Destroy(other.gameObject);
                 }
@@ -170,14 +180,14 @@ public class ModuleSystemInfo : MonoBehaviour {
                 //************************************************
                 refiner = gameObject.transform.parent.GetComponentInChildren<Refiner>();
                 if (refiner != null) {
-                    refiner.OnTriggerEnter2D(other);
+                    UnityFunctions.SendAlert(enum_status.Info, "Refining Material: " + other.gameObject.name.ToString());
+                    refiner.AddItemToRefiner(other.gameObject);
                 }
             }
+        } else{
+            DamageShip();
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision) {
-        DamageShip();
+       
     }
 
     private void ProcessHit(DamageDealer damageDealer) {

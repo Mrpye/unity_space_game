@@ -4,9 +4,9 @@
 public class Enums {
 
     public enum enum_status {
-        Info,
-        Warning,
-        Danger
+        Info=0,
+        Warning=1,
+        Danger=2
     }
     public enum enum_staus_type {
         Online,
@@ -32,7 +32,8 @@ public class Enums {
         module,
         material,
         asset,
-        upgrade
+        upgrade,
+        pickup
     }
     public enum enum_item {
         material_gold,

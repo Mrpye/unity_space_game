@@ -14,6 +14,11 @@ public class UnityFunctions
     }
 
 
+    public static void SendAlert(Enums.enum_status status,string msg ) {
+        GameObject go= GameObject.Find("Alerts");
+        go.GetComponent<Alert>().RaiseAlert(status, msg);
+
+    } 
     public static float normValue(float x, float min, float max) {
         return (x - min) / (max - min);
     }

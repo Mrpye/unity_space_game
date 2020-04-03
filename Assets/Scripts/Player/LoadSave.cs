@@ -59,6 +59,10 @@ public class LoadSave : MonoBehaviour {
     public void LoadPlayer() {
         PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
         ShipManagment ship_mamanmger = gameObject.GetComponent<ShipManagment>();
+
+        ship_mamanmger.fuel = player_model.fuel;
+        ship_mamanmger.battery = player_model.battery;
+
         if (is_config == false) {
             transform.position = player_model.position;
             transform.rotation = player_model.roation;
