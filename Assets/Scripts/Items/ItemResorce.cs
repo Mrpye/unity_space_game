@@ -41,6 +41,9 @@ public class ItemResorce : MonoBehaviour {
         resource_data.Add(Enums.enum_item.module_thruster.ToString(), new ItemResorceData("Modules\\Engines\\Thruster", "Thrusters used to maneuver your ship", Enums.enum_item.module_thruster, Enums.enum_resorce_type.module));
         resource_data.Add(Enums.enum_item.module_refiner.ToString(), new ItemResorceData("Modules\\Refiner\\Refiner", "Used to refine materials", Enums.enum_item.module_refiner, Enums.enum_resorce_type.module));
         resource_data.Add(Enums.enum_item.module_tracktor_beam.ToString(), new ItemResorceData("Modules\\TracktorBeam\\TracktorBeam", "This is a Tracktor Beam", Enums.enum_item.module_tracktor_beam, Enums.enum_resorce_type.module));
+        resource_data.Add(Enums.enum_item.module_repair.ToString(), new ItemResorceData("Modules\\Repair\\AutoRepair", "Auto Repair Module", Enums.enum_item.module_repair, Enums.enum_resorce_type.module));
+        resource_data.Add(Enums.enum_item.module_cooling.ToString(), new ItemResorceData("Modules\\Cooling\\Cooling", "Heat Pump Cooling Module", Enums.enum_item.module_cooling, Enums.enum_resorce_type.module));
+
         resource_data.Add(Enums.enum_item.asset_asteroid_large.ToString(), new ItemResorceData("GameAssets\\Asteroid\\Asteroid_large", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_large, Enums.enum_resorce_type.asset));
         resource_data.Add(Enums.enum_item.asset_asteroid_med.ToString(), new ItemResorceData("GameAssets\\Asteroid\\Asteroid_med", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_med, Enums.enum_resorce_type.asset));
         resource_data.Add(Enums.enum_item.asset_small_enemy.ToString(), new ItemResorceData("GameAssets\\Enemy\\SmallEnemy", "Small Enemy", Enums.enum_item.asset_small_enemy, Enums.enum_resorce_type.asset));

@@ -171,6 +171,8 @@ public class ModuleSystemInfo : MonoBehaviour {
                     }
                     GameObject obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
                     UnityFunctions.SendAlert(enum_status.Info, "Collected Module: " + obj_module.name.ToString());
+                    ModuleSystemInfo ms = obj_module.GetComponent<ModuleSystemInfo>();
+                    ms.SetStartHealth();
                     storage.Store_Module(obj_module);
                     Destroy(other.gameObject);
                 }
@@ -243,7 +245,9 @@ public class ModuleSystemInfo : MonoBehaviour {
         ir = gameObject.GetComponent<ItemResorce>();
         StartCoroutine(Malfunction());
     }
-
+    public void SetStartHealth() {
+        this.current_health = this.settings.Health_start;
+    }
     public void ResetUsage() {
         current_power = settings.Power_idle;
         current_fuel = settings.Fuel_idle;
@@ -266,6 +270,10 @@ public class ModuleSystemInfo : MonoBehaviour {
         } else {
             calced_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
         }
+        
+        if (System.Double.IsNaN(current_fuel)) { current_fuel = 0; }
+        if (System.Double.IsNaN(current_power)) { current_power = 0; }
+        if (System.Double.IsNaN(calced_current_heat)) { calced_current_heat = 0; }
 
         current_heat += calced_current_heat;
 

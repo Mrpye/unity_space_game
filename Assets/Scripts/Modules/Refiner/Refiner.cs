@@ -23,10 +23,12 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void Start() {
-        storage = GetComponentInParent<InventoryManager>();
-        this.Run_Start();
-        UpdateModuleStats();
-        StartMonitor();
+        if (!this.is_in_storage) {
+            storage = GetComponentInParent<InventoryManager>();
+            this.Run_Start();
+            UpdateModuleStats();
+            StartMonitor();
+        }
     }
 
     public int Bin_Item_Count() {
@@ -50,10 +52,12 @@ public class Refiner : ModuleSystemInfo {
     }
 
     private void Update() {
-        UpdateUsage();
-        if (processing == false && processing_bin.Count > 0) {
-            StartUsage();
-            StartCoroutine(ProcessBin());
+        if (!this.is_in_storage) {
+            UpdateUsage();
+            if (processing == false && processing_bin.Count > 0) {
+                StartUsage();
+                StartCoroutine(ProcessBin());
+            }
         }
     }
 

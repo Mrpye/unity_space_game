@@ -40,8 +40,10 @@ public class PlayerSaveModel {
         roation = player_prefab.transform.rotation;
         scale = player_prefab.transform.localScale;
         module_name = ship_mamanmger.name;
+
         battery = ship_mamanmger.battery;
         fuel = ship_mamanmger.fuel;
+
         InventoryManager inv = player_prefab.GetComponent<InventoryManager>();
         this.inventory.Clear();
         foreach (InventoryManager.Item e in inv.inventory) {

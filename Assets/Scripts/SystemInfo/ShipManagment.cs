@@ -12,6 +12,8 @@ public class ShipManagment : InventoryManager {
         }
     }
 
+    [SerializeField] private bool is_config = false;
+
     [Header("Ship Stats ")]
     [SerializeField] private float heat_max;
 
@@ -24,7 +26,7 @@ public class ShipManagment : InventoryManager {
 
     [SerializeField] private float fuel_max;
     [SerializeField] private float upgraded_fuel_max;
-    [SerializeField] public float fuel;
+    [SerializeField] public float fuel = 0;
     [SerializeField] private float fuel_drain;
 
     [SerializeField] private float cpu_max = 0;
@@ -44,6 +46,7 @@ public class ShipManagment : InventoryManager {
     private float total_upgrade_battery_max;
     private float total_upgrade_fuel_max;
     private ModuleSystemInfo command_mod_system_info;
+
     private void Start() {
         rb = gameObject.GetComponent<Rigidbody2D>();
         if (command_module != null) {
@@ -54,7 +57,9 @@ public class ShipManagment : InventoryManager {
     }
 
     private void Update() {
-        UpdateValues();
+        if (is_config == false) {
+            UpdateValues();
+        }
     }
 
     /*public void DamageShip(float damage_f = 0) {
@@ -86,12 +91,10 @@ public class ShipManagment : InventoryManager {
     }*/
 
     private void CalcUpgrades() {
-
-        
-            //************************
-            //Run once to calc modules
-            //************************
-            total_upgrade_battery_max = 1;
+        //************************
+        //Run once to calc modules
+        //************************
+        total_upgrade_battery_max = 1;
         total_upgrade_fuel_max = 1;
         total_upgrade_cpu = 0;
         cpu_usage = 0;
@@ -143,7 +146,7 @@ public class ShipManagment : InventoryManager {
         battery_drain = 0;
         fuel_drain = 0;
         mass = 0;
-       
+
         int heat_generating_module = 0;
         //****************************************
         //Loop through each module and gather data
@@ -176,8 +179,6 @@ public class ShipManagment : InventoryManager {
                 }
             }
         }
-
-        
 
         //******
         //Heat

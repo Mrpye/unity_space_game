@@ -41,37 +41,38 @@ public class WeponSystem : ModuleSystemInfo {
     /// Start is called before the first frame update
     /// </summary>
     private void Start() {
-
-        GameObject p_obj = GameObject.Find("Player");
-        if (p_obj != null) {
-            rb = p_obj.GetComponent<Rigidbody2D>();
-        }
-        
-        line_renderer = GetComponent<LineRenderer>();
-        target = GetComponent<Targeting>();
-       
-        fire_points = new List<GameObject>();
-        foreach (Transform child in transform) {
-            if(child.name== "FirePoint") {
-                fire_points.Add(child.gameObject);
+        if (!this.is_in_storage) {
+            GameObject p_obj = GameObject.Find("Player");
+            if (p_obj != null) {
+                rb = p_obj.GetComponent<Rigidbody2D>();
             }
-        }
 
-        Transform t = gameObject.transform.Find("HitPoint");
-        if (t != null) {
-            laser_hit_sprite_renderer = t.GetComponent<SpriteRenderer>();
-        }
+            line_renderer = GetComponent<LineRenderer>();
+            target = GetComponent<Targeting>();
 
-        line_renderer.enabled = false;
-        line_renderer.useWorldSpace = true;
-        if (laser_hit_sprite != null) {
-            laser_hit_sprite_renderer = laser_hit_sprite.GetComponent<SpriteRenderer>();
-            laser_hit_sprite_renderer.enabled = false;
+            fire_points = new List<GameObject>();
+            foreach (Transform child in transform) {
+                if (child.name == "FirePoint") {
+                    fire_points.Add(child.gameObject);
+                }
+            }
+
+            Transform t = gameObject.transform.Find("HitPoint");
+            if (t != null) {
+                laser_hit_sprite_renderer = t.GetComponent<SpriteRenderer>();
+            }
+
+            line_renderer.enabled = false;
+            line_renderer.useWorldSpace = true;
+            if (laser_hit_sprite != null) {
+                laser_hit_sprite_renderer = laser_hit_sprite.GetComponent<SpriteRenderer>();
+                laser_hit_sprite_renderer.enabled = false;
+            }
+            //Lets get module info if exist
+            this.Run_Start();
+            UpdateModuleStats();
+            StartMonitor();
         }
-        //Lets get module info if exist
-        this.Run_Start();
-        UpdateModuleStats();
-        StartMonitor();
     }
 
     /// <summary>
@@ -87,25 +88,27 @@ public class WeponSystem : ModuleSystemInfo {
     }
 
     private void Update() {
-        if (is_in_storage == true) { return; }
-        if (this.Is_Malfunctioning()) {
-            if (target != null) {
-                //Left make the trurret target
-                target.range = this.Get_Calculated_Range();
+        if (!this.is_in_storage) {
+            if (is_in_storage == true) { return; }
+            if (this.Is_Malfunctioning()) {
+                if (target != null) {
+                    //Left make the trurret target
+                    target.range = this.Get_Calculated_Range();
 
-                target.TargetingRange(transform.position);
-                if (target.target_object != null) {
+                    target.TargetingRange(transform.position);
+                    if (target.target_object != null) {
 
-                    UnityFunctions.LookAt2D(transform, target.target_object.transform, rotate_speed, Enums.enum_facing_direction.Up);
-                } 
+                        UnityFunctions.LookAt2D(transform, target.target_object.transform, rotate_speed, Enums.enum_facing_direction.Up);
+                    }
+                }
+                if (wepon_type == Enums.enum_wepon_type.beam) {
+                    Fire_Beam();
+                } else {
+                    Fire_Blaster();
+                }
             }
-            if (wepon_type == Enums.enum_wepon_type.beam) {
-                Fire_Beam();
-            } else {
-                Fire_Blaster();
-            }
+            UpdateUsage();
         }
-        UpdateUsage();
     }
 
     /// <summary>

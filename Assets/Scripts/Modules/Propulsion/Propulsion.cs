@@ -7,9 +7,11 @@ public class Propulsion : ModuleSystemInfo {
     private ParticleSystem fx;
 
     private void Start() {
-        fx = GetComponent<ParticleSystem>();
-        this.Run_Start();
-        this.StartMonitor();
+        if (!this.is_in_storage) {
+            fx = GetComponent<ParticleSystem>();
+            this.Run_Start();
+            this.StartMonitor();
+        }
     }
 
     public void Set_PlayerObj(GameObject obj) {
@@ -20,7 +22,9 @@ public class Propulsion : ModuleSystemInfo {
     // Update is called once per frame
 
     private void Update() {
-        UpdateUsage();
+        if (!this.is_in_storage) {
+            UpdateUsage();
+        }
     }
 
     public void Deactivate() {

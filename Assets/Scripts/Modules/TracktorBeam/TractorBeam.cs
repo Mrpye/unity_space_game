@@ -11,14 +11,17 @@ public class TractorBeam : ModuleSystemInfo {
     [SerializeField] private float width = 0.3f;
 
     private void Start() {
-        //Lets set up the range and width
-        tractor_beam_fx = gameObject.GetComponent<ParticleSystem>();
-        FirePoint = gameObject.transform.Find("FirePoint").gameObject;
-        shape = tractor_beam_fx.shape;
-        main = tractor_beam_fx.main;
-        player = GameObject.Find("Player");
-        prb = player.GetComponent<Rigidbody2D>();
-        this.Run_Start();
+        if (!this.is_in_storage) {
+            //Lets set up the range and width
+            tractor_beam_fx = gameObject.GetComponent<ParticleSystem>();
+            FirePoint = gameObject.transform.Find("FirePoint").gameObject;
+            shape = tractor_beam_fx.shape;
+            main = tractor_beam_fx.main;
+            player = GameObject.Find("Player");
+            if (player != null) { prb = player.GetComponent<Rigidbody2D>(); }
+
+            this.Run_Start();
+        }
     }
 
     private void UpdateTracktorBeam() {
@@ -58,16 +61,18 @@ public class TractorBeam : ModuleSystemInfo {
     }
 
     private void Update() {
-        if (Input.GetKey(KeyCode.T)) {
-            if (this.Is_Malfunctioning()) {
-                UpdateTracktorBeam();
-                tractor_beam_fx.Play();
-                StartUsage();
+        if (!this.is_in_storage) {
+            if (Input.GetKey(KeyCode.T)) {
+                if (this.Is_Malfunctioning()) {
+                    UpdateTracktorBeam();
+                    tractor_beam_fx.Play();
+                    StartUsage();
+                }
+            } else {
+                tractor_beam_fx.Stop();
+                StopUsage();
             }
-        } else {
-            tractor_beam_fx.Stop();
-            StopUsage();
+            UpdateUsage();
         }
-        UpdateUsage();
     }
 }
