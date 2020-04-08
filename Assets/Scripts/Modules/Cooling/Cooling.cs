@@ -22,13 +22,14 @@ public class Cooling : ModuleSystemInfo {
         while (true) {
             this.cool_ammount = this.settings.Action_speed;
             this.time_between_cooling = this.settings.Action_speed2;
-
-            if (current_item == null) {
-                ModuleSystemInfo[] items = GeEquipedItems();
-                foreach (ModuleSystemInfo i in items) {
-                    if (i.current_heat >0 ) {
-                        i.current_heat -= cool_ammount;
-                        if (i.current_heat < 0) { i.current_heat = 0; }
+            if (this.is_online && this.active) {
+                if (current_item == null) {
+                    ModuleSystemInfo[] items = GeEquipedItems();
+                    foreach (ModuleSystemInfo i in items) {
+                        if (i.current_heat > 0) {
+                            i.current_heat -= cool_ammount;
+                            if (i.current_heat < 0) { i.current_heat = 0; }
+                        }
                     }
                 }
             }

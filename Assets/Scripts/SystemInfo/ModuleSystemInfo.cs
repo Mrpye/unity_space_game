@@ -41,6 +41,11 @@ public class ModuleSystemInfo : MonoBehaviour {
     public float current_power = 0;
     public float current_fuel = 0;
     public float current_thrust = 0;
+    public float current_shield = 0;
+    public float max_shield = 0;
+
+    public bool active=true;
+    public bool is_online=true;
 
     [Header("Render Info")]
     [SerializeField] public int order_layer = 100;
@@ -57,6 +62,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     private float offline_malfunction_time;
     private float online_malfunction_time;
     private ItemResorce ir;
+    private ItemResorce module_ir;
     private Alert alerts = null;
     private enum_staus_type status = enum_staus_type.Online;
     private enum_staus_type last_mafuntion_message_sent = enum_staus_type.Online;
@@ -100,6 +106,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     private float total_upgrade_ammount;
     private float total_upgrade_damage;
     private float total_upgrade_damage_resistance;
+    private float total_upgrade_shield;
     private float total_mass;
 
     public void SendAlert(enum_status status, string message) {
@@ -110,6 +117,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public void Run_Start() {
+        module_ir = gameObject.GetComponent<ItemResorce>();
         GameObject go = GameObject.Find("Alerts");
         if (go != null) {
             this.alerts = go.GetComponent<Alert>();
@@ -125,6 +133,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         total_upgrade_range = 1;
         total_upgrade_thrust = 1;
         total_upgrade_ammount = 1;
+        total_upgrade_shield = 1;
         total_mass = 1;
         foreach (Upgrade_Settings u in this.upgrades) {
             total_upgrade_power_usage += u.Power_usage_p;
@@ -137,23 +146,32 @@ public class ModuleSystemInfo : MonoBehaviour {
             total_upgrade_thrust += u.Thrust_p;
             total_upgrade_ammount += u.Ammount_p;
             total_upgrade_damage += u.Damage_P;
+            total_upgrade_shield += u.Shield_P;
             total_upgrade_damage_resistance += u.Damage_resistance_P;
             total_mass += u.Mass_P;
         }
+        max_shield = max_shield * total_upgrade_shield;
     }
 
     #region Damage
 
     private void OnTriggerEnter2D(Collider2D other) {
-        DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
-        if (damageDealer) {
-            ProcessHit(damageDealer);
+        if (module_ir != null) {
+            DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
+            if (damageDealer) {
+                if (module_ir.Item_type == enum_item.module_shield) { 
+                    DamageShield(damageDealer.GetDamage());
+                    damageDealer.Hit();
+                } else {
+                    ProcessHit(damageDealer);
+                }
+            }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
-       ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
-        if (ir != null&& (ir.GetResorceType()==  enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup)) {
+        ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
+        if (ir != null && (ir.GetResorceType() == enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup)) {
             //**********************************
             //We need to see if this is a pickup
             //**********************************
@@ -161,13 +179,13 @@ public class ModuleSystemInfo : MonoBehaviour {
                 ItemResorceData item = ir.Spawn_Any_Module_Upgrade_Material();
                 InventoryManager storage = GetComponentInParent<InventoryManager>();
                 if (item.resorce_type == enum_resorce_type.material) {
-                    UnityFunctions.SendAlert(  enum_status.Info,"Collected Item: " + item.item_type.ToString());
+                    UnityFunctions.SendAlert(enum_status.Info, "Collected Item: " + item.item_type.ToString());
                     storage.Store_Material(item.item_type);
                     Destroy(other.gameObject);
                 } else if (item.resorce_type == enum_resorce_type.module) {
                     GameObject refab = Resources.Load(item.resorce) as GameObject;
-                    if(refab == null) {
-                        UnityFunctions.SendAlert(enum_status.Info, "Null object" );
+                    if (refab == null) {
+                        UnityFunctions.SendAlert(enum_status.Info, "Null object");
                     }
                     GameObject obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
                     UnityFunctions.SendAlert(enum_status.Info, "Collected Module: " + obj_module.name.ToString());
@@ -186,14 +204,18 @@ public class ModuleSystemInfo : MonoBehaviour {
                     refiner.AddItemToRefiner(other.gameObject);
                 }
             }
-        } else{
-            DamageShip();
+        } else {
+            if (module_ir != null && module_ir.Item_type == enum_item.module_shield) {
+                DamageShield();
+            } else {
+                DamageShip();
+            }
         }
-       
     }
 
     private void ProcessHit(DamageDealer damageDealer) {
         current_health -= damageDealer.GetDamage();
+        UnityFunctions.CameraShake();
         damageDealer.Hit();
         if (current_health <= 0) {
             current_health = 0;
@@ -201,13 +223,32 @@ public class ModuleSystemInfo : MonoBehaviour {
         this.SendAlert(enum_status.Danger, this.name + " is taking Damage!");
     }
 
+    public void DamageShield(float damage_f = 0) {
+        Rigidbody2D rb = GetComponentInParent<Rigidbody2D>();
+        if (damage_f > 0) {
+            this.current_shield -= damage_f * total_upgrade_damage_resistance;
+        } else {
+            float kernetic_energy1 = UnityFunctions.Calc_Kinetic_Energy(rb);
+            this.current_shield -= (kernetic_energy1 * 0.05f) * total_upgrade_damage_resistance;
+        }
+    }
+
     public void DamageShip(float damage_f = 0) {
         Rigidbody2D rb = GetComponentInParent<Rigidbody2D>();
         if (damage_f > 0) {
+            //************************
+            //Shake camera if dieectly
+            //************************
+            UnityFunctions.CameraShake();
             this.current_health -= damage_f * total_upgrade_damage_resistance;
         } else {
             float kernetic_energy1 = UnityFunctions.Calc_Kinetic_Energy(rb);
+            //*****************************************
+            //Shake camera if we are hit by a explosion
+            //*****************************************
+            UnityFunctions.CameraShake(0.2f, (kernetic_energy1*0.05f));
             this.current_health -= (kernetic_energy1 * 0.05f) * total_upgrade_damage_resistance;
+            
         }
         this.SendAlert(enum_status.Danger, this.name + " is taking Damage!");
     }
@@ -245,9 +286,11 @@ public class ModuleSystemInfo : MonoBehaviour {
         ir = gameObject.GetComponent<ItemResorce>();
         StartCoroutine(Malfunction());
     }
+
     public void SetStartHealth() {
         this.current_health = this.settings.Health_start;
     }
+
     public void ResetUsage() {
         current_power = settings.Power_idle;
         current_fuel = settings.Fuel_idle;
@@ -270,7 +313,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         } else {
             calced_current_heat = this.Get_Calculated_Heat_Idle() * Time.deltaTime;
         }
-        
+
         if (System.Double.IsNaN(current_fuel)) { current_fuel = 0; }
         if (System.Double.IsNaN(current_power)) { current_power = 0; }
         if (System.Double.IsNaN(calced_current_heat)) { calced_current_heat = 0; }
@@ -287,6 +330,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         //Used for things like wepons when they are fired
         //***********************************************
         in_use = true;
+        use_continuous_usage = false;
         current_heat += this.Get_Calculated_Heat();
         current_power = this.Get_Calculated_Power();
         current_fuel = this.Get_Calculated_Fuel();
@@ -294,6 +338,12 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     public virtual void Set_Values(float heat, float max_heat, float power, float max_power, float fuel, float max_fuel) {
+        if (power > 0) {
+            this.is_online = true;
+        } else {
+            this.is_online = false;
+        }
+
     }
 
     public bool Is_Malfunctioning() {
@@ -340,6 +390,10 @@ public class ModuleSystemInfo : MonoBehaviour {
             value += u.Fuel_capacity_P;
         }
         return value;
+    }
+
+    public float Get_Calculated_Max_Shield_Capacity() {
+        return max_shield;
     }
 
     public float Get_Calculated_Extra_Battery_Capacity_P() {

@@ -65,11 +65,13 @@ public class Refiner : ModuleSystemInfo {
         processing = true;
         do {
             yield return new WaitForSeconds(processing_time);
-            Enums.enum_item item = processing_bin[0];
-            if (storage != null) {
-                storage.Store_Material(item);
+            if (this.is_online && this.active) {
+                Enums.enum_item item = processing_bin[0];
+                if (storage != null) {
+                    storage.Store_Material(item);
+                }
+                processing_bin.RemoveAt(0);
             }
-            processing_bin.RemoveAt(0);
         } while (processing_bin.Count > 0);
         processing = false;
         StopUsage();

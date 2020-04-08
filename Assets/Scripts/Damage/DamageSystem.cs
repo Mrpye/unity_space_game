@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class DamageSystem : MonoBehaviour {
@@ -98,22 +99,46 @@ public class DamageSystem : MonoBehaviour {
         int i = 0;
         //Apply force
         if (hitColliders.Length>0) {
-            GameObject player = GameObject.Find("Player");
-            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-            Vector2 force = (player.transform.position - transform.position) * (forceMultiplier * 100);
+            //GameObject player = GameObject.Find("Player");
+            Rigidbody2D rb = UnityFunctions.player.GetComponent<Rigidbody2D>();
+            Vector2 force = (UnityFunctions.player.transform.position - transform.position) * (forceMultiplier * 100);
             rb.AddForce(force);
         }
 
-
-        while (i < hitColliders.Length) {
-            ModuleSystemInfo ir = hitColliders[i].GetComponent<ModuleSystemInfo>();
-            if (ir != null) {
-                ApplyDamageByForce(hitColliders[i].gameObject, transform); 
+        //**********************************
+        //We need to see if we have a shield
+        //**********************************
+        var res = (from n in hitColliders where n.name == "Shield(Clone)" select n).FirstOrDefault();
+        if (res != null) {
+            Shield s = res.GetComponent<Shield>();
+            if (s.shield_online == true) {
+                ApplyDamageByForceToShield(res.gameObject, transform);
             }
-            i++;
+        } else {
+            while (i < hitColliders.Length) {
+                ModuleSystemInfo ir = hitColliders[i].GetComponent<ModuleSystemInfo>();
+                if (ir != null) {
+                    ApplyDamageByForce(hitColliders[i].gameObject, transform);
+                }
+                i++;
+            }
         }
     }
 
+    private void ApplyDamageByForceToShield(GameObject game_obj, Transform source_transform = null) {
+        ModuleSystemInfo ship_managment = game_obj.GetComponent<ModuleSystemInfo>();
+        if (ship_managment != null && source_transform != null) {
+            float ratio = 1 / (source_transform.position - game_obj.transform.position).sqrMagnitude;
+            if (ratio > 0) {
+                ship_managment.DamageShield(shockwave_damagefactor * ratio);
+            }
+        } else {
+            DamageDealer damageDealer = game_obj.gameObject.GetComponent<DamageDealer>();
+            if (damageDealer) {
+                ProcessHit(damageDealer);
+            }
+        }
+    }
     private void ApplyDamageByForce(GameObject game_obj, Transform source_transform = null) {
         ModuleSystemInfo ship_managment = game_obj.GetComponent<ModuleSystemInfo>();
         if (ship_managment != null && source_transform != null) {

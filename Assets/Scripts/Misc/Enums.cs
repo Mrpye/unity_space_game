@@ -62,6 +62,7 @@ public class Enums {
         None=23,
         module_repair = 24,
         module_cooling = 25,
+        module_shield = 26,
     }
 
     public enum emun_zone {
@@ -101,13 +102,14 @@ public class Enums {
     }
 
     public enum enum_system_info {
-        heat,
-        power,
-        cpu,
-        fuel,
-        health,
-        flight_assist,
-        landing_zone,
-        refiner,
+        heat=0,
+        power=1,
+        cpu=2,
+        fuel=3,
+        health=4,
+        flight_assist=5,
+        landing_zone=6,
+        refiner=7,
+        shield=8
     }
 }

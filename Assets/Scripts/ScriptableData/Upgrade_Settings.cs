@@ -22,6 +22,7 @@ public class Upgrade_Settings : ScriptableObject {
     [SerializeField] private float damage_P = 0;
     [SerializeField] private float damage_resistance_P = 0;
     [SerializeField] private float mass_p = 0;
+    [SerializeField] private float shield_p = 0;
     #endregion
 
 
@@ -64,6 +65,6 @@ public class Upgrade_Settings : ScriptableObject {
     public float Damage_P { get => damage_P; set => damage_P = value; }
     public float Damage_resistance_P { get => damage_resistance_P; set => damage_resistance_P = value; }
     public float Mass_P { get => mass_p; set => mass_p = value; }
-
+    public float Shield_P { get => shield_p; set => shield_p = value; }
     #endregion
 }

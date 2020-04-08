@@ -35,8 +35,8 @@ public class Propulsion : ModuleSystemInfo {
     public void ResetCurrentThrust() {
     }
 
-    public void Activate(float overthrust=-1) {
-        if (Is_Malfunctioning()) {
+        public void Activate(float overthrust=-1) {
+        if (Is_Malfunctioning()&& this.is_online && this.active) {
             //if (overthrust < current_Thrust && this.IsInUse()) { return; }
 
 

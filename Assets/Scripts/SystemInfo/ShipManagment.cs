@@ -35,16 +35,22 @@ public class ShipManagment : InventoryManager {
     [SerializeField] private float health_max;
     [SerializeField] private float health;
 
+    [SerializeField] private float shield_max;
+    [SerializeField] private float shield;
+
     [SerializeField] private float mass;
     [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] public float kernetic_energy;
+
+    //private Shield shield_obj;
 
     //Private
     private float total_upgrade_cpu;
 
     private float total_upgrade_battery_max;
     private float total_upgrade_fuel_max;
+    private float total_upgrade_shield_max;
     private ModuleSystemInfo command_mod_system_info;
 
     private void Start() {
@@ -52,43 +58,27 @@ public class ShipManagment : InventoryManager {
         if (command_module != null) {
             this.command_mod_system_info = command_module.GetComponent<ModuleSystemInfo>();
         }
+       
+
+        
         this.child_Start();
         CalcUpgrades();
     }
 
+   /* public bool ShieldOnline() {
+        if(this.shield_obj != null) {
+            return this.shield_obj.shield_online;
+        } else {
+            return false;
+        }
+    }*/
     private void Update() {
         if (is_config == false) {
             UpdateValues();
         }
     }
 
-    /*public void DamageShip(float damage_f = 0) {
-        Rigidbody2D rb1 = GetComponent<Rigidbody2D>();
-        if (damage_f > 0) {
-            this.health -= damage_f;
-        } else {
-            float kernetic_energy1 = UnityFunctions.Calc_Kinetic_Energy(rb);
-            this.health -= (kernetic_energy1 * 0.05f);
-        }
-    }*/
-
-    /*private void OnTriggerEnter2D(Collider2D other) {
-        DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
-        if (damageDealer) {
-            ProcessHit(damageDealer);
-        }
-    }*/
-
-    /*private void ProcessHit(DamageDealer damageDealer) {
-        health -= damageDealer.GetDamage();
-        damageDealer.Hit();
-        if (health <= 0) {
-        }
-    }*/
-
-    /*private void OnCollisionEnter2D(Collision2D collision) {
-        DamageShip();
-    }*/
+   
 
     private void CalcUpgrades() {
         //************************
@@ -96,18 +86,24 @@ public class ShipManagment : InventoryManager {
         //************************
         total_upgrade_battery_max = 1;
         total_upgrade_fuel_max = 1;
+        total_upgrade_shield_max = 1;
         total_upgrade_cpu = 0;
         cpu_usage = 0;
         cpu_max = 0;
+
         //This will cal the upgrades values
-        foreach (ModuleSystemInfo ms in GeEquipedItems()) {
+        foreach (ModuleSystemInfo ms in UnityFunctions.GetModules()) {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
                     //*********************************
                     //Calc the module internal upgrades
                     //*********************************
                     //ms.CalcUpgrades();
-
+                   /* if (shield_obj == null) {
+                        if(ms.GetComponent<ItemResorce>().Item_type== Enums.enum_item.module_shield) {
+                            this.shield_obj = (Shield)ms;
+                        }
+                    }*/
                     //**************
                     //heat
                     //**************
@@ -134,8 +130,10 @@ public class ShipManagment : InventoryManager {
                     fuel_drain += ms.current_fuel;
 
                     //*******
-                    //Mass
+                    //shield
                     //*******
+                    shield_max += ms.Get_Calculated_Max_Shield_Capacity();
+
                 }
             }
         }
@@ -146,12 +144,12 @@ public class ShipManagment : InventoryManager {
         battery_drain = 0;
         fuel_drain = 0;
         mass = 0;
-
+        this.shield = 0;
         int heat_generating_module = 0;
         //****************************************
         //Loop through each module and gather data
         //****************************************
-        foreach (ModuleSystemInfo ms in GeEquipedItems()) {
+        foreach (ModuleSystemInfo ms in UnityFunctions.GetModules()) {
             if (ms != null) {
                 if (ms.is_in_storage == false) {
                     //**************
@@ -163,6 +161,9 @@ public class ShipManagment : InventoryManager {
                     //*******************
                     //Power
                     //*******************
+                    if (ms.current_power > 0) {
+
+                    }
                     battery_drain += ms.current_power;
 
                     //******
@@ -174,6 +175,9 @@ public class ShipManagment : InventoryManager {
                     //Mass
                     //*******
                     mass += ms.Get_Calculated_Mass();
+
+                    //Shield
+                    shield += ms.current_shield;
 
                     ms.ResetUsage();
                 }
@@ -211,10 +215,13 @@ public class ShipManagment : InventoryManager {
         this.health_max = command_mod_system_info.settings.Health_start;
         this.health = command_mod_system_info.current_health;
 
+      
+
+
         //******************************************
         //This feeds back information to each module
         //******************************************
-        foreach (ModuleSystemInfo ms in GeEquipedItems()) {
+        foreach (ModuleSystemInfo ms in UnityFunctions.GetModules()) {
             if (ms != null) {
                 ms.Set_Values(heat, heat_max, battery, upgraded_battery_max, fuel, fuel_max);
             }
@@ -230,19 +237,16 @@ public class ShipManagment : InventoryManager {
         switch (info_type) {
             case Enums.enum_system_info.heat:
                 return new value_data(heat_max, heat);
-
             case Enums.enum_system_info.power:
-                return new value_data(battery_max, battery);
-
+                return new value_data(upgraded_battery_max, battery);
             case Enums.enum_system_info.cpu:
                 return new value_data(cpu_max, cpu_usage);
-
             case Enums.enum_system_info.fuel:
-                return new value_data(fuel_max, fuel);
-
+                return new value_data(upgraded_fuel_max, fuel);
             case Enums.enum_system_info.health:
                 return new value_data(health_max, health);
-
+            case Enums.enum_system_info.shield:
+                return new value_data(shield_max, shield);
             default:
                 return new value_data(health_max, health);
         }

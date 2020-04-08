@@ -104,7 +104,7 @@ public class InventoryManager : MonoBehaviour {
         //*************************
         //Load stored Items in list
         //*************************
-        ModuleSystemInfo[] modules = GetStoredItems();
+        ModuleSystemInfo[] modules = UnityFunctions.GetStoredModules();
         foreach (ModuleSystemInfo module in modules) {
             GameObject item = Instantiate(inventory_item.gameObject, inventory_panel.transform);
             //Lets config it
@@ -157,10 +157,14 @@ public class InventoryManager : MonoBehaviour {
         module_info.IteminUse(module_info.is_internal_module);
     }
 
-    public ModuleSystemInfo[] GeEquipedItems() {
+    /*public ModuleSystemInfo[] GeEquipedItems() {
         modules_game_object = GameObject.Find("Modules");
-        return modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
-    }
+        if (modules_game_object != null) {
+            return modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
+        } else {
+            return null;
+        }   
+    }*/
 
     public float Get_Total_Stored_Item_Mass() {
         return 1;
@@ -168,15 +172,15 @@ public class InventoryManager : MonoBehaviour {
 
    
 
-    public ModuleSystemInfo[] GetStoredItems() {
+   /* public ModuleSystemInfo[] GetStoredItems() {
         Stored_Modules_game_object = GameObject.Find("Stored_Modules");
         return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
-    }
+    }*/
 
-    public Upgrade_Settings[] GetStoredUpgrades() {
+    /*public Upgrade_Settings[] GetStoredUpgrades() {
         Stored_Upgrades_game_object = GameObject.Find("Stored_Upgrades");
         return Stored_Upgrades_game_object.GetComponentsInChildren<Upgrade_Settings>();
-    }
+    }*/
 
     public int Item_Count(Enums.enum_item material) {
         var res = (from n in inventory where n.item_type == material select n).Count();
@@ -236,7 +240,7 @@ public class InventoryManager : MonoBehaviour {
         //***********************************
         //First we need to remove all modules
         //***********************************
-        ModuleSystemInfo[] modules = GeEquipedItems();
+        ModuleSystemInfo[] modules = UnityFunctions.GetModules();
         foreach (ModuleSystemInfo module in modules) {
             this.Store_Module(module.gameObject);
         }
@@ -315,7 +319,7 @@ public class InventoryManager : MonoBehaviour {
     }
 
     private void Populate_Mount_Point_Drop_Panels() {
-        ModuleSystemInfo[] modules = GeEquipedItems();
+        ModuleSystemInfo[] modules = UnityFunctions.GetModules();
         foreach (ModuleSystemInfo module in modules) {
             GameObject item = Instantiate(inventory_item, inventory_panel.transform);
             item.transform.parent = mount_point_drop_zone_list[module.mount_point].transform;

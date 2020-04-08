@@ -5,7 +5,7 @@
 /// </summary>
 public class DamageDealer : MonoBehaviour {
     [SerializeField] private int damage = 100;
-
+    [SerializeField] private GameObject particleSystem;
     public void SetDamage(int damage) {
         this.damage= damage;
     }
@@ -19,6 +19,14 @@ public class DamageDealer : MonoBehaviour {
     }
 
     public void Hit() {
+        //**************************
+        //Draw some particle effects
+        //**************************
+        GameObject p = Instantiate(particleSystem);
+        ParticleSystem particle= p.GetComponent<ParticleSystem>();
+        p.transform.position = gameObject.transform.position;
+        particle.Play();
+        Destroy(particle.gameObject,2);
         Destroy(gameObject);
     }
 }

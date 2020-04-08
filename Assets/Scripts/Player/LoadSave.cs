@@ -9,6 +9,7 @@ public class LoadSave : MonoBehaviour {
 
     private void Awake() {
         LoadPlayer();
+        UnityFunctions.PopulateCommonVariables();
     }
 
     private void Update() {
@@ -28,7 +29,7 @@ public class LoadSave : MonoBehaviour {
         //************
         //Used Modules
         //************
-        GameObject go = GameObject.Find("Modules");
+        GameObject go = UnityFunctions.modules;
         ModuleSystemInfo[] modules = go.GetComponentsInChildren<ModuleSystemInfo>();
         foreach (ModuleSystemInfo e in modules) {
             ModuleSaveModel m = new ModuleSaveModel();
@@ -41,8 +42,8 @@ public class LoadSave : MonoBehaviour {
         //**************
         //Stored Modules
         //**************
-        go = GameObject.Find("Stored_Modules");
-        modules = go.GetComponentsInChildren<ModuleSystemInfo>();
+        //go = GameObject.Find("Stored_Modules");
+        modules = UnityFunctions.stored_modules.GetComponentsInChildren<ModuleSystemInfo>();
         foreach (ModuleSystemInfo e in modules) {
             ModuleSaveModel m = new ModuleSaveModel();
             m.ReadData(e.gameObject);

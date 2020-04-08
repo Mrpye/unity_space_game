@@ -5,7 +5,7 @@ public class TractorBeam : ModuleSystemInfo {
     private ParticleSystem.ShapeModule shape;
     private ParticleSystem.MainModule main;
     private GameObject FirePoint;
-    private GameObject player;
+    //private GameObject player;
     private Rigidbody2D prb;
     [Header("Tractorbeam")]
     [SerializeField] private float width = 0.3f;
@@ -17,8 +17,8 @@ public class TractorBeam : ModuleSystemInfo {
             FirePoint = gameObject.transform.Find("FirePoint").gameObject;
             shape = tractor_beam_fx.shape;
             main = tractor_beam_fx.main;
-            player = GameObject.Find("Player");
-            if (player != null) { prb = player.GetComponent<Rigidbody2D>(); }
+            //player = GameObject.Find("Player");
+            if (UnityFunctions.player != null) { prb = UnityFunctions.player.GetComponent<Rigidbody2D>(); }
 
             this.Run_Start();
         }
@@ -37,7 +37,7 @@ public class TractorBeam : ModuleSystemInfo {
         int hit_mask = (1 << LayerMask.NameToLayer("game-assets"));
         hit_mask |= (1 << LayerMask.NameToLayer("Material"));
         //hit_mask = ~hit_mask;
-        Collider2D[] hitColliders = Physics2D.OverlapBoxAll(new Vector2(FirePoint.transform.position.x, FirePoint.transform.position.y), new Vector2(width, range), player.transform.rotation.eulerAngles.z, hit_mask);
+        Collider2D[] hitColliders = Physics2D.OverlapBoxAll(new Vector2(FirePoint.transform.position.x, FirePoint.transform.position.y), new Vector2(width, range), UnityFunctions.player.transform.rotation.eulerAngles.z, hit_mask);
         if (hitColliders.Length > 0) {
         }
 
@@ -47,10 +47,10 @@ public class TractorBeam : ModuleSystemInfo {
             if (rb != null) {
                 Vector2 force;
                 if (prb.mass > rb.mass) {
-                    force=-(player.transform.position - transform.position) * (forceMultiplier * 100);
+                    force=-(UnityFunctions.player.transform.position - transform.position) * (forceMultiplier * 100);
                     rb.AddForce(force);
                 } else {
-                    force = -(transform.position-player.transform.position ) * (forceMultiplier * 100);
+                    force = -(transform.position- UnityFunctions.player.transform.position ) * (forceMultiplier * 100);
                     prb.AddForce(force);
                 }
 
@@ -62,11 +62,16 @@ public class TractorBeam : ModuleSystemInfo {
 
     private void Update() {
         if (!this.is_in_storage) {
-            if (Input.GetKey(KeyCode.T)) {
-                if (this.Is_Malfunctioning()) {
-                    UpdateTracktorBeam();
-                    tractor_beam_fx.Play();
-                    StartUsage();
+            if (this.is_online && this.active) {
+                if (Input.GetKey(KeyCode.T)) {
+                    if (this.Is_Malfunctioning()) {
+                        UpdateTracktorBeam();
+                        tractor_beam_fx.Play();
+                        StartUsage();
+                    }
+                } else {
+                    tractor_beam_fx.Stop();
+                    StopUsage();
                 }
             } else {
                 tractor_beam_fx.Stop();
