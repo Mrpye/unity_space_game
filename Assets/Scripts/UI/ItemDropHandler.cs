@@ -29,7 +29,14 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
         ItemDragHandler d = eventData.pointerDrag.GetComponent<ItemDragHandler>();
         InventoryItem inv_item = eventData.pointerDrag.gameObject.GetComponent<InventoryItem>();
         EnabledDisabled enable_disable = gameObject.GetComponentInParent<EnabledDisabled>();
-
+        ModuleSystemInfo sys_info = inv_item.item.GetComponent<ModuleSystemInfo>();
+        
+        if (sys_info.allow_multiple_install == false && inventory_box == Enums.emun_inventory.Selected) {
+            if (UnityFunctions.ModuleInstalled(inv_item.item_type)) {
+                return;
+            }
+        }
+       
         //*****************************************************
         //Couple of test to make sure we can drop the item here
         //*****************************************************
@@ -58,14 +65,14 @@ public class ItemDropHandler : MonoBehaviour, IDropHandler {
                         storage.Build_Mount_Point_Drop_Panels();
                     } else {
                         MountPoint amp = mp.associated_mountpoint.GetComponent<MountPoint>();
-                        inv_item.item.GetComponent<ModuleSystemInfo>().mount_point = amp.index;
+                        sys_info.mount_point = amp.index;
                         storage.Equip(inv_item.item);
                     }
                 }
             } else {
                 storage.Store_Module(inv_item.item);
                 
-               if(inv_item.item.GetComponent<ModuleSystemInfo>().is_command_module) {
+               if(sys_info.is_command_module) {
                     Destroy(eventData.pointerDrag.gameObject);
                     storage.SetScreenNoCommandModule();
                 }

@@ -27,6 +27,7 @@ public class PlayerSaveModel {
     //public List<ShipSaveModel> ships = new List<ShipSaveModel>();
     public List<ModuleSaveModel> modules = new List<ModuleSaveModel>();
     public List<Enums.enum_item> inventory = new List<Enums.enum_item>();
+    public List<Enums.enum_item> blueprints = new List<Enums.enum_item>();
     public List<ModuleSaveModel> stored_modules = new List<ModuleSaveModel>();
 
     //public List<string> upgrades = new List<string>();
@@ -45,11 +46,17 @@ public class PlayerSaveModel {
         fuel = ship_mamanmger.fuel;
 
         InventoryManager inv = player_prefab.GetComponent<InventoryManager>();
+
         this.inventory.Clear();
         foreach (InventoryManager.Item e in inv.inventory) {
             this.inventory.Add(e.item_type);
         }
- 
+
+        this.blueprints.Clear();
+        foreach (InventoryManager.Item e in inv.blueprints) {
+            this.inventory.Add(e.item_type);
+        }
+
         //*****************
         //Same the upgrades
         //*****************

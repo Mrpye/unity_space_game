@@ -17,7 +17,7 @@ public class ModuleToggleActivate : MonoBehaviour {
     public void SetModule(ModuleSystemInfo m) {
         this.module_info = m;
         if (this.module_info != null) {
-            SetToggleNameAndValue(this.module_info.name, this.module_info.active, this.module_info.current_health);
+            SetToggleNameAndValue(this.module_info.name, this.module_info.active, this.module_info.current_health, this.module_info.Is_Malfunctioning());
         }
     }
 

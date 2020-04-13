@@ -4,19 +4,18 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour {
     [SerializeField] public Enums.enum_item item_type;
     [SerializeField] public GameObject item;
-   /* [SerializeField] private Sprite single_blaster;
-    [SerializeField] private Sprite double_blaster;
-    [SerializeField] private Sprite mining_laser;
-    [SerializeField] private Sprite main_engine;
-    [SerializeField] private Sprite thruster;
-    [SerializeField] private Sprite refiner;
-    [SerializeField] private Sprite tracktor_beam;
-    [SerializeField] private Sprite power;
-    [SerializeField] private Sprite unknown;*/
+    /* [SerializeField] private Sprite single_blaster;
+     [SerializeField] private Sprite double_blaster;
+     [SerializeField] private Sprite mining_laser;
+     [SerializeField] private Sprite main_engine;
+     [SerializeField] private Sprite thruster;
+     [SerializeField] private Sprite refiner;
+     [SerializeField] private Sprite tracktor_beam;
+     [SerializeField] private Sprite power;
+     [SerializeField] private Sprite unknown;*/
 
     [Header("Mounting Position")]
     [SerializeField] public bool mount_type_util_top = true;
-
     [SerializeField] public bool mount_type_util_side = true;
     [SerializeField] public bool mount_type_thruster = true;
     [SerializeField] public bool mount_type_engine = true;

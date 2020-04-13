@@ -17,6 +17,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public bool is_in_storage;
     [SerializeField] public bool is_internal_module;
     [SerializeField] public bool is_command_module;
+    [SerializeField] public bool allow_multiple_install=false;
 
     [Header("Config Info")]
     [SerializeField] public Module_Settings settings;
@@ -44,8 +45,8 @@ public class ModuleSystemInfo : MonoBehaviour {
     public float current_shield = 0;
     public float max_shield = 0;
 
-    public bool active=true;
-    public bool is_online=true;
+    public bool active = true;
+    public bool is_online = true;
 
     [Header("Render Info")]
     [SerializeField] public int order_layer = 100;
@@ -159,7 +160,7 @@ public class ModuleSystemInfo : MonoBehaviour {
         if (module_ir != null) {
             DamageDealer damageDealer = other.gameObject.GetComponent<DamageDealer>();
             if (damageDealer) {
-                if (module_ir.Item_type == enum_item.module_shield) { 
+                if (module_ir.Item_type == enum_item.module_shield) {
                     DamageShield(damageDealer.GetDamage());
                     damageDealer.Hit();
                 } else {
@@ -171,7 +172,7 @@ public class ModuleSystemInfo : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D other) {
         ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
-        if (ir != null && (ir.GetResorceType() == enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup)) {
+        if (ir != null && (ir.GetResorceType() == enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup || ir.GetResorceType() == enum_resorce_type.blueprint)) {
             //**********************************
             //We need to see if this is a pickup
             //**********************************
@@ -200,8 +201,13 @@ public class ModuleSystemInfo : MonoBehaviour {
                 //************************************************
                 refiner = gameObject.transform.parent.GetComponentInChildren<Refiner>();
                 if (refiner != null) {
-                    UnityFunctions.SendAlert(enum_status.Info, "Refining Material: " + other.gameObject.name.ToString());
+                    //Need to be added to the refiner
                     refiner.AddItemToRefiner(other.gameObject);
+                    if (ir.GetNeedsRefining() == true) {
+                        UnityFunctions.SendAlert(enum_status.Info, "Refining Material: " + other.gameObject.name.ToString());
+                    } else {
+                        UnityFunctions.SendAlert(enum_status.Info, "Collected: " + other.gameObject.name.ToString());
+                    }
                 }
             }
         } else {
@@ -246,9 +252,8 @@ public class ModuleSystemInfo : MonoBehaviour {
             //*****************************************
             //Shake camera if we are hit by a explosion
             //*****************************************
-            UnityFunctions.CameraShake(0.2f, (kernetic_energy1*0.05f));
+            UnityFunctions.CameraShake(0.2f, (kernetic_energy1 * 0.05f));
             this.current_health -= (kernetic_energy1 * 0.05f) * total_upgrade_damage_resistance;
-            
         }
         this.SendAlert(enum_status.Danger, this.name + " is taking Damage!");
     }
@@ -343,7 +348,6 @@ public class ModuleSystemInfo : MonoBehaviour {
         } else {
             this.is_online = false;
         }
-
     }
 
     public bool Is_Malfunctioning() {

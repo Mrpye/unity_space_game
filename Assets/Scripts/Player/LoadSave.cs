@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 public class LoadSave : MonoBehaviour {
@@ -82,6 +83,18 @@ public class LoadSave : MonoBehaviour {
                 inv.inventory.Add( new InventoryManager.Item(e));
             }
         }
+
+        //****************
+        //Load blue prints
+        //****************
+        inv.blueprints.Clear();
+        if (inv != null && player_model.blueprints != null) {
+            foreach (Enums.enum_item e in player_model.blueprints) {
+                inv.blueprints.Add(new InventoryManager.Item(e));
+            }
+        }
+
+
         //*****************
         //Load the upgrades
         //*****************
@@ -110,15 +123,22 @@ public class LoadSave : MonoBehaviour {
         //********************************************
         //Loop through the modules in our player model
         //********************************************
-       ;
+       
         foreach (ModuleSaveModel module in player_model.stored_modules) {
             //****************
             //Create our modue
             //****************
-            GameObject new_module = Create_Module(module);
+            GameObject new_module=null;
+            try {
+                 new_module = Create_Module(module);
+                
+            } catch (Exception ex) {
+                Debug.Log(ex);
+            }
             if (new_module != null) {
                 ship_mamanmger.Store_Module(new_module);
             }
+
         }
     }
 
@@ -140,7 +160,13 @@ public class LoadSave : MonoBehaviour {
                 }
             } else {
                 if (model.is_internal_module == false) {
-                    MountPoint mp = sm.mount_points[model.mount_point - 1];
+                    MountPoint mp = null;
+                    if (model.is_in_storage == false) {
+                        mp = sm.mount_points[0];
+                    } else {
+                        mp = sm.mount_points[model.mount_point - 1];
+                    }
+                    
                     if (mp != null) {
                         obj_module = Instantiate(refab, mp.transform.position, mp.transform.rotation) as GameObject;
                     }

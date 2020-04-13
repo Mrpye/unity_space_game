@@ -55,6 +55,7 @@ public class InventoryManager : MonoBehaviour {
 
     [Header("Storage ")]
     [SerializeField] public List<InventoryManager.Item> inventory = new List<InventoryManager.Item>();// Inventory items
+    [SerializeField] public List<InventoryManager.Item> blueprints = new List<InventoryManager.Item>();// Inventory items
 
     [SerializeField] private GameObject inventory_item;
 
@@ -82,6 +83,7 @@ public class InventoryManager : MonoBehaviour {
     private GameObject Stored_Upgrades_game_object;
     private GameObject tmp_drop_panel;
     private bool drop_panels_loaded = false;
+    private bool first_run = false;
     //Panels the lists are on
     //Panels the lists are on
 
@@ -119,10 +121,16 @@ public class InventoryManager : MonoBehaviour {
         Stored_Modules_game_object = GameObject.Find("Stored_Modules");
         modules_game_object = GameObject.Find("Modules");
 
+        
+
         //Lets load out config
         if (inventory_panel != null && inventory_item != null) {
             //Build_Inventory_List_Items();
             Build_Mount_Point_Drop_Panels();
+
+            Button butt = GameObject.Find("cmdCommand").GetComponent<Button>();
+            butt.onClick.Invoke();
+
         }
     }
 
@@ -170,31 +178,58 @@ public class InventoryManager : MonoBehaviour {
         return 1;
     }
 
-   
 
-   /* public ModuleSystemInfo[] GetStoredItems() {
-        Stored_Modules_game_object = GameObject.Find("Stored_Modules");
-        return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
-    }*/
+
+    /* public ModuleSystemInfo[] GetStoredItems() {
+         Stored_Modules_game_object = GameObject.Find("Stored_Modules");
+         return Stored_Modules_game_object.GetComponentsInChildren<ModuleSystemInfo>();
+     }*/
 
     /*public Upgrade_Settings[] GetStoredUpgrades() {
         Stored_Upgrades_game_object = GameObject.Find("Stored_Upgrades");
         return Stored_Upgrades_game_object.GetComponentsInChildren<Upgrade_Settings>();
     }*/
 
-    public int Item_Count(Enums.enum_item material) {
+    public int Blueprint_Item_Count(Enums.enum_item material) {
+        var res = (from n in blueprints where n.item_type == material select n).Count();
+        return res;
+    }
+
+    public int Inventory_Item_Count(Enums.enum_item material) {
         var res = (from n in inventory where n.item_type == material select n).Count();
         return res;
     }
+
+
 
     public void Set_Max_Storage(int max) {
         max_storage_items = max;
     }
 
+    public void remove_x_material(Enums.enum_item material,int qty) {
+        if (Inventory_Item_Count(material) >= qty) {
+            var r = (from InventoryManager.Item n in inventory where n.item_type == material select n).Take(qty).ToList();
+            foreach (InventoryManager.Item i in r) {
+                inventory.Remove(i);
+            }
+            r = null;
+        }
+    }
+    public void remove_material(Enums.enum_item material) {
+        if (Inventory_Item_Count(material) >= 1) {
+            var r = (from InventoryManager.Item n in inventory where n.item_type == material select n).Take(1).ToList();
+            foreach (InventoryManager.Item i in r) {
+                inventory.Remove(i);
+            }
+            r = null;
+        }
+    }
     public void Store_Material(Enums.enum_item material) {
         inventory.Add(new InventoryManager.Item(material));
     }
-
+    public void Store_Blueprint(Enums.enum_item blue_print) {
+        blueprints.Add(new InventoryManager.Item(blue_print));
+    }
     /// <summary>
     /// This function stores the modules
     /// </summary>
@@ -234,6 +269,7 @@ public class InventoryManager : MonoBehaviour {
         GameObject.Find("cmdLeft").GetComponent<Button>().interactable = action;
         GameObject.Find("cmdTop").GetComponent<Button>().interactable = action;
         GameObject.Find("cmdCommand").GetComponent<Button>().onClick.Invoke();
+
     }
 
     public void SetScreenNoCommandModule() {
@@ -271,7 +307,9 @@ public class InventoryManager : MonoBehaviour {
         //*******************
         DisableEnableButtons(false);//Disble all the button
 
+        
        
+
     }
 
     public void Build_Mount_Point_Drop_Panels() {

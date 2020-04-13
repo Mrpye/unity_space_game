@@ -8,6 +8,12 @@ public class Enums {
         Warning=1,
         Danger=2
     }
+
+    public enum enum_read_type {
+        storage = 0,
+        replicator_que = 1,
+        replicator_time = 2
+    }
     public enum enum_staus_type {
         Online,
         Malfunction,
@@ -33,6 +39,7 @@ public class Enums {
         material,
         asset,
         upgrade,
+        blueprint,
         pickup
     }
     public enum enum_item {
@@ -63,6 +70,9 @@ public class Enums {
         module_repair = 24,
         module_cooling = 25,
         module_shield = 26,
+        material_fuel = 27,
+        blueprint_fuel = 28
+
     }
 
     public enum emun_zone {

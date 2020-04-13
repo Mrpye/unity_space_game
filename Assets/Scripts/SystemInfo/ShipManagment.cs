@@ -65,6 +65,15 @@ public class ShipManagment : InventoryManager {
         CalcUpgrades();
     }
 
+    public bool AddFuel(float ammount) {
+        if(this.fuel+ ammount > fuel_max) {
+            return false;
+        } else {
+            fuel += ammount;
+            return true;
+        }
+
+    }
    /* public bool ShieldOnline() {
         if(this.shield_obj != null) {
             return this.shield_obj.shield_online;

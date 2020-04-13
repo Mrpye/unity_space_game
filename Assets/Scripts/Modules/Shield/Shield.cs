@@ -67,6 +67,11 @@ public class Shield : ModuleSystemInfo {
                 UpdateUsage();
             } else {
                 ShieldOffline();
+                current_shield -= 10;
+                if (current_shield < 0) {
+                    current_shield = 0;
+                }
+
             }
         } else {
             ShieldOffline();

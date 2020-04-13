@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Specialized;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
+
 
 public class UnityFunctions {
     public static GameObject modules;
@@ -7,12 +10,91 @@ public class UnityFunctions {
     public static GameObject game_elements;
     public static GameObject stored_upgrades;
     public static GameObject player;
+    public static ShipManagment ship_manager;
+    public static OrderedDictionary resource_data = new OrderedDictionary();
+    public static bool data_loaded = false;
+
     public static void PopulateCommonVariables() {
         UnityFunctions.modules = GameObject.Find("Modules");
         UnityFunctions.stored_modules = GameObject.Find("Stored_Modules");
         UnityFunctions.game_elements = GameObject.Find("GameElements");
         UnityFunctions.stored_upgrades = GameObject.Find("Stored_Upgrades");
         UnityFunctions.player = GameObject.Find("Player");
+        if (UnityFunctions.player == null) {
+            UnityFunctions.player = GameObject.Find("Player_Config");
+        } else {
+            UnityFunctions.ship_manager = (ShipManagment)UnityFunctions.player.GetComponent("ShipManagment");
+        }
+        
+        PopulateItemResorces();
+    }
+
+    public static void PopulateItemResorces() {
+        if (UnityFunctions.data_loaded == true) { return; }
+        UnityFunctions.data_loaded = true;
+
+        UnityFunctions.resource_data.Add(Enums.enum_item.pickup.ToString(), new ItemResorce.ItemResorceData("Material\\Pickup", "Spawn Modules and Blue Prints or Material", Enums.enum_item.pickup, Enums.enum_resorce_type.pickup, false));
+
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_gold.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Gold", "Gold material used for manufacturing and making money", Enums.enum_item.material_gold, Enums.enum_resorce_type.material, true));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_iron.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Iron", "Iron material used for manufacturing and making money", Enums.enum_item.material_iron, Enums.enum_resorce_type.material, true));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_ice.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Ice", "Gold material used for manufacturing and making money", Enums.enum_item.material_ice, Enums.enum_resorce_type.material, true));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_ilium.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Ilium", "ilium Used for making fuel", Enums.enum_item.material_ilium, Enums.enum_resorce_type.material, true));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_neutronium.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Neutonium", "neutonium material used for manufacturing and making money", Enums.enum_item.material_neutronium, Enums.enum_resorce_type.material, true));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_plastica.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Plastica", "plastica material used for manufacturing and making money", Enums.enum_item.material_plastica, Enums.enum_resorce_type.material, true));
+
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_double_blaster.ToString(), new ItemResorce.ItemResorceData("Modules\\WeponSystems\\WeponSystem-BlasterDouble", "Wepon Fires a Double shot", Enums.enum_item.module_double_blaster, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_single_blaster.ToString(), new ItemResorce.ItemResorceData("Modules\\WeponSystems\\WeponSystem-BlasterSingle", "Wepon Fires a Single shot", Enums.enum_item.module_single_blaster, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_turret.ToString(), new ItemResorce.ItemResorceData("Modules\\WeponSystems\\WeponSystem-Turret", "Rotation", Enums.enum_item.module_turret, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_mining_laser.ToString(), new ItemResorce.ItemResorceData("Modules\\WeponSystems\\WeponSystem-Laser", "Used for mining asteroids", Enums.enum_item.module_mining_laser, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_power_reactor.ToString(), new ItemResorce.ItemResorceData("Modules\\Power\\PowerReactor", "Used to power your ship", Enums.enum_item.module_power_reactor, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_command_module_type1.ToString(), new ItemResorce.ItemResorceData("Modules\\CommandModule\\CommandModuleType1", "Type1 command module", Enums.enum_item.module_command_module_type1, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_main_engine.ToString(), new ItemResorce.ItemResorceData("Modules\\Engines\\MainEngine", "Main enging use to make your ship go", Enums.enum_item.module_main_engine, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_thruster.ToString(), new ItemResorce.ItemResorceData("Modules\\Engines\\Thruster", "Thrusters used to maneuver your ship", Enums.enum_item.module_thruster, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_refiner.ToString(), new ItemResorce.ItemResorceData("Modules\\Refiner\\Refiner", "Used to refine materials", Enums.enum_item.module_refiner, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_tracktor_beam.ToString(), new ItemResorce.ItemResorceData("Modules\\TracktorBeam\\TracktorBeam", "This is a Tracktor Beam", Enums.enum_item.module_tracktor_beam, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_repair.ToString(), new ItemResorce.ItemResorceData("Modules\\Repair\\AutoRepair", "Auto Repair Module", Enums.enum_item.module_repair, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_cooling.ToString(), new ItemResorce.ItemResorceData("Modules\\Cooling\\Cooling", "Heat Pump Cooling Module", Enums.enum_item.module_cooling, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_shield.ToString(), new ItemResorce.ItemResorceData("Modules\\Shield\\Shield", "Shield Module", Enums.enum_item.module_shield, Enums.enum_resorce_type.module, false));
+
+        UnityFunctions.resource_data.Add(Enums.enum_item.asset_asteroid_large.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Asteroid\\Asteroid_large", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_large, Enums.enum_resorce_type.asset, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.asset_asteroid_med.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Asteroid\\Asteroid_med", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_med, Enums.enum_resorce_type.asset, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.asset_small_enemy.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Enemy\\SmallEnemy", "Small Enemy", Enums.enum_item.asset_small_enemy, Enums.enum_resorce_type.asset, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.asset_large_enemy.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Enemy\\LargeEnemy", "Large Enemy", Enums.enum_item.asset_large_enemy, Enums.enum_resorce_type.asset, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.material_fuel.ToString(), new ItemResorce.ItemResorceData("Material\\fuel", "Used to fuel the ship", Enums.enum_item.material_fuel, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_fuel.ToString(), new ItemResorce.ItemResorceData("Blueprint\\blueprint_fuel", "Blueprint to make fuel", Enums.enum_item.material_fuel, Enums.enum_resorce_type.blueprint, false));
+
+    }
+
+    public static string GetItemTypeDescription(Enums.enum_item Item_type) {
+
+        if (UnityFunctions.resource_data.Contains(Item_type.ToString())) {
+            ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+            return item.description;
+        } else {
+            return "";
+        }
+    }
+
+    public static string GetItemTypeResorceLocation(Enums.enum_item Item_type) {
+        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        return item.resorce;
+    }
+    public static Enums.enum_item GetItemType(Enums.enum_item Item_type) {
+        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        return item.item_type;
+    }
+    public static Enums.enum_resorce_type GetItemTypeResorceType(Enums.enum_item Item_type) {
+        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        return item.resorce_type;
+    }
+
+    public static bool GetItemTypeNeedsRefining(Enums.enum_item Item_type) {
+        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        return item.need_refining;
+    }
+    public static ItemResorce.ItemResorceData GetItemTypeItem(Enums.enum_item Item_type) {
+        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        return item;
     }
 
     public static void LookAt2D(Transform obj, Transform theTarget, float speed, Enums.enum_facing_direction facing) {
@@ -81,6 +163,17 @@ public class UnityFunctions {
         return UnityFunctions.stored_modules.GetComponentsInChildren<ModuleSystemInfo>();
     }
 
+    public static bool ModuleInstalled(Enums.enum_item item) {
+        ItemResorce[] items = UnityFunctions.modules.GetComponentsInChildren<ItemResorce>();
+        var r = (from ItemResorce n in items where n.Item_type == item select n).Count();
+        if (r > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+   
     public Upgrade_Settings[] GetStoredUpgrades() {
         return UnityFunctions.stored_modules.GetComponentsInChildren<Upgrade_Settings>();
     }
@@ -92,6 +185,6 @@ public class UnityFunctions {
         return Color.red;
     }
     public static Color Color_Orange() {
-        return UnityFunctions.RGBA(45, 195, 52, 255);
+        return UnityFunctions.RGBA(255, 150, 0, 255);
     }
 }
