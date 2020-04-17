@@ -45,7 +45,7 @@ public class Shield : ModuleSystemInfo {
                 current_shield += (charge_rate * Time.deltaTime) * 0.05f;
                 current_shield = Mathf.Clamp(current_shield, 0, this.total_max_shield);
 
-                if (Input.GetKeyDown(KeyCode.J)) {
+                if (Input.GetKeyDown(KeyCode.J) && !UnityFunctions.controls_locked) {
                     shield_online = !shield_online;
                 }
 

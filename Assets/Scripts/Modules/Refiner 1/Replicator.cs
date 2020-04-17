@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,15 +14,16 @@ public class Replicator : ModuleSystemInfo {
 
     private ShipManagment storage;
     public bool processing = false;
-    public int process_time =0;
+    public int process_time = 0;
     public Enums.enum_item current_item;
+    public DateTimeOffset est_finish_time;
     //private ItemResorce mr;
 
     /// <summary>
     /// This gets Moduleinfo settigs and apply to the specific module
     /// </summary>
     public void UpdateModuleStats() {
-        processing_time = this.Get_Calculated_Action_Speed()  ;
+        processing_time = this.Get_Calculated_Action_Speed();
         if (processing_time == 0) { processing_time = 1; }
     }
 
@@ -39,17 +41,16 @@ public class Replicator : ModuleSystemInfo {
         return res;
     }
 
-
     public void AddItemToReplicator(Recipe recipe) {
         float maxbin = this.settings.Items_max;
         if (processing_bin.Count < maxbin) {
             processing_bin.Add(recipe);
         }
         //ItemResorce.ItemResorceData id=   UnityFunctions.GetItemTypeItem(item);
-       // if(id.resorce_type== Enums.enum_resorce_type.material) {
-            //Need to remove 
-           
-      //  }
+        // if(id.resorce_type== Enums.enum_resorce_type.material) {
+        //Need to remove
+
+        //  }
         /*
         if (go.tag == "material" && processing_bin.Count < maxbin) {
             ItemResorce mr = go.GetComponent<ItemResorce>();
@@ -61,7 +62,7 @@ public class Replicator : ModuleSystemInfo {
             } else if (mr != null && msi != null) {
                 //Storing a module
                 storage.Store_Module(go);
-            }   
+            }
         }*/
     }
 
@@ -80,19 +81,29 @@ public class Replicator : ModuleSystemInfo {
         do {
             if (this.is_online && this.active) {
                 Recipe item = processing_bin[0];
-                process_time = item.make_time;
-                current_item = item.item_type;
-                yield return new WaitForSeconds(process_time);   
-                ItemResorce.ItemResorceData id = UnityFunctions.GetItemTypeItem(item.item_type);
-                if (storage != null) {
-                    if( id.resorce_type== Enums.enum_resorce_type.material) {
-                        //************************************
-                        //We need to remove x items from stock
-                        //************************************
-                        foreach(Recipe.Ingreadient i in item.ingredients) {
-                            storage.remove_x_material(i.item_type, i.qty);
+                bool validated = true;
+                foreach (Recipe.Ingreadient i in item.ingredients) {
+                    int in_stock = storage.Inventory_Item_Count(i.item_type);
+                    if (in_stock < i.qty) { validated = false; break; }
+                }
+                if (validated == true) {
+                    process_time = item.make_time;
+                    current_item = item.item_type;
+                    est_finish_time = new DateTimeOffset(DateTime.Now.AddSeconds(process_time));
+                    yield return new WaitForSeconds(process_time);
+                    ItemResorce.ItemResorceData id = UnityFunctions.GetItemTypeItem(item.item_type);
+                    if (storage != null) {
+                        if (id.resorce_type == Enums.enum_resorce_type.material) {
+                            //First check we have all the  items
+
+                            //************************************
+                            //We need to remove x items from stock
+                            //************************************
+                            foreach (Recipe.Ingreadient i in item.ingredients) {
+                                storage.remove_x_material(i.item_type, i.qty);
+                            }
+                            storage.Store_Material(item.item_type);
                         }
-                        storage.Store_Material(item.item_type);
                     }
                 }
                 processing_bin.RemoveAt(0);

@@ -130,7 +130,7 @@ public class SpaceShipMovment : MonoBehaviour {
         movement_x = Input.GetAxis("Strife");
         rotaion_movement = Input.GetAxis("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.K)) {
+        if (Input.GetKeyDown(KeyCode.K) && !UnityFunctions.controls_locked) {
             cruse_control = !cruse_control;
             this.cruse_control_speed = rb.velocity.magnitude;
         }
@@ -142,14 +142,14 @@ public class SpaceShipMovment : MonoBehaviour {
         }
 
         CalcThrustFactor();
-        if (Input.GetKeyDown(KeyCode.F)) {
+        if (Input.GetKeyDown(KeyCode.F) && !UnityFunctions.controls_locked) {
             this.flight_assist += 1;
             if (this.flight_assist > 2) {
                 this.flight_assist = 0;
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.L) && is_in_docking_zone) {
+        if (Input.GetKeyDown(KeyCode.L) && is_in_docking_zone && !UnityFunctions.controls_locked) {
             LoadSave ls = gameObject.GetComponent<LoadSave>();
             if (ls != null) { ls.SavePlayer(); }
 
@@ -229,13 +229,13 @@ public class SpaceShipMovment : MonoBehaviour {
         //Breaking system
         //***************
         if (rb == null) { return; }
-        if (Input.GetKey(KeyCode.X)) {
+        if (Input.GetKey(KeyCode.X) && !UnityFunctions.controls_locked) {
             BreakSystem_Stop_Roatation();
             BreakSystem_Stop_Strife();
             BreakSystem_Stop_Forward();
-        } else if (Input.GetKey(KeyCode.Z)) {
+        } else if (Input.GetKey(KeyCode.Z) && !UnityFunctions.controls_locked) {
             BreakSystem_Stop_Roatation();
-        } else if (Input.GetKey(KeyCode.C)) {
+        } else if (Input.GetKey(KeyCode.C) && !UnityFunctions.controls_locked) {
             BreakSystem_Stop_Strife();
             BreakSystem_Stop_Forward();
         } else {
@@ -266,8 +266,8 @@ public class SpaceShipMovment : MonoBehaviour {
                         } else if (m.movement_type == Enums.enum_movment_type.strife) {
                             p.Activate(Mathf.Abs(Calc_Strife_Trust(p.Get_Calculated_Thrust(m.value))));
                         } else if (m.movement_type == Enums.enum_movment_type.forward_backward) {
-                            p.Activate(p.Get_Calculated_Thrust(m.value)* Calc_Percentage_Forward());
-                           // p.Activate(Mathf.Abs(Calc_forward_Trust(p.Get_Calculated_Thrust(m.value), Calc_Percentage_Forward())));
+                            p.Activate(p.Get_Calculated_Thrust(m.value) * Calc_Percentage_Forward());
+                            // p.Activate(Mathf.Abs(Calc_forward_Trust(p.Get_Calculated_Thrust(m.value), Calc_Percentage_Forward())));
                         } else {
                             p.Activate(p.Get_Calculated_Thrust(m.value));
                         }
@@ -278,7 +278,7 @@ public class SpaceShipMovment : MonoBehaviour {
     }
 
     private float Calc_Percentage_Forward() {
-        float result = (this.mag / 100)* 3;
+        float result = (this.mag / 100) * 3;
         return result;
     }
 
@@ -382,9 +382,11 @@ public class SpaceShipMovment : MonoBehaviour {
         //This Handles the zoom Mode
         //**************************
         float zoom = cam.orthographicSize;
-        float scroll_data = Input.GetAxis("Mouse ScrollWheel");
-        zoom += scroll_data * zoom_speed;
-        zoom = Mathf.Clamp(zoom, min_zoom, max_zoom);
-        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime * zoom_speed);
+        if (!UnityFunctions.controls_locked) {
+            float scroll_data = Input.GetAxis("Mouse ScrollWheel");
+            zoom += scroll_data * zoom_speed;
+            zoom = Mathf.Clamp(zoom, min_zoom, max_zoom);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoom, Time.deltaTime * zoom_speed);
+        }
     }
 }

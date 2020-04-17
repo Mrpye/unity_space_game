@@ -90,7 +90,7 @@ public class ModuleSaveModel {
     public bool is_in_storage;
     public bool is_internal_module;
     public float health;
-
+    public bool enabled;
     public void ReadData(GameObject module) {
         ModuleSystemInfo sys = module.GetComponent<ModuleSystemInfo>();
         ItemResorce ir = module.GetComponent<ItemResorce>();
@@ -104,6 +104,7 @@ public class ModuleSaveModel {
         health = sys.current_health;
         order_layer = sys.order_layer;
         is_in_storage = sys.is_in_storage;
+        enabled = sys.active;
         is_internal_module = sys.is_internal_module;
     }
 }

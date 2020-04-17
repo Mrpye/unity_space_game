@@ -185,6 +185,7 @@ public class LoadSave : MonoBehaviour {
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
             mod_sys.is_internal_module = model.is_internal_module;
+            mod_sys.active = model.enabled;
             mod_sys.upgrades.Clear();
             //Load upgrades
             foreach (string s in model.upgrades) {

@@ -71,7 +71,8 @@ public class Enums {
         module_cooling = 25,
         module_shield = 26,
         material_fuel = 27,
-        blueprint_fuel = 28
+        blueprint_fuel = 28,
+        module_replicator = 29,
 
     }
 

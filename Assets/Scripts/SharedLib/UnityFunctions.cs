@@ -13,7 +13,7 @@ public class UnityFunctions {
     public static ShipManagment ship_manager;
     public static OrderedDictionary resource_data = new OrderedDictionary();
     public static bool data_loaded = false;
-
+    public static bool controls_locked = false;
     public static void PopulateCommonVariables() {
         UnityFunctions.modules = GameObject.Find("Modules");
         UnityFunctions.stored_modules = GameObject.Find("Stored_Modules");
@@ -55,6 +55,7 @@ public class UnityFunctions {
         UnityFunctions.resource_data.Add(Enums.enum_item.module_repair.ToString(), new ItemResorce.ItemResorceData("Modules\\Repair\\AutoRepair", "Auto Repair Module", Enums.enum_item.module_repair, Enums.enum_resorce_type.module, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.module_cooling.ToString(), new ItemResorce.ItemResorceData("Modules\\Cooling\\Cooling", "Heat Pump Cooling Module", Enums.enum_item.module_cooling, Enums.enum_resorce_type.module, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.module_shield.ToString(), new ItemResorce.ItemResorceData("Modules\\Shield\\Shield", "Shield Module", Enums.enum_item.module_shield, Enums.enum_resorce_type.module, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.module_replicator.ToString(), new ItemResorce.ItemResorceData("Modules\\Replicator\\Replicator", "Replictaor tobuild items", Enums.enum_item.module_replicator, Enums.enum_resorce_type.module, false));
 
         UnityFunctions.resource_data.Add(Enums.enum_item.asset_asteroid_large.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Asteroid\\Asteroid_large", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_large, Enums.enum_resorce_type.asset, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.asset_asteroid_med.ToString(), new ItemResorce.ItemResorceData("GameAssets\\Asteroid\\Asteroid_med", "This is a Tracktor Beam", Enums.enum_item.asset_asteroid_med, Enums.enum_resorce_type.asset, false));

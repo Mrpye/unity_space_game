@@ -121,7 +121,7 @@ public class WeponSystem : ModuleSystemInfo {
             return;
         }
        
-            if (Input.GetButton("Fire2") && Is_Malfunctioning() && this.is_online && this.active) {
+            if (Input.GetButton("Fire2") && Is_Malfunctioning() && this.is_online && this.active && !UnityFunctions.controls_locked) {
             int hit_mask = (1 << LayerMask.NameToLayer("game-assets")) | (1 << LayerMask.NameToLayer("Enemy"));
             StartUsage();
             RaycastHit2D hit2D = Physics2D.Raycast(transform.position, transform.up, laser_range, hit_mask);
@@ -156,11 +156,11 @@ public class WeponSystem : ModuleSystemInfo {
         if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) {
             return;
         }
-        if (Input.GetButtonDown("Fire1") && Is_Malfunctioning() && this.is_online && this.active) {
+        if (Input.GetButtonDown("Fire1") && Is_Malfunctioning() && this.is_online && this.active && !UnityFunctions.controls_locked) {
             if (fire_method != null) { StopCoroutine(fire_method); }
             fire_method = StartCoroutine(FireConinuous());
         }
-        if (Input.GetButtonUp("Fire1")) {
+        if (Input.GetButtonUp("Fire1") && !UnityFunctions.controls_locked) {
             if (fire_method != null) {
                 StopCoroutine(fire_method);
             }

@@ -63,7 +63,7 @@ public class TractorBeam : ModuleSystemInfo {
     private void Update() {
         if (!this.is_in_storage) {
             if (this.is_online && this.active) {
-                if (Input.GetKey(KeyCode.T)) {
+                if ((Input.GetMouseButton(2) || Input.GetKey(KeyCode.T)) && !UnityFunctions.controls_locked) {
                     if (this.Is_Malfunctioning()) {
                         UpdateTracktorBeam();
                         tractor_beam_fx.Play();
