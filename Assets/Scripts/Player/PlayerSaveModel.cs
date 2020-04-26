@@ -54,7 +54,7 @@ public class PlayerSaveModel {
 
         this.blueprints.Clear();
         foreach (InventoryManager.Item e in inv.blueprints) {
-            this.inventory.Add(e.item_type);
+            this.blueprints.Add(e.item_type);
         }
 
         //*****************

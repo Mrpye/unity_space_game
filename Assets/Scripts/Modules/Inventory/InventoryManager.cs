@@ -57,12 +57,13 @@ public class InventoryManager : MonoBehaviour {
     [SerializeField] public List<InventoryManager.Item> inventory = new List<InventoryManager.Item>();// Inventory items
     [SerializeField] public List<InventoryManager.Item> blueprints = new List<InventoryManager.Item>();// Inventory items
 
-    [SerializeField] private GameObject inventory_item;
+   
 
     [SerializeField] public List<Upgrade_Settings> stored_upgrades;
     //public List<string> stored_upgrades = new List<string>();
 
     [Header("Config Inventory")]
+    [SerializeField] private GameObject inventory_item;
     [SerializeField] private GameObject inventory_panel;
 
     [SerializeField] private int max_storage_items = 10; //Max items that can be stored in our inventory

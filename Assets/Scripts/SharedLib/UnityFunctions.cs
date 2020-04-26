@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,6 +15,9 @@ public class UnityFunctions {
     public static OrderedDictionary resource_data = new OrderedDictionary();
     public static bool data_loaded = false;
     public static bool controls_locked = false;
+
+
+
     public static void PopulateCommonVariables() {
         UnityFunctions.modules = GameObject.Find("Modules");
         UnityFunctions.stored_modules = GameObject.Find("Stored_Modules");
@@ -32,6 +36,11 @@ public class UnityFunctions {
     public static void PopulateItemResorces() {
         if (UnityFunctions.data_loaded == true) { return; }
         UnityFunctions.data_loaded = true;
+
+
+        
+
+
 
         UnityFunctions.resource_data.Add(Enums.enum_item.pickup.ToString(), new ItemResorce.ItemResorceData("Material\\Pickup", "Spawn Modules and Blue Prints or Material", Enums.enum_item.pickup, Enums.enum_resorce_type.pickup, false));
 
@@ -64,10 +73,38 @@ public class UnityFunctions {
         UnityFunctions.resource_data.Add(Enums.enum_item.material_fuel.ToString(), new ItemResorce.ItemResorceData("Material\\fuel", "Used to fuel the ship", Enums.enum_item.material_fuel, Enums.enum_resorce_type.material, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_fuel.ToString(), new ItemResorce.ItemResorceData("Blueprint\\blueprint_fuel", "Blueprint to make fuel", Enums.enum_item.material_fuel, Enums.enum_resorce_type.blueprint, false));
 
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_wire.ToString(), new ItemResorce.ItemResorceData("", "Component Wire", Enums.enum_item.component_wire, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_circuit.ToString(), new ItemResorce.ItemResorceData("", "Circuits", Enums.enum_item.component_circuit, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_coil.ToString(), new ItemResorce.ItemResorceData("", "Power Coil", Enums.enum_item.component_coil, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_matrix.ToString(), new ItemResorce.ItemResorceData("", "Circuit Matrix", Enums.enum_item.component_matrix, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_capacitor.ToString(), new ItemResorce.ItemResorceData("", "Power Capacitor", Enums.enum_item.component_capacitor, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_insulation.ToString(), new ItemResorce.ItemResorceData("", "Insulation", Enums.enum_item.component_insulation, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_focus_crystal.ToString(), new ItemResorce.ItemResorceData("", "Focus Crystal", Enums.enum_item.component_focus_crystal, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_glass.ToString(), new ItemResorce.ItemResorceData("", "Glass", Enums.enum_item.component_glass, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_vents.ToString(), new ItemResorce.ItemResorceData("", "Cooling Vents", Enums.enum_item.component_vents, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_cooling_pump.ToString(), new ItemResorce.ItemResorceData("", "Colling pump", Enums.enum_item.component_cooling_pump, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_money.ToString(), new ItemResorce.ItemResorceData("", "Money", Enums.enum_item.component_money, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_plastic.ToString(), new ItemResorce.ItemResorceData("", "Plastic Material used for construction", Enums.enum_item.component_plastic, Enums.enum_resorce_type.material, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.component_metal.ToString(), new ItemResorce.ItemResorceData("", "Metal use for constrution", Enums.enum_item.component_metal, Enums.enum_resorce_type.material, false));
+
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_money.ToString(), new ItemResorce.ItemResorceData("", "Print Money", Enums.enum_item.component_money, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_wire.ToString(), new ItemResorce.ItemResorceData("", "Component Wire", Enums.enum_item.blueprint_wire, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_circuit.ToString(), new ItemResorce.ItemResorceData("", "Circuits", Enums.enum_item.blueprint_circuit, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_coil.ToString(), new ItemResorce.ItemResorceData("", "Power Coil", Enums.enum_item.blueprint_coil, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_matrix.ToString(), new ItemResorce.ItemResorceData("", "Circuit Matrix", Enums.enum_item.blueprint_matrix, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_capacitor.ToString(), new ItemResorce.ItemResorceData("", "Power Capacitor", Enums.enum_item.blueprint_capacitor, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_insulation.ToString(), new ItemResorce.ItemResorceData("", "Insulation", Enums.enum_item.blueprint_insulation, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_focus_crystal.ToString(), new ItemResorce.ItemResorceData("", "Focus Crystal", Enums.enum_item.blueprint_focus_crystal, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_glass.ToString(), new ItemResorce.ItemResorceData("", "Glass", Enums.enum_item.blueprint_glass, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_vents.ToString(), new ItemResorce.ItemResorceData("", "Cooling Vents", Enums.enum_item.blueprint_vents, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_cooling_pump.ToString(), new ItemResorce.ItemResorceData("", "Colling pump", Enums.enum_item.blueprint_cooling_pump, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_plastic.ToString(), new ItemResorce.ItemResorceData("", "Plastic Material used for construction", Enums.enum_item.blueprint_plastic, Enums.enum_resorce_type.blueprint, false));
+        UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_metal.ToString(), new ItemResorce.ItemResorceData("", "Metal use for constrution", Enums.enum_item.blueprint_metal, Enums.enum_resorce_type.blueprint, false));
+
     }
 
     public static string GetItemTypeDescription(Enums.enum_item Item_type) {
-
+        UnityFunctions.PopulateItemResorces();
         if (UnityFunctions.resource_data.Contains(Item_type.ToString())) {
             ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
             return item.description;
@@ -77,6 +114,7 @@ public class UnityFunctions {
     }
 
     public static string GetItemTypeResorceLocation(Enums.enum_item Item_type) {
+        UnityFunctions.PopulateItemResorces();
         ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
         return item.resorce;
     }
@@ -85,15 +123,18 @@ public class UnityFunctions {
         return item.item_type;
     }
     public static Enums.enum_resorce_type GetItemTypeResorceType(Enums.enum_item Item_type) {
+        UnityFunctions.PopulateItemResorces();
         ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
         return item.resorce_type;
     }
 
     public static bool GetItemTypeNeedsRefining(Enums.enum_item Item_type) {
+        UnityFunctions.PopulateItemResorces();
         ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
         return item.need_refining;
     }
     public static ItemResorce.ItemResorceData GetItemTypeItem(Enums.enum_item Item_type) {
+        UnityFunctions.PopulateItemResorces();
         ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
         return item;
     }

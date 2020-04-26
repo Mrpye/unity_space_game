@@ -80,16 +80,22 @@ public class LoadSave : MonoBehaviour {
         inv.inventory.Clear();
         if(inv!=null && player_model.inventory != null) {
             foreach (Enums.enum_item e in player_model.inventory) {
-                inv.inventory.Add( new InventoryManager.Item(e));
+                //if (UnityFunctions.GetItemTypeResorceType(e) == Enums.enum_resorce_type.blueprint) {
+                    //inv.blueprints.Add(new InventoryManager.Item(e));
+                //} else {
+                   inv.inventory.Add(new InventoryManager.Item(e));
+               // }
+               
             }
         }
 
         //****************
         //Load blue prints
         //****************
-        inv.blueprints.Clear();
+        //inv.blueprints.Clear();
         if (inv != null && player_model.blueprints != null) {
             foreach (Enums.enum_item e in player_model.blueprints) {
+               
                 inv.blueprints.Add(new InventoryManager.Item(e));
             }
         }

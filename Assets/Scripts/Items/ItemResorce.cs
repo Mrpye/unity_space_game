@@ -4,7 +4,12 @@ using UnityEngine;
 using static Enums;
 
 public class ItemResorce : MonoBehaviour {
-    [SerializeField] public Enums.enum_item Item_type;
+   [ReadOnly] [SerializeField] public Enums.enum_item Item_type;
+    [SerializeField] Recipe Item_Data;
+    private void OnValidate() {
+        if (Item_Data != null) { Item_type = Item_Data.item_type; }
+       
+    }
 
     public struct ItemResorceData {
         public string resorce;
