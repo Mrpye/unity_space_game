@@ -91,7 +91,7 @@ public class Replicator : ModuleSystemInfo {
                     current_item = item.item_type;
                     est_finish_time = new DateTimeOffset(DateTime.Now.AddSeconds(process_time));
                     yield return new WaitForSeconds(process_time);
-                    ItemResorce.ItemResorceData id = UnityFunctions.GetItemTypeItem(item.item_type);
+                    Recipe id = UnityFunctions.GetItemTypeItem(item.item_type);
                     if (storage != null) {
                         if (id.resorce_type == Enums.enum_resorce_type.material) {
                             //First check we have all the  items

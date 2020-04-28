@@ -10,7 +10,6 @@ public class StorageReader : MonoBehaviour, Reader {
     private ShipManagment storage;
     private Replicator replicator;
 
-
     private Text txt;
     private Button but;
     private Image img;
@@ -36,7 +35,6 @@ public class StorageReader : MonoBehaviour, Reader {
             if (but != null) {
                 but.targetGraphic = img;
             }
-            
         }
     }
 
@@ -45,10 +43,10 @@ public class StorageReader : MonoBehaviour, Reader {
         txt = GetComponentInChildren<Text>();
         Transform go = gameObject.transform.Find("Image");
         if (go != null) {
-            img =go.transform.GetComponent<Image>();
+            img = go.transform.GetComponent<Image>();
         }
-        
     }
+
     // Start is called before the first frame update
     private void Start() {
         storage = UnityFunctions.ship_manager;
@@ -57,10 +55,9 @@ public class StorageReader : MonoBehaviour, Reader {
         OnValidate();
 
         txt.enabled = true;
-        if (recipe != null && read_type== Enums.enum_read_type.replicator_make) {
+        if (recipe != null && read_type == Enums.enum_read_type.replicator_make) {
             txt.enabled = !recipe.blueprint;
         }
-        
 
         //*************************
         //Get the replicator object
@@ -72,7 +69,7 @@ public class StorageReader : MonoBehaviour, Reader {
         }
 
         if (but != null) {
-            //Lets hook up event 
+            //Lets hook up event
             if (read_type == Enums.enum_read_type.replicator_make) {
                 but.onClick.AddListener(MakeItem);
             } else if (read_type == Enums.enum_read_type.use) {
@@ -87,11 +84,10 @@ public class StorageReader : MonoBehaviour, Reader {
 
     void Reader.UpdateDisplayData() {
         if (storage != null && txt != null) {
-
             //**************
             //Set the colour
             //**************
-            if (is_Blueprint && read_type== Enums.enum_read_type.replicator_make) {
+            if (is_Blueprint && read_type == Enums.enum_read_type.replicator_make) {
                 ColorBlock cb = but.colors;
                 if (storage.Blueprint_Item_Count(recipe.required_blueprint) > 0) {
                     cb.disabledColor = Color.blue;
@@ -102,7 +98,6 @@ public class StorageReader : MonoBehaviour, Reader {
                 }
                 but.colors = cb;
             }
-
 
             if (read_type == Enums.enum_read_type.replicator_que) {
                 //**********************************
@@ -143,7 +138,7 @@ public class StorageReader : MonoBehaviour, Reader {
                 //*************
                 txt.text = storage.Inventory_Item_Count(item_type).ToString();
             }
-        } 
+        }
     }
 
     private bool HasIngredients() {

@@ -37,11 +37,25 @@ public class UnityFunctions {
         if (UnityFunctions.data_loaded == true) { return; }
         UnityFunctions.data_loaded = true;
 
+        AssetDatabase.FindAssets("t:Recipe");
+        Recipe[] d = Resources.FindObjectsOfTypeAll(typeof(Recipe)) as Recipe[];
+        foreach(Recipe item in d) {
+            if (!UnityFunctions.resource_data.Contains(item.item_type.ToString())) {
+                UnityFunctions.resource_data.Add(item.item_type.ToString(), item);
+            } else {
+                Debug.Log("Duplicate");
+            }
+           
+            if (item.blueprint) {
+                if (!UnityFunctions.resource_data.Contains(item.required_blueprint.ToString())) {
+                    UnityFunctions.resource_data.Add(item.required_blueprint.ToString(), item);
+                } else {
+                    Debug.Log("Duplicate");
+                }
+            }
+        }
 
-        
-
-
-
+        /*
         UnityFunctions.resource_data.Add(Enums.enum_item.pickup.ToString(), new ItemResorce.ItemResorceData("Material\\Pickup", "Spawn Modules and Blue Prints or Material", Enums.enum_item.pickup, Enums.enum_resorce_type.pickup, false));
 
         UnityFunctions.resource_data.Add(Enums.enum_item.material_gold.ToString(), new ItemResorce.ItemResorceData("Material\\Mat_Gold", "Gold material used for manufacturing and making money", Enums.enum_item.material_gold, Enums.enum_resorce_type.material, true));
@@ -100,13 +114,13 @@ public class UnityFunctions {
         UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_cooling_pump.ToString(), new ItemResorce.ItemResorceData("", "Colling pump", Enums.enum_item.blueprint_cooling_pump, Enums.enum_resorce_type.blueprint, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_plastic.ToString(), new ItemResorce.ItemResorceData("", "Plastic Material used for construction", Enums.enum_item.blueprint_plastic, Enums.enum_resorce_type.blueprint, false));
         UnityFunctions.resource_data.Add(Enums.enum_item.blueprint_metal.ToString(), new ItemResorce.ItemResorceData("", "Metal use for constrution", Enums.enum_item.blueprint_metal, Enums.enum_resorce_type.blueprint, false));
-
+        */
     }
 
     public static string GetItemTypeDescription(Enums.enum_item Item_type) {
         UnityFunctions.PopulateItemResorces();
         if (UnityFunctions.resource_data.Contains(Item_type.ToString())) {
-            ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+            Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
             return item.description;
         } else {
             return "";
@@ -115,27 +129,27 @@ public class UnityFunctions {
 
     public static string GetItemTypeResorceLocation(Enums.enum_item Item_type) {
         UnityFunctions.PopulateItemResorces();
-        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
-        return item.resorce;
+        Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
+        return item.prefab_path;
     }
     public static Enums.enum_item GetItemType(Enums.enum_item Item_type) {
-        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
         return item.item_type;
     }
     public static Enums.enum_resorce_type GetItemTypeResorceType(Enums.enum_item Item_type) {
         UnityFunctions.PopulateItemResorces();
-        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
         return item.resorce_type;
     }
 
     public static bool GetItemTypeNeedsRefining(Enums.enum_item Item_type) {
         UnityFunctions.PopulateItemResorces();
-        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
         return item.need_refining;
     }
-    public static ItemResorce.ItemResorceData GetItemTypeItem(Enums.enum_item Item_type) {
+    public static Recipe GetItemTypeItem(Enums.enum_item Item_type) {
         UnityFunctions.PopulateItemResorces();
-        ItemResorce.ItemResorceData item = (ItemResorce.ItemResorceData)UnityFunctions.resource_data[Item_type.ToString()];
+        Recipe item = (Recipe)UnityFunctions.resource_data[Item_type.ToString()];
         return item;
     }
 

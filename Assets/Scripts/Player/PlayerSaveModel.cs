@@ -81,9 +81,10 @@ public class ShipSaveModel {
 
 [Serializable]
 public class ModuleSaveModel {
-    public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
+    //public List<KeyMappingModel> key_mappings = new List<KeyMappingModel>();
     public List<string> upgrades = new List<string>();
-    public string id;//used to hep idetify the module if there are multiple
+    //public string id;//used to hep idetify the module if there are multiple
+    public Enums.enum_item item_type;
     public string module_name;//Store the location of prefab and name
     public int order_layer;
     public int mount_point;
@@ -98,8 +99,9 @@ public class ModuleSaveModel {
         foreach (Upgrade_Settings u in sys.upgrades) {
             upgrades.Add(u.Full_name);
         }
-        module_name = ir.GetResorceLocation();
-        id = module.name;
+        module_name = ir.Item_Data.recipe_name;
+        //id = module.name;
+        item_type = ir.Item_Data.item_type;
         mount_point = sys.mount_point;
         health = sys.current_health;
         order_layer = sys.order_layer;

@@ -5,12 +5,12 @@ using static Enums;
 
 public class ItemResorce : MonoBehaviour {
    [ReadOnly] [SerializeField] public Enums.enum_item Item_type;
-    [SerializeField] Recipe Item_Data;
+    [SerializeField] public Recipe Item_Data;
     private void OnValidate() {
         if (Item_Data != null) { Item_type = Item_Data.item_type; }
        
     }
-
+/*
     public struct ItemResorceData {
         public string resorce;
         public string description;
@@ -25,25 +25,26 @@ public class ItemResorce : MonoBehaviour {
             this.resorce_type = resorce_type;
             this.need_refining = need_refining;
         }
-    }
+    }*/
 
   
-    public ItemResorceData Spawn_Any_Module_Upgrade_Material() {
-        ItemResorceData item;
+    public Recipe Spawn_Any_Module_Upgrade_Material() {
+        Recipe item;
         do {
             int index = Random.Range(0,UnityFunctions.resource_data.Count);
-            item=(ItemResorceData)UnityFunctions.resource_data[index];
+            item=(Recipe)UnityFunctions.resource_data[index];
         } while (item.resorce_type == enum_resorce_type.asset|| item.item_type == enum_item.module_command_module_type1 || item.item_type == enum_item.pickup);
+
 
         return item;
 
     }
     public string GetDescription() {
-        return UnityFunctions.GetItemTypeDescription(Item_type);
+        return Item_Data.description;//    UnityFunctions.GetItemTypeDescription(Item_type);
     }
 
     public string GetResorceLocation() {
-        return UnityFunctions.GetItemTypeResorceLocation(Item_type);
+        return  UnityFunctions.GetItemTypeResorceLocation(Item_type);
     }
     public Enums.enum_item GetItemType() {
         return UnityFunctions.GetItemType(Item_type);
@@ -55,7 +56,7 @@ public class ItemResorce : MonoBehaviour {
     public bool GetNeedsRefining() {
         return UnityFunctions.GetItemTypeNeedsRefining(Item_type);
     }
-    public ItemResorceData GetItem() {
+    public Recipe GetItem() {
         return UnityFunctions.GetItemTypeItem(Item_type);
     }
 }

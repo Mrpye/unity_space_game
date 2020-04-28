@@ -17,7 +17,7 @@ public class ModuleSystemInfo : MonoBehaviour {
     [SerializeField] public bool is_in_storage;
     [SerializeField] public bool is_internal_module;
     [SerializeField] public bool is_command_module;
-    [SerializeField] public bool allow_multiple_install=false;
+    [SerializeField] public bool allow_multiple_install = false;
 
     [Header("Config Info")]
     [SerializeField] public Module_Settings settings;
@@ -171,20 +171,25 @@ public class ModuleSystemInfo : MonoBehaviour {
     }
 
     private void OnCollisionEnter2D(Collision2D other) {
+        Enums.enum_resorce_type rt = enum_resorce_type.asset;
         ItemResorce ir = other.gameObject.GetComponent<ItemResorce>();
-        if (ir != null && (ir.GetResorceType() == enum_resorce_type.material || ir.GetResorceType() == enum_resorce_type.pickup || ir.GetResorceType() == enum_resorce_type.blueprint)) {
+        if (ir != null) {
+            rt = ir.GetResorceType();
+        }
+        if (rt == enum_resorce_type.material || rt == enum_resorce_type.pickup || rt == enum_resorce_type.blueprint) {
             //**********************************
             //We need to see if this is a pickup
             //**********************************
             if (ir != null && ir.Item_type == enum_item.pickup) {
-                ItemResorceData item = ir.Spawn_Any_Module_Upgrade_Material();
+                Recipe item = ir.Spawn_Any_Module_Upgrade_Material();
                 InventoryManager storage = GetComponentInParent<InventoryManager>();
                 if (item.resorce_type == enum_resorce_type.material) {
                     UnityFunctions.SendAlert(enum_status.Info, "Collected Item: " + item.item_type.ToString());
                     storage.Store_Material(item.item_type);
                     Destroy(other.gameObject);
                 } else if (item.resorce_type == enum_resorce_type.module) {
-                    GameObject refab = Resources.Load(item.resorce) as GameObject;
+                    //GameObject refab = Resources.Load(item.prefab_path) as GameObject;
+                    GameObject refab = item.preFab;
                     if (refab == null) {
                         UnityFunctions.SendAlert(enum_status.Info, "Null object");
                     }

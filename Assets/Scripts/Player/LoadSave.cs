@@ -59,6 +59,8 @@ public class LoadSave : MonoBehaviour {
     }
 
     public void LoadPlayer() {
+        UnityFunctions.PopulateItemResorces();
+
         PlayerSaveModel player_model = PlayerSaveModel.LoadPlayer();
         ShipManagment ship_mamanmger = gameObject.GetComponent<ShipManagment>();
 
@@ -149,8 +151,9 @@ public class LoadSave : MonoBehaviour {
     }
 
     public GameObject Create_Module(ModuleSaveModel model) {
-        GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
-        if (refab != null) {
+        //GameObject refab = Resources.Load(model.module_name.ToString()) as GameObject;
+        Recipe r=  UnityFunctions.GetItemTypeItem(model.item_type);
+        if (r.preFab != null) {
             GameObject modules = GameObject.Find("Modules");
             GameObject stored_modules = GameObject.Find("Stored_Modules");
             ShipModule sm = modules.GetComponentInChildren<ShipModule>();
@@ -159,7 +162,7 @@ public class LoadSave : MonoBehaviour {
 
             if (sm == null) {
                 //Debug.Log("Loading Model");
-                obj_module = Instantiate(refab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+                obj_module = Instantiate(r.preFab, gameObject.transform.position, gameObject.transform.rotation) as GameObject;
                 sm = obj_module.GetComponent<ShipModule>();
                 if (sm != null) {
                     sm.LoadMountPoints();
@@ -174,10 +177,10 @@ public class LoadSave : MonoBehaviour {
                     }
                     
                     if (mp != null) {
-                        obj_module = Instantiate(refab, mp.transform.position, mp.transform.rotation) as GameObject;
+                        obj_module = Instantiate(r.preFab, mp.transform.position, mp.transform.rotation) as GameObject;
                     }
                 } else {
-                    obj_module = Instantiate(refab, stored_modules.transform) as GameObject;
+                    obj_module = Instantiate(r.preFab, stored_modules.transform) as GameObject;
                 }
             }
 
@@ -185,8 +188,8 @@ public class LoadSave : MonoBehaviour {
             if (obj_module == null) { return null; }
             ModuleSystemInfo mod_sys = obj_module.GetComponent<ModuleSystemInfo>();
             ItemResorce ir = obj_module.GetComponent<ItemResorce>();
-            mod_sys.key_mappings = model.key_mappings;
-            mod_sys.id = model.id;
+            //mod_sys.key_mappings = model.key_mappings;
+            //mod_sys.id = model.id;
             mod_sys.current_health = model.health;
             mod_sys.mount_point = model.mount_point;
             mod_sys.order_layer = model.order_layer;
